@@ -3,7 +3,7 @@ import { Layers, Shield, Sun, Building2, Sparkles, Blinds, ArrowUpRight, Palette
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
-import { PVC_COLOR_ALTERNATIVES, WINDOW_COLOR_FEATURES } from "@/data/pvcColorAlternatives";
+import { PVC_COLOR_ALTERNATIVES, WINDOW_COLOR_FEATURES, PVC_COLORED_GLASS_OPTIONS } from "@/data/pvcColorAlternatives";
 
 import imgVillaWindow from "@/assets/firatpen-selenit-pvc-pencere.jpg";
 import imgBalcony from "@/assets/firatpen-cam-balkon-sistemleri.jpg";
@@ -273,6 +273,35 @@ export const Services = () => {
                   </Button>
                 </Link>
               </div>
+            </div>
+          </div>
+
+          {/* PVC İçin Renkli & Reflekte Isıcam Şeridi */}
+          <div className="mt-8 pt-7 border-t border-slate-200">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+              <div>
+                <h4 className="font-serif text-lg sm:text-xl font-bold text-slate-900">
+                  PVC Pencereler & Cam Balkonlar İçin Renkli Cam Seçenekleri
+                </h4>
+                <p className="text-xs text-slate-600">
+                  Seçtiğiniz PVC profil rengine uygun Füme, Bronz, Mavi/Yeşil Reflekte, Buzlu (Satinato) ve Solar Konfor Isıcam alternatifleri:
+                </p>
+              </div>
+              <Link to="/urunler/renkli-camlar" className="text-xs font-bold text-sky-600 hover:text-sky-800 shrink-0">
+                Renkli Cam & Profil Kombinasyonlarını İncele →
+              </Link>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-3">
+              {PVC_COLORED_GLASS_OPTIONS.map((g) => (
+                <div key={g.id} className="rounded-2xl bg-slate-50 border border-slate-200 p-3.5 hover:border-sky-400 transition-all">
+                  <div className="flex items-center gap-2.5 mb-2">
+                    <span className={`w-7 h-7 rounded-lg bg-gradient-to-br ${g.gradientClass} border border-slate-300 shrink-0`} />
+                    <span className="font-bold text-xs text-slate-900 leading-tight">{g.name}</span>
+                  </div>
+                  <div className="text-[10px] font-mono text-sky-700 font-semibold mb-1">{g.solarControl}</div>
+                  <p className="text-[11px] text-slate-600 line-clamp-2">{g.benefit}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>

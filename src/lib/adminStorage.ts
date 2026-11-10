@@ -402,7 +402,7 @@ export interface InventoryItem {
   name: string;
   category: "Hammadde (Plaka Cam)" | "Yarı Mamul" | "Mamul" | "Sarf Malzeme" | "Ambalaj / Sehpa";
   thickness: string;
-  dimensions: string; // e.g. "3210 x 2250 mm Jumbo Plaka"
+  dimensions: string; // e.g. "6500 mm Fıratpen Boy Profil"
   supplier: string;
   warehouseLocation: string; // e.g. "Depo-A / Raf-04"
   lotNo: string;
@@ -506,8 +506,8 @@ export interface FactoryServiceItem {
 }
 
 export const INITIAL_PRICES: FactoryPriceItem[] = [
-  { id: "isicam-s", name: "Şişecam Isıcam S (Low-E Yalıtımlı)", m2Price: 1450, thickness: "4+16+4 mm", category: "Çift Cam", stock: "Mevcut", version: "2026-Liste-v1" },
-  { id: "isicam-k", name: "Şişecam Isıcam K (Solar Güneş Kontrol)", m2Price: 1680, thickness: "6+16+6 mm", category: "Güneş Kontrol", stock: "Mevcut", version: "2026-Liste-v1" },
+  { id: "isicam-s", name: "Fıratpen Selenit 75 PVC Pencere (4+16+4 Isıcam)", m2Price: 1450, thickness: "4+16+4 mm", category: "Çift Cam", stock: "Mevcut", version: "2026-Liste-v1" },
+  { id: "isicam-k", name: "Fıratpen Redonit 85 PVC Pencere (Renkli/Konfor Isıcam)", m2Price: 1680, thickness: "6+16+6 mm", category: "Güneş Kontrol", stock: "Mevcut", version: "2026-Liste-v1" },
   { id: "balkon-8mm", name: "8mm Rodajlı Katlanır Balkon Camı", m2Price: 1250, thickness: "8 mm Temperli", category: "Balkon Camı", stock: "Mevcut", version: "2026-Liste-v1" },
   { id: "balkon-10mm", name: "10mm Sürgülü / Giyotin Balkon Camı", m2Price: 1550, thickness: "10 mm Temperli", category: "Giyotin Cam", stock: "Mevcut", version: "2026-Liste-v1" },
   { id: "jaluzili", name: "Jaluzili Isıcam (Mıknatıslı/Motorlu)", m2Price: 2850, thickness: "6+22+6 mm", category: "Jaluzili", stock: "Sipariş Üzeri", version: "2026-Liste-v1" },
@@ -521,7 +521,7 @@ export const INITIAL_SERVICES: FactoryServiceItem[] = [
   { id: "srv-delik", ad: "Delik Açma (adet)", fiyat: 50, birim: "Adet" },
   { id: "srv-zimpara", ad: "Zımpara / Pah Kırma", fiyat: 80, birim: "İşlem" },
   { id: "srv-cnc", ad: "CNC Özel Kesim", fiyat: 200, birim: "İşlem" },
-  { id: "srv-temper", ad: "640°C Convection Temperleme", fiyat: 300, birim: "İşlem" },
+  { id: "srv-temper", ad: "Çift Açılım İspanyolet & EPDM Donanım", fiyat: 300, birim: "İşlem" },
   { id: "srv-montaj", ad: "Şantiye Montaj Hizmeti", fiyat: 500, birim: "Sefer" },
   { id: "srv-nakliye", ad: "Vinçli Araç Nakliye", fiyat: 250, birim: "Sefer" },
   { id: "srv-iscilik", ad: "Özel İşçilik & Silikonlama", fiyat: 400, birim: "İşlem" },
@@ -569,7 +569,7 @@ export interface CashLedgerItem {
     | "Müşteri Sipariş Tahsilatı"
     | "Alınan Çek Tahsilatı"
     | "Kesilen Çek Ödemesi"
-    | "Şişecam / Hammadde Ödemesi"
+    | "Fıratpen Profil / Hammadde Ödemesi"
     | "Nakliye / Yakıt / Vinç Gideri"
     | "Personel / İşçilik Ödemesi"
     | "Fabrika Genel Gider / Enerji"

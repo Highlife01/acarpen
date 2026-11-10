@@ -164,7 +164,7 @@ export const QualityModuleView: React.FC<QualityModuleProps> = ({
         className="p-5 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-4 text-xs"
       >
         <h4 className="text-sm font-bold text-white">
-          Yeni Kalite Kontrol & TSE EN 12150 / EN 1279 Muayene Kaydı
+          Yeni Kalite Kontrol & TS EN 12608 / EN 1279 Muayene Kaydı
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <select
@@ -243,7 +243,7 @@ export const QualityModuleView: React.FC<QualityModuleProps> = ({
                 checked={form.temperStressOk}
                 onChange={(e) => setForm({ ...form, temperStressOk: e.target.checked })}
               />
-              <span>EN 12150 Temper Parçacık & Bombelik</span>
+              <span>TS EN 12608 Profil & Köşe Kaynak Mukavemeti</span>
             </label>
             <label className="flex items-center gap-1.5 cursor-pointer">
               <input
@@ -342,7 +342,7 @@ export const ShipmentModuleView: React.FC<ShipmentModuleProps> = ({ quotes }) =>
     signatureRef: `IRS-2026-${Math.floor(Math.random() * 9000 + 1000)}`,
     shippedM2: "",
     packageCount: "4",
-    vehiclePlate: "01 TC 322 (Vinçli Kamyon)",
+    vehiclePlate: "01 AP 322 (Acarpen Montaj & Sevkiyat Aracı)",
     driverName: "Mehmet Kaptan",
     rackNo: "SHP-104",
     damageNote: "Hasarsız / Eksiksiz Tam Teslimat",
@@ -366,7 +366,7 @@ export const ShipmentModuleView: React.FC<ShipmentModuleProps> = ({ quotes }) =>
         `IRS-2026-${Math.floor(Math.random() * 9000 + 1000)}`,
       shippedM2: String(q.deliveryProof?.shippedM2 ?? q.totalArea),
       packageCount: String(q.deliveryProof?.packageCount ?? q.packageCount ?? 4),
-      vehiclePlate: q.vehiclePlate || "01 TC 322 (Vinçli Kamyon)",
+      vehiclePlate: q.vehiclePlate || "01 AP 322 (Acarpen Montaj & Sevkiyat Aracı)",
       driverName: q.driverName || "Mehmet Kaptan",
       rackNo: q.rackNo || "SHP-104",
       damageNote: q.deliveryProof?.damageNote || "Hasarsız / Eksiksiz Tam Teslimat",

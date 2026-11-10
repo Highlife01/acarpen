@@ -5,7 +5,7 @@ import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
 import { SEO } from "@/components/SEO";
-import { PVC_COLOR_ALTERNATIVES } from "@/data/pvcColorAlternatives";
+import { PVC_COLOR_ALTERNATIVES, PVC_COLORED_GLASS_OPTIONS } from "@/data/pvcColorAlternatives";
 import {
   Shield,
   Thermometer,
@@ -249,6 +249,78 @@ const CiftCam = () => {
                     </Link>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* PVC İçin Renkli & Reflekte Isıcam Seçenekleri */}
+            <div className="mt-14 bg-slate-900 text-white rounded-3xl p-8 lg:p-10 border border-slate-800 shadow-xl">
+              <div className="max-w-3xl mb-8">
+                <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-sky-400 font-bold mb-2">
+                  <Sparkles className="w-4 h-4" />
+                  PVC Doğramalar İçin Renkli & Güneş Kontrol Camları
+                </span>
+                <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-2">
+                  PVC Pencereleriniz İçin Renkli Isıcam Seçenekleri
+                </h3>
+                <p className="text-sm text-slate-300 leading-relaxed">
+                  Fıratpen PVC pencerelerinizde standart şeffaf çift camın yanı sıra; güneş ısısını kesen, içerinin görünmesini engelleyen ve doğrama renginizle bütünleşen <strong>Füme, Bronz, Mavi/Yeşil Reflekte, Satinato Buzlu ve Solar Low-E Konfor</strong> cam alternatiflerini tercih edebilirsiniz.
+                </p>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {PVC_COLORED_GLASS_OPTIONS.map((g) => (
+                  <div key={g.id} className="rounded-2xl bg-slate-950/80 border border-slate-800 p-5 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <span className={`w-9 h-9 rounded-xl bg-gradient-to-br ${g.gradientClass} border border-white/20 inline-block`} />
+                        <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                          {g.solarControl}
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-base text-white mb-1">{g.name}</h4>
+                      <div className="text-xs font-mono text-sky-400 mb-2">{g.spec}</div>
+                      <p className="text-xs text-slate-300 leading-relaxed mb-3">{g.benefit}</p>
+                    </div>
+                    <div className="pt-3 border-t border-slate-800 text-[11px] text-slate-400">
+                      <strong className="text-slate-200">Uyumlu PVC Renkleri:</strong> {g.matchingProfiles}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* PVC İçin Renkli & Reflekte Isıcam Seçenekleri */}
+            <div className="mt-14 bg-slate-900 text-white rounded-3xl p-8 lg:p-10 border border-slate-800 shadow-xl">
+              <div className="max-w-3xl mb-8">
+                <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-sky-400 font-bold mb-2">
+                  <Sparkles className="w-4 h-4" />
+                  PVC Doğramalar İçin Renkli & Güneş Kontrol Camları
+                </span>
+                <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-2">
+                  PVC Pencereleriniz İçin Renkli Isıcam Seçenekleri
+                </h3>
+                <p className="text-sm text-slate-300 leading-relaxed">
+                  Fıratpen PVC pencerelerinizde standart şeffaf çift camın yanı sıra; güneş ısısını kesen, içerinin görünmesini engelleyen ve doğrama renginizle bütünleşen <strong>Füme, Bronz, Mavi/Yeşil Reflekte, Satinato Buzlu ve Solar Low-E Konfor</strong> cam alternatiflerini tercih edebilirsiniz.
+                </p>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {PVC_COLORED_GLASS_OPTIONS.map((g) => (
+                  <div key={g.id} className="rounded-2xl bg-slate-950/80 border border-slate-800 p-5 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <span className={`w-9 h-9 rounded-xl bg-gradient-to-br ${g.gradientClass} border border-white/20 inline-block`} />
+                        <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                          {g.solarControl}
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-base text-white mb-1">{g.name}</h4>
+                      <div className="text-xs font-mono text-sky-400 mb-2">{g.spec}</div>
+                      <p className="text-xs text-slate-300 leading-relaxed mb-3">{g.benefit}</p>
+                    </div>
+                    <div className="pt-3 border-t border-slate-800 text-[11px] text-slate-400">
+                      <strong className="text-slate-200">Uyumlu PVC Renkleri:</strong> {g.matchingProfiles}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

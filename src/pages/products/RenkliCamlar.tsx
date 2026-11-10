@@ -3,33 +3,38 @@ import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
-import { Palette, Sun, ShieldCheck, Calculator, CheckCircle2, MessageCircle } from "lucide-react";
+import { Palette, Sun, ShieldCheck, Calculator, CheckCircle2, MessageCircle, Sparkles, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
-import { PVC_COLOR_ALTERNATIVES, WINDOW_COLOR_FEATURES } from "@/data/pvcColorAlternatives";
+import {
+  PVC_COLOR_ALTERNATIVES,
+  WINDOW_COLOR_FEATURES,
+  PVC_COLORED_GLASS_OPTIONS,
+} from "@/data/pvcColorAlternatives";
 
 export default function RenkliCamlar() {
   const [activeColor, setActiveColor] = useState(PVC_COLOR_ALTERNATIVES[0]);
+  const [activeGlass, setActiveGlass] = useState(PVC_COLORED_GLASS_OPTIONS[0]);
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 pt-28">
       <SEO
-        title="PVC Pencere & Kapı Renk Alternatifleri (19 Farklı Desen) | Acarpen Adana"
-        description="Acarpen Fıratpen PVC pencere ve kapı renk alternatifleri: Antrasit Gri, Metalik Antrasit, Altın Meşe, Eskitme, Vizon, Koyu Meşe, Antik Meşe, Karbon Siyah, Maun, Budaklı Meşe, Kuvars Platin ve Bazalt Gri."
+        title="PVC Pencere Renk Alternatifleri (19 Desen) & PVC İçin Renkli Isıcamlar | Acarpen Adana"
+        description="Acarpen Fıratpen 19 farklı PVC profil renk kartelası (Antrasit Gri, Altın Meşe, Vizon, Maun, Kuvars Platin) ve PVC pencereler ile cam balkonlar için Füme, Bronz, Mavi, Yeşil Reflekte ve Buzlu ısıcam seçenekleri."
         canonicalPath="/urunler/renkli-camlar"
         keywords={[
           "pvc pencere renkleri",
           "antrasit gri pvc pencere",
           "altın meşe pimapen",
-          "metalik antrasit doğrama",
-          "vizon pvc pencere",
-          "kuvars platin pvc",
-          "bazalt gri pencere adana",
+          "pvc pencere renkli cam",
+          "füme camlı pvc pencere",
+          "bronz reflekte ısıcam pvc",
+          "buzlu cam wc kapısı adana",
         ]}
         schemaType="Product"
-        serviceName="PVC Pencere ve Kapı Laminasyon Renk Alternatifleri"
+        serviceName="PVC Pencere Renk Alternatifleri ve Renkli Isıcam Sistemleri"
         breadcrumbs={[
           { name: "Ürünlerimiz", path: "/hizmetler" },
-          { name: "Renk Alternatifleri", path: "/urunler/renkli-camlar" },
+          { name: "PVC Renk & Renkli Cam Alternatifleri", path: "/urunler/renkli-camlar" },
         ]}
       />
       <Navbar />
@@ -38,20 +43,20 @@ export default function RenkliCamlar() {
       <section className="relative py-16 bg-gradient-to-b from-sky-50 via-white to-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-6">
           <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold text-sky-800 bg-sky-50 border border-sky-200 shadow-sm mb-4">
-            <Palette className="h-3.5 w-3.5 text-sky-600" /> 19 Farklı Lamine Folyo & Renk Kartelası
+            <Palette className="h-3.5 w-3.5 text-sky-600" /> 19 PVC Profil Deseni + 6 Renkli & Reflekte Isıcam Seçeneği
           </span>
           <h1 className="font-serif text-4xl sm:text-6xl font-bold text-slate-900 tracking-tight">
-            PVC Pencere & Kapı <span className="text-gradient italic">Renk Alternatifleri</span>
+            PVC Pencere <span className="text-gradient italic">Renk Alternatifleri</span> & Renkli Camlar
           </h1>
           <p className="text-slate-600 text-sm sm:text-base font-normal leading-relaxed max-w-3xl mt-4">
-            Antrasit Gri, Metalik Antrasit, Altın Meşe, Eskitme, Vizon, Koyu Meşe, Antik Meşe, Karbon Siyah, Gümüş Gri, Alüminyum Efekt, Kristal Beyaz, Maun, Budaklı Meşe, Pirit, Kuvars Platin, Bazalt Gri, Taç Platin ve Parlak Gümüş seçenekleriyle yapılarınıza estetik değer katın.
+            Fıratpen PVC doğramalarınızda <strong>Antrasit Gri, Altın Meşe, Vizon, Koyu Meşe, Maun, Kuvars Platin</strong> dahil 19 lamine profil rengini; <strong>Füme, Bronz, Mavi Reflekte, Yeşil Reflekte, Satinato Buzlu ve Solar Low-E Konfor</strong> renkli ısıcamlarla kombine ederek hem ısı/güneş kontrolü hem de kusursuz mimari estetik sağlıyoruz.
           </p>
         </div>
       </section>
 
       {/* Interactive 3-Column Color Previewer */}
-      <section className="py-16 max-w-7xl mx-auto px-6">
-        <div className="bg-white rounded-3xl p-7 sm:p-10 border border-slate-200 shadow-xl mb-16">
+      <section className="py-16 max-w-7xl mx-auto px-6 space-y-16">
+        <div className="bg-white rounded-3xl p-7 sm:p-10 border border-slate-200 shadow-xl">
           <div className="grid lg:grid-cols-12 gap-8 items-center">
             {/* Left Column: 4 Feature Blocks */}
             <div className="lg:col-span-4 space-y-4">
@@ -91,7 +96,7 @@ export default function RenkliCamlar() {
             {/* Right Column: 19 Swatches */}
             <div className="lg:col-span-4">
               <h2 className="font-serif text-2xl font-bold text-slate-900 mb-2">
-                Renk Alternatifleri
+                19 PVC Profil Renk Kartelası
               </h2>
               <p className="text-xs text-slate-500 mb-4">
                 Pencere üzerinde canlı görmek istediğiniz renk kartelasına tıklayın:
@@ -138,7 +143,7 @@ export default function RenkliCamlar() {
                 </Link>
                 <a
                   href={`https://wa.me/905336253611?text=${encodeURIComponent(
-                    `Merhaba Acarpen, ${activeColor.name} (${activeColor.code}) renkli PVC pencere/kapı için fiyat teklifi almak istiyorum.`
+                    `Merhaba Acarpen, ${activeColor.name} (${activeColor.code}) renkli PVC pencere ve ${activeGlass.name} kombinasyonu için fiyat teklifi almak istiyorum.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -150,6 +155,93 @@ export default function RenkliCamlar() {
                 </a>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* NEW SECTION: PVC Pencereler ve Cam Balkonlar İçin Renkli & Reflekte Isıcam Seçenekleri */}
+        <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-2xl relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+            <div className="max-w-3xl space-y-3">
+              <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-sky-300 font-bold bg-sky-500/15 px-3.5 py-1.5 rounded-full border border-sky-400/30">
+                <Sparkles className="h-3.5 w-3.5" /> PVC Doğrama & Cam Balkon İçin Renkli Cam Çözümleri
+              </span>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white">
+                PVC Pencereler İçin <span className="text-sky-400 italic">Renkli & Reflekte Isıcam</span> Seçenekleri
+              </h2>
+              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                Adana'nın yoğun güneş ışığı ve sıcak ikliminde PVC pencerelerinizde, sürme kapılarınızda ve cam balkonlarınızda yalnızca profil rengini değil, <strong>4+16+4 mm ısıcam veya 8-10 mm temperli cam rengini</strong> de cephenize ve mahremiyet ihtiyacınıza göre seçebilirsiniz.
+              </p>
+            </div>
+            <div className="shrink-0">
+              <a
+                href={`https://wa.me/905336253611?text=${encodeURIComponent(
+                  `Merhaba Acarpen, PVC pencerelerimiz için ${activeGlass.name} (${activeGlass.spec}) hakkında bilgi ve fiyat teklifi almak istiyorum.`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-11 px-5">
+                  <MessageCircle className="mr-2 h-4 w-4" />
+                  Seçili Renkli Cam İçin Teklif Al
+                </Button>
+              </a>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {PVC_COLORED_GLASS_OPTIONS.map((glass) => {
+              const isSelected = activeGlass.id === glass.id;
+              return (
+                <div
+                  key={glass.id}
+                  onClick={() => setActiveGlass(glass)}
+                  className={`cursor-pointer rounded-2xl p-6 border transition-all flex flex-col justify-between ${
+                    isSelected
+                      ? "bg-slate-800/95 border-sky-400 ring-2 ring-sky-400/30 shadow-xl"
+                      : "bg-slate-950/70 border-slate-800 hover:border-slate-700"
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-3 mb-4">
+                      <div
+                        className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${glass.gradientClass} border border-white/20 shadow-inner flex items-center justify-center`}
+                      >
+                        <Eye className="h-6 w-6 text-white/85" />
+                      </div>
+                      <div className="text-right">
+                        <span className="inline-block text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 font-bold">
+                          {glass.solarControl}
+                        </span>
+                        <div className="text-[11px] text-emerald-300 font-semibold mt-1">
+                          {glass.privacyLevel}
+                        </div>
+                      </div>
+                    </div>
+
+                    <h3 className="font-serif text-xl font-bold text-white mb-1">
+                      {glass.name}
+                    </h3>
+                    <div className="text-xs font-mono text-sky-400 font-semibold mb-3">
+                      {glass.spec}
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                      {glass.benefit}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-800 space-y-2 text-xs">
+                    <div>
+                      <span className="text-slate-400 font-semibold">Önerilen PVC Profil Renkleri: </span>
+                      <span className="text-white font-medium">{glass.matchingProfiles}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 font-semibold">Uygulama Alanı: </span>
+                      <span className="text-slate-200">{glass.usage}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 

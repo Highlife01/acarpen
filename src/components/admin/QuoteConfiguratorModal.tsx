@@ -101,12 +101,12 @@ export const QuoteConfiguratorModal: React.FC<QuoteConfiguratorModalProps> = ({
       setDiscountRate("0");
       setExtraCost("0");
       setEstimatedDeliveryDate(new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10));
-      setVehiclePlate("01 TC 322 (Vinçli Kamyon)");
+      setVehiclePlate("01 AP 322 (Acarpen Montaj & Sevkiyat Aracı)");
       const p0 = prices[0];
       setLines([
         {
           id: `line-${Date.now()}`,
-          glassType: p0?.name || "Şişecam Isıcam S (Low-E Yalıtımlı)",
+          glassType: p0?.name || "Fıratpen Selenit 75 PVC Pencere (4+16+4 Isıcam)",
           thickness: p0?.thickness || "4+16+4 mm",
           widthMm: 1500,
           heightMm: 2200,
@@ -158,7 +158,7 @@ export const QuoteConfiguratorModal: React.FC<QuoteConfiguratorModalProps> = ({
     const p0 = prices[0];
     const newLine: QuoteLineItem = recalcLine({
       id: `line-${Date.now()}-${Math.floor(Math.random() * 100)}`,
-      glassType: p0?.name || "Şişecam Isıcam S (Low-E Yalıtımlı)",
+      glassType: p0?.name || "Fıratpen Selenit 75 PVC Pencere (4+16+4 Isıcam)",
       thickness: p0?.thickness || "4+16+4 mm",
       widthMm: 1000,
       heightMm: 2000,

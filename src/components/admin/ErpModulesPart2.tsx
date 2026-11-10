@@ -37,8 +37,8 @@ import { toast } from "sonner";
 
 const STATIONS = [
   { id: 1, name: "1. Sipariş & Kesim Planı", icon: FileCheck },
-  { id: 2, name: "2. CNC Kesim & Rodaj", icon: Cpu },
-  { id: 3, name: "3. Convection Temper", icon: Flame },
+  { id: 2, name: "2. CNC Profil Kesim & Destek Sacı", icon: Cpu },
+  { id: 3, name: "3. 4 Köşe Kaynak & Köşe Temizleme", icon: Flame },
   { id: 4, name: "4. Robotik Isıcam & Lamine", icon: Layers },
   { id: 5, name: "5. Sevkiyat & Kasalama", icon: Truck },
   { id: 6, name: "6. Şantiye Teslimat", icon: PackageCheck },
@@ -59,8 +59,8 @@ export const ProductionModuleView: React.FC<ProductionModuleProps> = ({
   const [qrSearch, setQrSearch] = useState("");
   const [scrapModalOrder, setScrapModalOrder] = useState<QuoteItem | null>(null);
   const [scrapM2Input, setScrapM2Input] = useState("1.5");
-  const [scrapReasonInput, setScrapReasonInput] = useState("Temper fırını spontan patlama / ısıl şok");
-  const [scrapStationInput, setScrapStationInput] = useState("3. Convection Temper");
+  const [scrapReasonInput, setScrapReasonInput] = useState("Profil kesim / köşe kaynak fire kaydı");
+  const [scrapStationInput, setScrapStationInput] = useState("3. 4 Köşe Kaynak & Köşe Temizleme");
 
   const activeOrders = quotes.filter((q) => {
     if (q.status === "cancelled") return false;
@@ -477,7 +477,7 @@ export const InventoryPurchasingModuleView: React.FC<InventoryModuleProps> = ({
     category: "Hammadde (Plaka Cam)" as InventoryItem["category"],
     thickness: "6 mm",
     dimensions: "3210 x 2250 mm",
-    supplier: "Şişecam Düzcam",
+    supplier: "Fıratpen Profil & Isıcam",
     warehouseLocation: "Depo-A / Sehpa-09",
     lotNo: `LOT-2026-${Math.floor(Math.random() * 900 + 100)}`,
     unit: "m²" as InventoryItem["unit"],

@@ -87,7 +87,7 @@ export const FinanceModuleView: React.FC<FinanceModuleProps> = ({
   // Kesilen Çek (Issued Check) Form State
   const [issCheckForm, setIssCheckForm] = useState({
     serialNo: "",
-    counterparty: "Şişecam Düzcam (Mersin Fabrikası)",
+    counterparty: "Fıratpen Profil & Isıcam (Mersin Fabrikası)",
     bankName: "İş Bankası Ticari Hesap (Kendi Çekimiz)",
     amount: "",
     dueDate: new Date(Date.now() + 45 * 86400000).toISOString().slice(0, 10),
@@ -255,7 +255,7 @@ export const FinanceModuleView: React.FC<FinanceModuleProps> = ({
 
   // Alınan Çeki Tedarikçiye Ciro Et
   const handleEndorseReceivedCheck = (chk: CheckInstrumentItem) => {
-    const supplier = chk.endorsedTo || "Şişecam Düzcam / Hammadde Tedarikçisi";
+    const supplier = chk.endorsedTo || "Fıratpen Profil & Isıcam / Hammadde Tedarikçisi";
     updateAdminCheck(chk.id, {
       status: "Ciro Edildi (Tedarikçiye)",
       endorsedTo: supplier,
@@ -561,7 +561,7 @@ export const FinanceModuleView: React.FC<FinanceModuleProps> = ({
                 <option value="Müşteri Sipariş Tahsilatı">Müşteri Sipariş Tahsilatı</option>
                 <option value="Alınan Çek Tahsilatı">Alınan Çek Tahsilatı</option>
                 <option value="Kesilen Çek Ödemesi">Kesilen Çek Ödemesi</option>
-                <option value="Şişecam / Hammadde Ödemesi">Şişecam / Hammadde Ödemesi</option>
+                <option value="Fıratpen Profil / Hammadde Ödemesi">Fıratpen Profil / Hammadde Ödemesi</option>
                 <option value="Nakliye / Yakıt / Vinç Gideri">Nakliye / Yakıt / Vinç Gideri</option>
                 <option value="Personel / İşçilik Ödemesi">Personel / İşçilik Ödemesi</option>
                 <option value="Fabrika Genel Gider / Enerji">Fabrika Genel Gider / Enerji</option>
@@ -1007,7 +1007,7 @@ export const FinanceModuleView: React.FC<FinanceModuleProps> = ({
                 <label className="text-[10px] text-slate-400 block mb-0.5">Ödeme Açıklaması</label>
                 <input
                   type="text"
-                  placeholder="Örn: Jumbo plaka cam alımı"
+                  placeholder="Örn: Fıratpen Selenit 75 profil ve aksesuar alımı"
                   value={issCheckForm.notes}
                   onChange={(e) => setIssCheckForm({ ...issCheckForm, notes: e.target.value })}
                   className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white"

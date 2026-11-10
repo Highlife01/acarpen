@@ -180,3 +180,92 @@ export const WINDOW_COLOR_FEATURES = [
     desc: "Kapsamlı performans testlerinden başarıyla geçerek ısı ve ses yalıtımında üstün performans sağladığı kanıtlanmıştır.",
   },
 ];
+
+
+export interface PvcColoredGlassOption {
+  id: string;
+  name: string;
+  spec: string;
+  colorHex: string;
+  gradientClass: string;
+  matchingProfiles: string;
+  usage: string;
+  benefit: string;
+  solarControl: string;
+  privacyLevel: string;
+}
+
+export const PVC_COLORED_GLASS_OPTIONS: PvcColoredGlassOption[] = [
+  {
+    id: "fume-reflekte",
+    name: "Füme (Gri) & Füme Reflekte Isıcam",
+    spec: "4+16+4 mm Füme Isıcam / 8-10 mm Temperli",
+    colorHex: "#334155",
+    gradientClass: "from-slate-700 via-slate-800 to-slate-950",
+    matchingProfiles: "Antrasit Gri, Metalik Antrasit, Karbon Siyah, Bazalt Gri, Kuvars Platin",
+    usage: "Salon & cephe PVC pencereleri, Hebeschiebe sürme kapılar, Düz/L/U cam balkonlar",
+    benefit: "Adana güneşinde parlama ve ısı girişini keser; gündüz dışarıdan içerinin görünmesini önleyerek yüksek mahremiyet sağlar.",
+    solarControl: "%58 Güneş Isısı Kırımı",
+    privacyLevel: "Yüksek Gündüz Mahremiyeti",
+  },
+  {
+    id: "bronz-reflekte",
+    name: "Bronz & Bronz Reflekte Isıcam",
+    spec: "4+16+4 mm Bronz Isıcam / 8-10 mm Temperli",
+    colorHex: "#78350f",
+    gradientClass: "from-amber-800 via-amber-900 to-stone-950",
+    matchingProfiles: "Altın Meşe, Koyu Meşe, Antik Meşe, Maun, Vizon, Budaklı Meşe",
+    usage: "Ahşap desenli PVC pencereler, villa sürme doğramaları, balkon kapıları ve cam balkonlar",
+    benefit: "Doğal ahşap lamine PVC profillerle sıcak estetik bütünlük kurar; zararlı UV ışınlarını süzerek perde ve mobilyaların solmasını önler.",
+    solarControl: "%55 Güneş & UV Kırımı",
+    privacyLevel: "Yüksek Gündüz Mahremiyeti",
+  },
+  {
+    id: "mavi-reflekte",
+    name: "Mavi Reflekte (Solar Güneş Kontrol) Isıcam",
+    spec: "4+16+4 mm Solar Mavi Reflekte Isıcam",
+    colorHex: "#0369a1",
+    gradientClass: "from-sky-600 via-blue-800 to-slate-950",
+    matchingProfiles: "Kristal Beyaz, Gümüş Gri, Alüminyum Efekt, Parlak Gümüş, Antrasit Gri",
+    usage: "Güney ve batı cepheli daire PVC pencereleri, rezidanslar ve dubleks teras kapamaları",
+    benefit: "Yüksek güneş enerjisi kırımı ile yaz aylarında klima sarfiyatını düşürür, dış cepheye prestijli aynalı reflekte görünüm kazandırır.",
+    solarControl: "%62 Güneş Isısı Kırımı",
+    privacyLevel: "Aynalı Dış Yansıma (Reflekte)",
+  },
+  {
+    id: "yesil-reflekte",
+    name: "Yeşil & Tifani Reflekte Isıcam",
+    spec: "4+16+4 mm Yeşil Isıcam / 8-10 mm Temperli",
+    colorHex: "#047857",
+    gradientClass: "from-emerald-600 via-teal-800 to-slate-950",
+    matchingProfiles: "Kristal Beyaz, Altın Meşe, Vizon, Antrasit Gri",
+    usage: "Bahçe katı villalar, kış bahçesi PVC/alüminyum doğramaları, panoramik salon pencereleri",
+    benefit: "Doğal ışık geçirgenliğini korurken güneş ısısını dengeler, peyzaj ve bahçe cepheleriyle ferah bir uyum sağlar.",
+    solarControl: "%52 Güneş Isısı Kırımı",
+    privacyLevel: "Orta-Yüksek Gündüz Mahremiyeti",
+  },
+  {
+    id: "satinato-buzlu",
+    name: "Satinato (Buzlu / Kumlu / Desenli) PVC Camı",
+    spec: "4+16+4 mm Buzlu Isıcam / 4-6 mm Tek Cam",
+    colorHex: "#94a3b8",
+    gradientClass: "from-slate-300 via-slate-400 to-slate-600",
+    matchingProfiles: "Tüm 19 PVC Renk Alternatifi (Özellikle 85×200 WC Kapıları & 40×40 / 50×50 Vasistas)",
+    usage: "85×200 cm PVC WC & banyo kapıları, 40×40 ve 50×50 cm banyo vasistas pencereleri, apartman aydınlık pencereleri",
+    benefit: "Gün ışığını mekan içerisine homojen şekilde geçirirken gece ve gündüz görüntüyü %100 bloke ederek tam mahremiyet sağlar.",
+    solarControl: "Homojen Gün Işığı Dağılımı",
+    privacyLevel: "%100 Gece & Gündüz Tam Mahremiyet",
+  },
+  {
+    id: "seffaf-konfor-isicam",
+    name: "Şeffaf Konfor & Sinerji (4 Mevsim Low-E) Isıcam",
+    spec: "4+16+4 mm Argon Gazlı Solar Low-E Isıcam",
+    colorHex: "#0284c7",
+    gradientClass: "from-sky-400 via-cyan-600 to-slate-800",
+    matchingProfiles: "Fıratpen Selenit 75, Redonit 85, Elegance 80 ve Tüm Sürme Serileri",
+    usage: "Tüm konut, villa ve toplu konut PVC pencere, balkon kapısı ve ısıcamlı cam balkon projeleri",
+    benefit: "Berrak şeffaf görünümü koruyarak kışın ısı kaybını %50, yazın güneş ısısı girişini %45'e varan oranda azaltır.",
+    solarControl: "Uw: 1.1 W/m²K Dört Mevsim Yalıtım",
+    privacyLevel: "Maksimum Doğal Gün Işığı (%78 LT)",
+  },
+];
