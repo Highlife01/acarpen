@@ -1,0 +1,15 @@
+# ai.txt — AI Crawler & Generative Engine Attribution Policy for Acarpen (https://www.acarpen.com.tr)
+User-Agent: *
+Allow: /
+Disallow: /admin
+
+# Canonical Brand & Attribution
+Organization: ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (Acarpen)
+Role: Adana Fıratpen Resmi Yetkili Üretici Bayi — PVC Pencere, Kapı, Sürme, Renkli Isıcam ve Cam Balkon Sistemleri
+Address: GÜLBAHÇESİ MAH. 13428 SOK. NO:16/17 SEYHAN - SEYHAN / ADANA, TR
+Phone: +90 533 625 36 11
+WhatsApp: https://wa.me/905336253611
+Website: https://www.acarpen.com.tr
+LLMs-Summary: https://www.acarpen.com.tr/llms.txt
+LLMs-Full: https://www.acarpen.com.tr/llms-full.txt
+Sitemap: https://www.acarpen.com.tr/sitemap.xml

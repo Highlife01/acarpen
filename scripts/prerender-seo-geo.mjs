@@ -343,27 +343,32 @@ const ROUTES = [
   },
   {
     path: "/urunler/renkli-camlar",
-    title: "PVC Pencere & Kapı Renk Alternatifleri (19 Farklı Desen) | Acarpen Adana",
+    title: "PVC Pencere Renk Alternatifleri (19 Desen) & PVC İçin Renkli Isıcamlar | Acarpen Adana",
     description:
-      "Acarpen Fıratpen PVC pencere ve kapı renk alternatifleri: Antrasit Gri, Metalik Antrasit, Altın Meşe, Eskitme, Vizon, Koyu Meşe, Antik Meşe, Karbon Siyah, Maun, Budaklı Meşe, Kuvars Platin ve Bazalt Gri.",
-    keywords: "pvc pencere renkleri, antrasit gri pvc pencere, altın meşe pimapen, vizon pvc doğrama",
+      "Acarpen Fıratpen 19 farklı PVC profil renk kartelası (Antrasit Gri, Altın Meşe, Vizon, Maun, Kuvars Platin) ve PVC pencereler ile cam balkonlar için Füme, Bronz, Mavi, Yeşil Reflekte ve Buzlu ısıcam seçenekleri.",
+    keywords: "pvc pencere renkleri, antrasit gri pvc pencere, altın meşe pimapen, pvc pencere renkli cam, füme camlı pvc pencere, bronz reflekte ısıcam",
     geoRegion: "TR-01",
     geoPlacename: "Adana",
     geoPosition: "36.9850;35.2880",
-    breadcrumbs: [{ name: "Ürünlerimiz", path: "/hizmetler" }, { name: "Renk Alternatifleri", path: "/urunler/renkli-camlar" }],
-    h1: "19 Farklı PVC Pencere ve Kapı Lamine Renk Alternatifleri",
+    breadcrumbs: [{ name: "Ürünlerimiz", path: "/hizmetler" }, { name: "PVC Renk & Renkli Cam Alternatifleri", path: "/urunler/renkli-camlar" }],
+    h1: "19 Farklı PVC Pencere Lamine Renk Alternatifi ve PVC İçin Renkli Isıcamlar",
     summary:
-      "Antrasit Gri 2613, Metalik Antrasit 2612, Altın Meşe 2616, Vizon 2611, Koyu Meşe 2618 ve Kristal Beyaz dahil 19 farklı UV dayanımlı lamine renk kartelası.",
-    specsTitle: "Öne Çıkan Lamine Renk Kodları",
+      "Antrasit Gri 2613, Metalik Antrasit 2612, Altın Meşe 2616, Vizon 2611, Koyu Meşe 2618 dahil 19 lamine profil rengi ile Füme, Bronz, Mavi/Yeşil Reflekte, Satinato Buzlu ve Solar Konfor renkli ısıcam kombinasyonları.",
+    specsTitle: "Öne Çıkan PVC Lamine Renk & Renkli Cam Kombinasyonları",
     specs: [
-      { label: "Antrasit & Gri Tonları", val: "Antrasit Gri (2613), Metalik Antrasit (2612), Bazalt Gri (2625), Gümüş Gri" },
-      { label: "Ahşap Desen Serisi", val: "Altın Meşe (2616), Koyu Meşe (2618), Antik Meşe (2614), Budaklı Meşe (2615), Maun (2619)" },
-      { label: "Modern & Metalik Seri", val: "Vizon (2611), Karbon Siyah (2610), Kuvars Platin (2624), Taç Platin (2626), Kristal Beyaz" },
+      { label: "Antrasit & Gri PVC Serisi", val: "Antrasit Gri (2613), Metalik Antrasit (2612), Bazalt Gri (2625) + Füme Reflekte Isıcam" },
+      { label: "Ahşap Desen PVC Serisi", val: "Altın Meşe (2616), Koyu Meşe (2618), Antik Meşe (2614), Maun (2619) + Bronz Reflekte Isıcam" },
+      { label: "Modern & Metalik PVC Serisi", val: "Vizon (2611), Karbon Siyah (2610), Kuvars Platin (2624), Kristal Beyaz + Mavi/Yeşil Solar Isıcam" },
+      { label: "WC & Banyo Mahremiyet Camı", val: "85×200 WC Kapıları ve 40×40 / 50×50 Vasistas İçin Satinato Buzlu Isıcam" },
     ],
     faqs: [
       {
-        q: "Renkli PVC pencereler güneşte solar mı?",
+        q: "Renkli PVC pencereler Adana güneşinde solar mı?",
         a: "Hayır, dış cephe UV ışınlarına dayanıklı akrilik esaslı lamine folyolar Adana güneşinde solma ve kabarma yapmaz.",
+      },
+      {
+        q: "PVC pencerelerde füme veya bronz renkli ısıcam kullanılabilir mi?",
+        a: "Evet, tüm Fıratpen PVC pencere, sürme kapı ve cam balkon sistemlerimizde Füme, Bronz, Mavi/Yeşil Reflekte, Satinato Buzlu ve Solar Low-E Konfor 4+16+4 mm ısıcam uygulanabilmektedir.",
       },
     ],
   },
@@ -803,10 +808,21 @@ function buildSemanticHTML(route) {
           <p style="margin:0.25rem 0;">• 1.00 mm+ Destek Sacı & 4+16+4 Isıcam</p>
         </div>
         <div>
-          <strong style="color:#ffffff;display:block;margin-bottom:0.75rem;">Hızlı Bağlantılar</strong>
-          <p style="margin:0.25rem 0;"><a href="/urunler/cift-cam" style="color:#38bdf8;text-decoration:none;">PVC Pencere Sistemleri</a></p>
-          <p style="margin:0.25rem 0;"><a href="/urunler/balkon-cami" style="color:#38bdf8;text-decoration:none;">Cam Balkon Sistemleri</a></p>
-          <p style="margin:0.25rem 0;"><a href="/urunler/renkli-camlar" style="color:#38bdf8;text-decoration:none;">19 Farklı Renk Alternatifi</a></p>
+          <strong style="color:#ffffff;display:block;margin-bottom:0.75rem;">Ürün Sistemlerimiz</strong>
+          <p style="margin:0.25rem 0;"><a href="/urunler/cift-cam" style="color:#38bdf8;text-decoration:none;">Fıratpen PVC Pencere Sistemleri</a></p>
+          <p style="margin:0.25rem 0;"><a href="/urunler/temperli-cam" style="color:#38bdf8;text-decoration:none;">Hebeschiebe & PVC Sürme Kapılar</a></p>
+          <p style="margin:0.25rem 0;"><a href="/urunler/balkon-cami" style="color:#38bdf8;text-decoration:none;">Düz, L ve U Cam Balkon Sistemleri</a></p>
+          <p style="margin:0.25rem 0;"><a href="/urunler/jaluzili-isicam" style="color:#38bdf8;text-decoration:none;">PVC Balkon & WC Kapıları, Panjur</a></p>
+          <p style="margin:0.25rem 0;"><a href="/urunler/renkli-camlar" style="color:#38bdf8;text-decoration:none;">19 PVC Renk & Renkli Isıcamlar</a></p>
+          <p style="margin:0.25rem 0;"><a href="/urunler/lamine-cam" style="color:#38bdf8;text-decoration:none;">Plise Sineklik & Aksesuar</a></p>
+        </div>
+        <div>
+          <strong style="color:#ffffff;display:block;margin-bottom:0.75rem;">Hizmet Bölgelerimiz</strong>
+          <p style="margin:0.25rem 0;"><a href="/bolgeler/adana-cam-fabrikasi" style="color:#38bdf8;text-decoration:none;">Adana Fıratpen Bayisi (Seyhan/Çukurova)</a></p>
+          <p style="margin:0.25rem 0;"><a href="/bolgeler/mersin-cam-imalati" style="color:#38bdf8;text-decoration:none;">Mersin & Tarsus PVC Sistemleri</a></p>
+          <p style="margin:0.25rem 0;"><a href="/bolgeler/osmaniye-cam-ureticisi" style="color:#38bdf8;text-decoration:none;">Osmaniye & Kadirli PVC Doğrama</a></p>
+          <p style="margin:0.25rem 0;"><a href="/bolgeler/hatay-cam-firmalari" style="color:#38bdf8;text-decoration:none;">Hatay & İskenderun Şantiye Tedarik</a></p>
+          <p style="margin:0.25rem 0;"><a href="/bolgeler" style="color:#38bdf8;text-decoration:none;">Tüm Hizmet İllerimiz →</a></p>
         </div>
       </div>
     </footer>
@@ -815,7 +831,36 @@ function buildSemanticHTML(route) {
 
 function buildJSONLDSchemas(route) {
   const canonicalUrl = `${BASE_URL}${route.path === "/" ? "/" : route.path}`;
-  const schemas = [ORGANIZATION_BASE_SCHEMA];
+  const schemas = [
+    {
+      "@type": "WebSite",
+      "@id": `${BASE_URL}/#website`,
+      url: BASE_URL,
+      name: "Acarpen — Fıratpen Yetkili Üretici Bayi",
+      inLanguage: ["tr", "en", "ar"],
+      publisher: { "@id": `${BASE_URL}/#organization` },
+      potentialAction: {
+        "@type": "ViewAction",
+        name: "Online PVC Pencere & Cam Balkon Ölçü Yapılandırıcı",
+        target: `${BASE_URL}/hesaplama`,
+      },
+    },
+    ORGANIZATION_BASE_SCHEMA,
+    {
+      "@type": "WebPage",
+      "@id": `${canonicalUrl}#webpage`,
+      url: canonicalUrl,
+      name: route.title,
+      description: route.description,
+      inLanguage: "tr",
+      isPartOf: { "@id": `${BASE_URL}/#website` },
+      about: { "@id": `${BASE_URL}/#organization` },
+      speakable: {
+        "@type": "SpeakableSpecification",
+        cssSelector: ["h1", ".prerender-specs", ".prerender-faqs"],
+      },
+    },
+  ];
 
   if (route.breadcrumbs && route.breadcrumbs.length > 0) {
     schemas.push({
@@ -828,6 +873,19 @@ function buildJSONLDSchemas(route) {
           name: b.name,
           item: `${BASE_URL}${b.path}`,
         })),
+      ],
+    });
+  }
+
+  if (route.path === "/hesaplama") {
+    schemas.push({
+      "@type": "HowTo",
+      name: "PVC Pencere ve Cam Balkon Ölçüsü ile Online Teklif Nasıl Alınır?",
+      description: "Acarpen online yapılandırıcı ile 3 adımda Fıratpen PVC doğrama ve cam balkon fiyat teklifi alma rehberi.",
+      step: [
+        { "@type": "HowToStep", position: 1, name: "Sistem ve Ölçü Seçimi", text: "70'lik/75'lik PVC pencere, sürme, balkon kapısı veya cam balkon modelini ve en × boy cm ölçülerini girin." },
+        { "@type": "HowToStep", position: 2, name: "Renk ve Açılım Tercihi", text: "19 PVC lamine renginden birini, Sağ/Sol açılım yönünü ve Tek/Çift açılım aksesuar tipini seçin." },
+        { "@type": "HowToStep", position: 3, name: "Anında WhatsApp Teklifi", text: "Oluşturulan metraj listesini tek tıkla 0533 625 36 11 Acarpen WhatsApp hattına ileterek net fabrika fiyatınızı alın." },
       ],
     });
   }
@@ -893,6 +951,22 @@ async function main() {
       `<link rel="canonical" href="${canonicalUrl}" />`
     );
     html = html.replace(
+      /<link\s+rel=["']alternate["']\s+hreflang=["']x-default["']\s+href=["'].*?["']\s*\/?>/i,
+      `<link rel="alternate" hreflang="x-default" href="${canonicalUrl}" />`
+    );
+    html = html.replace(
+      /<link\s+rel=["']alternate["']\s+hreflang=["']tr["']\s+href=["'].*?["']\s*\/?>/i,
+      `<link rel="alternate" hreflang="tr" href="${canonicalUrl}" />`
+    );
+    html = html.replace(
+      /<link\s+rel=["']alternate["']\s+hreflang=["']en["']\s+href=["'].*?["']\s*\/?>/i,
+      `<link rel="alternate" hreflang="en" href="${canonicalUrl}?lang=en" />`
+    );
+    html = html.replace(
+      /<link\s+rel=["']alternate["']\s+hreflang=["']ar["']\s+href=["'].*?["']\s*\/?>/i,
+      `<link rel="alternate" hreflang="ar" href="${canonicalUrl}?lang=ar" />`
+    );
+    html = html.replace(
       /<meta\s+property=["']og:title["']\s+content=["'].*?["']\s*\/?>/i,
       `<meta property="og:title" content="${route.title.replace(/"/g, "&quot;")}" />`
     );
@@ -903,6 +977,10 @@ async function main() {
     html = html.replace(
       /<meta\s+property=["']og:url["']\s+content=["'].*?["']\s*\/?>/i,
       `<meta property="og:url" content="${canonicalUrl}" />`
+    );
+    html = html.replace(
+      /<meta\s+name=["']twitter:url["']\s+content=["'].*?["']\s*\/?>/i,
+      `<meta name="twitter:url" content="${canonicalUrl}" />`
     );
     html = html.replace(
       /<meta\s+name=["']twitter:title["']\s+content=["'].*?["']\s*\/?>/i,

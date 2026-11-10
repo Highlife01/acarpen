@@ -9,10 +9,52 @@
   "hosting": {
     "site": "acarpen",
     "public": "dist",
+    "cleanUrls": true,
+    "trailingSlash": false,
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "redirects": [
+      { "source": "/pvc-pencere", "destination": "/urunler/cift-cam", "type": 301 },
+      { "source": "/pvc-surme", "destination": "/urunler/temperli-cam", "type": 301 },
+      { "source": "/cam-balkon", "destination": "/urunler/balkon-cami", "type": 301 },
+      { "source": "/pvc-kapi", "destination": "/urunler/jaluzili-isicam", "type": 301 },
+      { "source": "/pvc-renkler", "destination": "/urunler/renkli-camlar", "type": 301 },
+      { "source": "/adana-firatpen-bayisi", "destination": "/bolgeler/adana-cam-fabrikasi", "type": 301 }
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          { "key": "X-Content-Type-Options", "value": "nosniff" },
+          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+          {
+            "key": "Link",
+            "value": "<https://www.acarpen.com.tr/llms.txt>; rel=\"llms-txt\", <https://www.acarpen.com.tr/llms-full.txt>; rel=\"llms-full-txt\""
+          }
+        ]
+      },
+      {
+        "source": "/admin**",
+        "headers": [
+          { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }
+        ]
+      },
+      {
+        "source": "/assets/**",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      },
+      {
+        "source": "/@(llms.txt|llms-full.txt|ai.txt)",
+        "headers": [
+          { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
+          { "key": "Cache-Control", "value": "public, max-age=3600" }
+        ]
+      }
     ],
     "rewrites": [
       {

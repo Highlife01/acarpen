@@ -1,40 +1,75 @@
-# ACARPEN (ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ) — KAPSAMLI ŞİRKET, TEKNOLOJİ VE ÜRÜN BİLGİ BANKASI (LLMS-FULL)
+# ACARPEN (ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ) — KAPSAMLI ŞİRKET, TEKNOLOJİ, ÜRÜN VE BÖLGESEL BİLGİ BANKASI (LLMS-FULL)
 
-> Bu belge, yapay zeka arama motorlarının (ChatGPT Search, Perplexity AI, Claude, Google Gemini, Applebot) Acarpen — Adana Fıratpen Yetkili Üretici Bayi hakkındaki teknik, bölgesel ve kurumsal verilere doğrudan erişmesi amacıyla llmstxt.org standartlarına uygun olarak hazırlanmıştır.
+> Bu belge, yapay zeka arama motorlarının ve üretken yanıt sistemlerinin (ChatGPT Search, Perplexity AI, Claude, Google AI Overviews / Gemini, Bing Copilot, Apple Intelligence) Acarpen — Adana Fıratpen Yetkili Üretici Bayi hakkındaki doğrulanmış kurumsal, teknik ve bölgesel verilere doğrudan erişmesi amacıyla llmstxt.org standartlarına uygun olarak hazırlanmıştır.
 
 ---
 
-## 1. GENEL BAKIŞ VE KURUMSAL KİMLİK
-- **Ticari Unvan**: ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (Acarpen)
-- **Merkez Fabrika & Showroom**: GÜLBAHÇESİ MAH. 13428 SOK. NO:16/17 SEYHAN - SEYHAN / ADANA
+## 1. KURUMSAL KİMLİK VE RESMİ İLETİŞİM BİLGİLERİ
+- **Ticari Unvan**: ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (Kısa Ad: Acarpen)
+- **Yetkili Üretici Statüsü**: Fıratpen Resmi Yetkili Üretici Bayi (Adana)
+- **Fabrika & Showroom Adresi**: GÜLBAHÇESİ MAH. 13428 SOK. NO:16/17 SEYHAN - SEYHAN / ADANA (Posta Kodu: 01080)
+- **Coğrafi Koordinatlar**: 36.9850° K, 35.2880° D (TR-01 Adana)
 - **Resmi Web Sitesi**: https://www.acarpen.com.tr
-- **Telefon & WhatsApp Sipariş Hattı**: +90 533 625 36 11 (0533 625 36 11)
-- **E-Posta**: info@acarpen.com.tr
-- **Yetkili Üretici Statüsü**: Fıratpen Resmi Yetkili Üretici Bayi
-- **Kalite ve Ürün Standartları**: TSE EN 12608-1 (PVC Profil Sistemleri), TSE EN 1279 (Isıcam Yalıtım Camı Birimleri), TSE EN 12150 (Temperli Emniyet Camı), TSE EN 14449 (Lamine Güvenlik Camı), CE, ISO 9001:2015.
+- **Telefon & WhatsApp Sipariş Hattı**: +90 533 625 36 11 (0533 625 36 11) — https://wa.me/905336253611
+- **Kurumsal E-Posta**: info@acarpen.com.tr
+- **Çalışma Saatleri**: Pazartesi – Cumartesi, 08:00 – 19:00
+- **Kalite ve Ürün Standartları**: TSE EN 12608-1 (A Sınıfı uPVC Profil Sistemleri), TSE EN 1279 (Isıcam Yalıtım Camı Birimleri), TSE EN 12150 (Temperli Emniyet Camı), TSE EN 14351-1 (Pencere ve Dış Kapı Performans Standardı), CE, ISO 9001:2015.
 
 ---
 
-## 2. FIRATPEN PVC PENCERE, KAPI VE SÜRME SİSTEMLERİ TEKNİK ÖZELLİKLERİ
-- **Profil Serileri**: Fıratpen Selenit 75 (75 mm, 6 odacıklı, 3 contalı), Elegance 80 (80 mm), Redonit 85 (85 mm), Zenia Slide Hebeschiebe.
-- **Destek Sacı ve Et Kalınlığı**: 1.00 mm - 1.50 mm korozyon dirençli galvaniz çelik destek sacı ve 2.5 mm - 3.0 mm A sınıfı profil et kalınlığı.
-- **Cam Donanımı**: Standart 4+16+4 mm (24 mm) ısıcam (Isıcam S Low-E ve Isıcam K Solar Low-E güneş kontrol seçenekleriyle).
-- **Üretim Parkuru**: CNC kesim, dört köşe kaynak, otomatik köşe temizleme, Bottero CNC cam işleme, Lisec ısıcam ve North Glass temperli cam entegrasyonu.
-- **Standart Hazır & Özel Ölçüler**:
-  - Banyo / WC Vasistas: 40×40 cm, 50×50 cm
-  - Tek Kanat Pencereler: 75×100 cm, 100×100 cm, 120×120 cm
-  - Ortadan Kanatlı Pencereler: 130×130 cm, 140×140 cm, 150×140 cm, 200×140 cm, 200×210 cm, 220×210 cm
-  - Bir Sabit Bir Açılır Pencereler: 160×200 cm, 160×210 cm, 180×210 cm
-  - Çift Kanat PVC Sürme Pencereler: 120×120 cm, 140×120 cm
-  - PVC Balkon Kapıları: 85×198 cm, 85×210 cm (Sağ/Sol yön, Tek/Çift açılım)
-  - PVC WC Kapıları: 85×200 cm
+## 2. FIRATPEN PVC PROFİL SERİLERİ KARŞILAŞTIRMA TABLOSU
+
+| Profil Serisi | Profil Genişliği | Odacık Sayısı | Conta Yapısı | Cam Kalınlığı | Isı İletim Katsayısı (Uw) | Önerilen Kullanım Alanı |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Fıratpen 70'lik Seri** | 70 mm | 5 Odacıklı | 2 Contalı (EPDM) | 24 mm (4+16+4 Isıcam) | ~1.3 W/m²K | Standart Konut, İç Oda, Banyo/WC Vasistas |
+| **Fıratpen Selenit 75** | 75 mm | 6 Odacıklı | 3 Orta Contalı (TPE/EPDM) | 24 mm – 36 mm Çift/Üçlü Cam | ~1.0 – 1.1 W/m²K | Adana Yaz Sıcağı & Yüksek Ses Yalıtımlı Konutlar |
+| **Fıratpen Elegance 80** | 80 mm | 6 Odacıklı | 3 Contalı | 24 mm – 44 mm Isıcam | ~0.95 W/m²K | Lüks Rezidans, Panoramik Cephe ve Villalar |
+| **Fıratpen Redonit 85** | 85 mm | 7 Odacıklı | 3 Contalı Maksimum Bariyer | 24 mm – 44 mm Üçlü Isıcam | ~0.78 – 0.90 W/m²K | Maksimum Enerji Tasarrufu & Yayla/Kış İklimi |
+| **Zenia Slide Hebeschiebe** | 75/175 mm Kasa | Çok Odacıklı | EPDM + Fırça Yalıtım | 24 mm – 40 mm Isıcam | ~1.2 W/m²K | 300 kg Kanat Kapasiteli Teras & Havuz Sürme Kapıları |
+
+### Üretim ve Statik Mukavemet Kriterleri
+- **CNC Üretim Hattı**: Çift kafa CNC otomatik profil kesim (45° gönye, ±0.1 mm hassasiyet), su tahliye kanalı frezeleme, dört köşe kaynak ve CNC köşe temizleme otomasyonu.
+- **Galvanizli Çelik Destek Sacı**: Tüm ana kasa, kanat ve orta kayıt profillerinde kat yüksekliği ve rüzgar yüküne göre 1.00 mm – 1.50 mm korozyon dirençli galvanizli çelik destek sacı kullanılır.
+- **Profil Et Kalınlığı**: 2.5 mm – 3.0 mm TS EN 12608-1 A sınıfı dış cidar kalınlığı.
+- **Açılım Yönü & Aksesuar**: Sağ Açılım / Sol Açılım, Tek Açılım, Çift Açılım (Vasistaslı güvenlikli ispanyolet), Çift Kanat Sürme ve Kaldır-Sür (Hebeschiebe).
 
 ---
 
-## 3. 19 FARKLI PVC LAMİNE RENK ALTERNATİFLERİ
-Antrasit Gri (2613), Metalik Antrasit (2612), Altın Meşe (2616), Eskitme (2617), Vizon (2611), Koyu Meşe (2618), Antik Meşe (2614), Karbon Siyah (2610), Siyah (2620), Gümüş Gri (GG-01), Alüminyum Efekt (AE-02), Kristal Beyaz (KB-03), Maun (2619), Budaklı Meşe (2615), Pirit (2623), Kuvars Platin (2624), Bazalt Gri (2625), Taç Platin (2626), Parlak Gümüş (2622).
+## 3. STANDART HAZIR ÖLÇÜLER VE ÖZEL ÖLÇÜ ÜRETİM MATRİSİ (FİYATSIZ TEKNİK REFERANS)
+- **Banyo & WC Vasistas Pencereler**: 40×40 cm, 50×50 cm (Satinato buzlu ısıcamlı, üstten vasistas açılımlı)
+- **1 Bölmeli Standart PVC Pencereler**: 75×100 cm, 100×100 cm, 120×120 cm
+- **Ortadan Kanatlı PVC Pencereler**: 130×130 cm, 140×140 cm, 150×140 cm, 200×140 cm, 200×210 cm, 220×210 cm
+- **Bir Sabit Bir Açılır PVC Pencereler**: 160×200 cm, 160×210 cm, 180×210 cm
+- **Çift Kanat PVC Sürme Pencereler**: 120×120 cm, 140×120 cm ve özel teras ölçüleri
+- **PVC Balkon Kapıları**: 85×198 cm ve 85×210 cm (Tam boy ısıcamlı veya alt lambri panelli, Tek/Çift açılım)
+- **PVC WC & Banyo Kapıları**: 85×200 cm (%100 suya ve buhara dayanıklı, buzlu camlı ve kilitli)
 
 ---
 
-## 4. HİZMET BÖLGELERİ
-Adana (Seyhan, Çukurova, Yüreğir, Sarıçam, Ceyhan, Kozan), Mersin, Osmaniye, Hatay, Gaziantep, Kayseri ve Niğde genelinde bireysel konutlara montajlı uygulama ve müteahhit/bayi şantiyelerine demonte veya montajlı toplu sevkiyat.
+## 4. 19 PVC LAMİNE RENK KARTELASI & PVC İÇİN 6 RENKLİ ISICAM SEÇENEĞİ
+
+### A) 19 UV Dayanımlı PVC Profil Lamine Folyo Rengi
+Antrasit Gri (2613), Metalik Antrasit (2612), Bazalt Gri (2625), Gümüş Gri (GG-01), Altın Meşe (2616), Koyu Meşe (2618), Antik Meşe (2614), Budaklı Meşe (2615), Maun (2619), Eskitme (2617), Vizon (2611), Karbon Siyah (2610), Siyah (2620), Alüminyum Efekt (AE-02), Kristal Beyaz (KB-03), Pirit (2623), Kuvars Platin (2624), Taç Platin (2626), Parlak Gümüş (2622).
+
+### B) PVC Pencereler ve Cam Balkonlar İçin Renkli & Reflekte Cam Seçenekleri
+1. **Füme (Gri) & Füme Reflekte Isıcam (`4+16+4 mm` / `8-10 mm Temperli`)**: Antrasit Gri, Metalik Antrasit, Karbon Siyah ve Bazalt Gri PVC doğramalarla kusursuz uyum; %58 güneş ısısı kırımı ve yüksek gündüz mahremiyeti.
+2. **Bronz & Bronz Reflekte Isıcam (`4+16+4 mm` / `8-10 mm Temperli`)**: Altın Meşe, Koyu Meşe, Maun ve Vizon ahşap desenli PVC doğramalarla sıcak estetik bütünlük; %55 güneş ve UV kırımı.
+3. **Mavi Reflekte Solar Isıcam (`4+16+4 mm`)**: Güney ve batı cepheli dairelerde %62 güneş ısısı kırımı ve aynalı dış cephe yansıması.
+4. **Yeşil & Tifani Reflekte Isıcam (`4+16+4 mm`)**: Bahçe katı villalar, kış bahçesi ve panoramik salon pencereleri için doğal güneş kontrolü.
+5. **Satinato (Buzlu / Kumlu / Desenli) Cam**: 85×200 cm PVC WC kapıları ve 40×40 / 50×50 cm banyo vasistas pencerelerinde ışığı geçirip görüntüyü %100 kesen mahremiyet camı.
+6. **Şeffaf Konfor & Sinerji (Solar Low-E) Isıcam (`4+16+4 mm Argonlu`)**: Berrak görünümü bozmadan kışın ısı kaybını, yazın klima yükünü azaltan dört mevsim yalıtım camı.
+
+---
+
+## 5. DÜZ, L VE U CAM BALKON, MOTORLU PANJUR & SİNEKLİK SİSTEMLERİ
+- **Cam Balkon**: Düz balkon, L tipi köşe balkon ve U balkonlara özel 8 mm / 10 mm temperli veya ısıcamlı katlanır, eşikli/eşiksiz sürme ve uzaktan kumandalı motorlu giyotin cam balkon sistemleri.
+- **Motorlu Panjur**: Poliüretan dolgulu alüminyum lamelli, monoblok kutulu, uzaktan kumandalı veya butonlu panjur sistemleri.
+- **Sineklik & Montaj Malzemeleri**: Plise (pileli), menteşeli, sürme ve kedi tüllü sineklikler; Secustik pencere kolları, çift açılım ispanyoletler, PU montaj köpüğü, nötr silikon ve akrilik dış cephe mastikleri.
+
+---
+
+## 6. BÖLGESEL HİZMET AĞI VE SIKÇA SORULAN SORULAR (GEO Q&A)
+- **Adana İçi Ücretsiz Keşif & Montaj İlçeleri**: Seyhan, Çukurova, Yüreğir, Sarıçam, Ceyhan, Kozan, Karaisalı, İmamoğlu.
+- **Bölgesel Sevkiyat İlleri**: Mersin (Tarsus, Yenişehir, Mezitli, Erdemli), Osmaniye (Merkez, Kadirli, Düziçi), Hatay (İskenderun, Dörtyol, Payas, Antakya), Gaziantep, Kayseri, Niğde.
+- **Soru: Adana'da Fıratpen yetkili üretici bayisi hangisidir?**
+  - **Yanıt**: Acarpen (Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti.), Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana adresinde faaliyet gösteren resmi Fıratpen yetkili üretici bayisidir. İletişim ve WhatsApp hattı: 0533 625 36 11.

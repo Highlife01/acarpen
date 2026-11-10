@@ -70,21 +70,25 @@ describe("3. IndexNow Automation & Endpoints", () => {
 });
 
 describe("4. International SEO & GEO (AI Search Engines)", () => {
-  it("llms.txt and llms-full.txt should exist and contain company details", () => {
+  it("llms.txt, llms-full.txt and ai.txt should exist and contain verified Acarpen & colored glass details", () => {
     const llmsPath = path.resolve(__dirname, "../../public/llms.txt");
     const llmsFullPath = path.resolve(__dirname, "../../public/llms-full.txt");
+    const aiTxtPath = path.resolve(__dirname, "../../public/ai.txt");
 
     expect(fs.existsSync(llmsPath)).toBe(true);
     expect(fs.existsSync(llmsFullPath)).toBe(true);
+    expect(fs.existsSync(aiTxtPath)).toBe(true);
 
     const fullContent = fs.readFileSync(llmsFullPath, "utf-8");
     expect(fullContent).toContain("ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ");
     expect(fullContent).toContain("TSE EN 12608-1");
     expect(fullContent).toContain("TSE EN 1279");
     expect(fullContent).toContain("Selenit 75");
+    expect(fullContent).toContain("Füme (Gri) & Füme Reflekte Isıcam");
+    expect(fullContent).not.toContain("Bottero");
   });
 
-  it("robots.txt should permit AI search crawlers (GEO) and reference llms.txt", () => {
+  it("robots.txt should permit AI search crawlers (GEO) and reference llms.txt & ai.txt", () => {
     const robotsPath = path.resolve(__dirname, "../../public/robots.txt");
     expect(fs.existsSync(robotsPath)).toBe(true);
     const robotsContent = fs.readFileSync(robotsPath, "utf-8");
@@ -94,16 +98,20 @@ describe("4. International SEO & GEO (AI Search Engines)", () => {
     expect(robotsContent).toContain("User-agent: ClaudeBot");
     expect(robotsContent).toContain("User-agent: Applebot");
     expect(robotsContent).toContain("llms.txt");
+    expect(robotsContent).toContain("ai.txt");
   });
 
-  it("prerender script should produce valid semantic static HTML for regional routes", () => {
+  it("prerender script should produce valid semantic static HTML with route-specific hreflang and SpeakableSpecification", () => {
     const regionalHtmlPath = path.resolve(__dirname, "../../dist/bolgeler/adana-cam-fabrikasi/index.html");
     expect(fs.existsSync(regionalHtmlPath)).toBe(true);
 
     const html = fs.readFileSync(regionalHtmlPath, "utf-8");
     expect(html).toContain("<title>Adana Fıratpen Bayisi");
     expect(html).toContain('rel="canonical" href="https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi"');
+    expect(html).toContain('hreflang="en" href="https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi?lang=en"');
+    expect(html).toContain('hreflang="ar" href="https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi?lang=ar"');
     expect(html).toContain('id="static-prerender-jsonld"');
+    expect(html).toContain("SpeakableSpecification");
     expect(html).toContain("prerender-table");
     expect(html).toContain("prerender-faqs");
   });
