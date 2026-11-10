@@ -27,7 +27,7 @@ interface SEOProps {
 }
 
 const BASE_URL = "https://www.acarpen.com.tr";
-const DEFAULT_IMAGE = `${BASE_URL}/assets/hero-glass.jpg`;
+const DEFAULT_IMAGE = `${BASE_URL}/assets/firatpen-selenit-pvc-pencere.jpg`;
 const COMPANY_NAME = "Acarpen — Fıratpen Yetkili Üretici Bayi";
 
 const DNS_GOOGLE_VERIFICATION_FALLBACK = "";

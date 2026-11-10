@@ -1,3 +1,4 @@
+import heroProductImg from "@/assets/firatpen-cam-balkon-sistemleri.jpg";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
@@ -34,8 +35,7 @@ const BalkonCami = () => {
       <main className="pt-24">
         <section className="relative py-20 lg:py-28 bg-primary text-primary-foreground overflow-hidden">
           <div className="absolute inset-0 opacity-15 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-accent via-transparent to-transparent" />
-          <div className="container mx-auto px-4 lg:px-8 relative z-10">
-            <div className="max-w-3xl">
+          <div className="container mx-auto px-4 lg:px-8 relative z-10"><div className="grid lg:grid-cols-12 gap-10 items-center"><div className="lg:col-span-7">
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/20 text-accent text-xs font-medium tracking-wider uppercase mb-6">
                 <Home className="w-3.5 h-3.5" />
                 Dört Mevsim Balkon & Teras Sistemleri
@@ -67,6 +67,16 @@ const BalkonCami = () => {
                   0533 625 36 11
                 </a>
               </div>
+            </div>
+            <div className="lg:col-span-5">
+              <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-slate-900 aspect-[4/3]">
+                <img src={heroProductImg} alt="Düz, L ve U Tipi Katlanır ve Sürme Cam Balkon Sistemleri - Acarpen Adana" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+                <div className="absolute bottom-3 left-3 right-3 px-3 py-2 rounded-xl bg-slate-950/75 backdrop-blur-sm border border-white/10 text-xs font-medium text-white">
+                  Düz • L • U Tipi 8mm/10mm Temperli & Isıcamlı Cam Balkon
+                </div>
+              </div>
+            </div>
             </div>
           </div>
         </section>

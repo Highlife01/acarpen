@@ -1,9 +1,9 @@
 import { MapPin, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import projectPlaza from "@/assets/project-plaza.jpg";
-import projectVilla from "@/assets/project-villa.jpg";
-import projectTech from "@/assets/project-tech.jpg";
+import projectPlaza from "@/assets/proje-cukurova-konut-pvc.jpg";
+import projectVilla from "@/assets/proje-seyhan-cam-balkon.jpg";
+import projectTech from "@/assets/proje-villa-altinmese-panjur.jpg";
 
 export const projectsData = [
   {

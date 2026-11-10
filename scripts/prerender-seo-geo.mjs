@@ -16,7 +16,7 @@ const rootDir = path.resolve(__dirname, "..");
 const distDir = path.join(rootDir, "dist");
 
 const BASE_URL = "https://www.acarpen.com.tr";
-const DEFAULT_IMAGE = `${BASE_URL}/assets/hero-glass.jpg`;
+const DEFAULT_IMAGE = `${BASE_URL}/assets/firatpen-selenit-pvc-pencere.jpg`;
 
 const SERVED_CITIES = [
   { name: "Adana", lat: 36.985, lng: 35.288, qid: "Q40939" },

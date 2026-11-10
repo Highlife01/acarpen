@@ -1,8 +1,8 @@
 import { Cpu, Flame, Layers, Truck, ShieldCheck, CheckCircle2, ArrowRight, Wrench } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import productionHeroImg from "@/assets/project-tech.jpg";
-import villaWindowImg from "@/assets/hero-villa-window.jpg";
+import productionHeroImg from "@/assets/firatpen-cnc-uretim-hatti.jpg";
+import villaWindowImg from "@/assets/firatpen-selenit-pvc-pencere.jpg";
 
 const productionPillars = [
   {

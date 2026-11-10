@@ -7,11 +7,11 @@ import { useLanguage } from "@/context/LanguageContext";
 import { PVC_COLOR_ALTERNATIVES } from "@/data/pvcColorAlternatives";
 import { toast } from "sonner";
 
-import slideFacade from "@/assets/hero-curtain-facade.jpg";
-import slideVilla from "@/assets/hero-villa-window.jpg";
-import slideBalcony from "@/assets/hero-guillotine-balcony.jpg";
-import slideJaluzi from "@/assets/hero-jaluzi-villa.jpg";
-import slideArchitecture from "@/assets/hero-glass-architecture.jpg";
+import slideFacade from "@/assets/firatpen-santiye-toplu-pvc.jpg";
+import slideVilla from "@/assets/firatpen-selenit-pvc-pencere.jpg";
+import slideBalcony from "@/assets/firatpen-cam-balkon-sistemleri.jpg";
+import slideJaluzi from "@/assets/firatpen-balkon-wc-kapi.jpg";
+import slideArchitecture from "@/assets/firatpen-hebeschiebe-surme.jpg";
 
 const heroSlides = [
   {

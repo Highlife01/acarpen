@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
 import { PVC_COLOR_ALTERNATIVES, WINDOW_COLOR_FEATURES } from "@/data/pvcColorAlternatives";
 
-import imgVillaWindow from "@/assets/hero-villa-window.jpg";
-import imgBalcony from "@/assets/hero-guillotine-balcony.jpg";
-import imgJaluzi from "@/assets/hero-jaluzi-villa.jpg";
-import imgFacade from "@/assets/hero-curtain-facade.jpg";
-import imgArchitecture from "@/assets/hero-glass-architecture.jpg";
-import imgTech from "@/assets/project-tech.jpg";
+import imgVillaWindow from "@/assets/firatpen-selenit-pvc-pencere.jpg";
+import imgBalcony from "@/assets/firatpen-cam-balkon-sistemleri.jpg";
+import imgJaluzi from "@/assets/firatpen-balkon-wc-kapi.jpg";
+import imgFacade from "@/assets/firatpen-santiye-toplu-pvc.jpg";
+import imgArchitecture from "@/assets/firatpen-hebeschiebe-surme.jpg";
+import imgTech from "@/assets/firatpen-cnc-uretim-hatti.jpg";
 
 const services = [
   {
