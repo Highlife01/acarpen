@@ -1,0 +1,124 @@
+rules_version = '2';
+
+// Acar Pen — yalnızca "acarpen" adlı veritabanına dağıtılır (firebase.json).
+// Roller: superadmin > manager > sales | editor. Rol bilgisi users/{uid} belgesinden okunur.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+    function me() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    function isStaff() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && me().active == true;
+    }
+    function hasRole(roles) {
+      return isStaff() && me().role in roles;
+    }
+    function canManage() { return hasRole(['superadmin', 'manager']); }
+    function canSell() { return hasRole(['superadmin', 'manager', 'sales']); }
+    function canEdit() { return hasRole(['superadmin', 'manager', 'editor']); }
+
+    function optString(d, key, max) {
+      return !(key in d) || (d[key] is string && d[key].size() <= max);
+    }
+
+    function validLead() {
+      let d = request.resource.data;
+      return d.keys().hasOnly([
+          'type', 'name', 'phone', 'phoneNormalized', 'email', 'city', 'district', 'neighborhood',
+          'serviceId', 'projectType', 'dimensions', 'message', 'attachments', 'contactMethod',
+          'source', 'utm', 'landingPage', 'referrer', 'status', 'assignedTo', 'consent',
+          'createdAt', 'updatedAt'
+        ])
+        && d.keys().hasAll(['type', 'name', 'phone', 'phoneNormalized', 'serviceId', 'status', 'consent', 'createdAt', 'updatedAt'])
+        && d.type in ['quote', 'survey', 'contact']
+        && d.name is string && d.name.size() >= 2 && d.name.size() <= 80
+        && d.phone is string && d.phone.size() >= 10 && d.phone.size() <= 24
+        && d.phoneNormalized is string && d.phoneNormalized.matches('^[+][0-9]{10,15}$')
+        && d.serviceId is string && d.serviceId.size() <= 80
+        && d.status == 'new'
+        && (!('assignedTo' in d) || d.assignedTo == null)
+        && d.consent is map && d.consent.noticeAccepted == true
+        && d.createdAt == request.time && d.updatedAt == request.time
+        && optString(d, 'email', 120)
+        && optString(d, 'city', 40)
+        && optString(d, 'district', 40)
+        && optString(d, 'neighborhood', 80)
+        && optString(d, 'projectType', 20)
+        && optString(d, 'message', 2000)
+        && optString(d, 'contactMethod', 20)
+        && optString(d, 'source', 40)
+        && optString(d, 'landingPage', 300)
+        && optString(d, 'referrer', 300)
+        && (!('dimensions' in d) || d.dimensions is map)
+        && (!('utm' in d) || (d.utm is map && d.utm.size() <= 6))
+        && (!('attachments' in d) || (d.attachments is list && d.attachments.size() <= 5));
+    }
+
+    // Yayınlanan içerik herkese açık; taslaklar yalnızca içerik yetkililerine.
+    match /services/{id} {
+      allow read: if resource.data.status == 'published' || canEdit();
+      allow write: if canEdit();
+    }
+    match /projects/{id} {
+      allow read: if resource.data.status == 'published' || canEdit();
+      allow write: if canEdit();
+    }
+    match /blogPosts/{id} {
+      allow read: if resource.data.status == 'published' || canEdit();
+      allow write: if canEdit();
+    }
+    match /faq/{id} {
+      allow read: if resource.data.status == 'published' || canEdit();
+      allow write: if canEdit();
+    }
+    match /siteSettings/{id} {
+      allow read: if true;
+      allow write: if canManage();
+    }
+
+    // CRM: ziyaretçi yalnızca doğrulanmış biçimde yeni talep oluşturabilir, okuyamaz.
+    match /leads/{id} {
+      allow create: if validLead();
+      allow read, update: if canSell();
+      allow delete: if canManage();
+    }
+    match /leadNotes/{id} {
+      allow read: if canSell();
+      allow create: if canSell() && request.resource.data.authorId == request.auth.uid;
+      allow delete: if canManage();
+    }
+    match /quotes/{id} {
+      allow read, create, update: if canSell();
+      allow delete: if canManage();
+    }
+
+    match /media/{id} {
+      allow read, write: if canEdit();
+    }
+    match /contentVersions/{id} {
+      allow read, create: if canEdit();
+    }
+
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || canManage());
+      allow write: if hasRole(['superadmin']);
+    }
+
+    match /auditLogs/{id} {
+      allow read: if canManage();
+      allow create: if isStaff()
+        && request.resource.data.actorId == request.auth.uid
+        && request.resource.data.timestamp == request.time;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

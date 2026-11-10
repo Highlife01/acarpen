@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <!-- 1. Ana Sayfa (TR / EN / AR) -->
+  <url>
+    <loc>https://www.acarpen.com.tr/</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.00</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/?lang=ar" />
+    <image:image>
+      <image:loc>https://www.acarpen.com.tr/assets/hero-glass.jpg</image:loc>
+      <image:title>Acarpen — Adana Fıratpen Yetkili Üretici Bayi</image:title>
+      <image:caption>Adana Seyhan Gülbahçesi Mah. 13428 Sok. No:16/17 adresinde PVC pencere, kapı ve cam balkon üretimi</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 2. Pencere & Cam Balkon Yapılandırıcı & Teklif -->
+  <url>
+    <loc>https://www.acarpen.com.tr/hesaplama</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/hesaplama" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/hesaplama" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/hesaplama?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/hesaplama?lang=ar" />
+  </url>
+
+  <!-- 3. Hizmetler & Ürün Kataloğu -->
+  <url>
+    <loc>https://www.acarpen.com.tr/hizmetler</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/hizmetler" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/hizmetler" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/hizmetler?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/hizmetler?lang=ar" />
+  </url>
+
+  <!-- 4. Ürün Detay Sayfaları -->
+  <url>
+    <loc>https://www.acarpen.com.tr/urunler/cift-cam</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/urunler/cift-cam" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/urunler/cift-cam" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/urunler/cift-cam?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/urunler/cift-cam?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/urunler/temperli-cam</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/urunler/temperli-cam" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/urunler/temperli-cam" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/urunler/temperli-cam?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/urunler/temperli-cam?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/urunler/balkon-cami</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/urunler/balkon-cami" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/urunler/balkon-cami" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/urunler/balkon-cami?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/urunler/balkon-cami?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/urunler/jaluzili-isicam</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/urunler/jaluzili-isicam" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/urunler/jaluzili-isicam" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/urunler/jaluzili-isicam?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/urunler/jaluzili-isicam?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/urunler/dis-cephe-camlari</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/urunler/dis-cephe-camlari" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/urunler/dis-cephe-camlari" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/urunler/dis-cephe-camlari?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/urunler/dis-cephe-camlari?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/urunler/lamine-cam</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/urunler/lamine-cam" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/urunler/lamine-cam" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/urunler/lamine-cam?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/urunler/lamine-cam?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/urunler/renkli-camlar</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/urunler/renkli-camlar" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/urunler/renkli-camlar" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/urunler/renkli-camlar?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/urunler/renkli-camlar?lang=ar" />
+  </url>
+
+  <!-- 5. Bölgesel SEO & GEO İl Sayfaları -->
+  <url>
+    <loc>https://www.acarpen.com.tr/bolgeler</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/bolgeler" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/bolgeler" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/bolgeler?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/bolgeler?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/bolgeler/mersin-cam-imalati</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/bolgeler/mersin-cam-imalati" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/bolgeler/mersin-cam-imalati" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/bolgeler/mersin-cam-imalati?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/bolgeler/mersin-cam-imalati?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/bolgeler/osmaniye-cam-ureticisi</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/bolgeler/osmaniye-cam-ureticisi" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/bolgeler/osmaniye-cam-ureticisi" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/bolgeler/osmaniye-cam-ureticisi?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/bolgeler/osmaniye-cam-ureticisi?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/bolgeler/hatay-cam-firmalari</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/bolgeler/hatay-cam-firmalari" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/bolgeler/hatay-cam-firmalari" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/bolgeler/hatay-cam-firmalari?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/bolgeler/hatay-cam-firmalari?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/bolgeler/gaziantep-cam-cozumleri</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/bolgeler/gaziantep-cam-cozumleri" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/bolgeler/gaziantep-cam-cozumleri" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/bolgeler/gaziantep-cam-cozumleri?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/bolgeler/gaziantep-cam-cozumleri?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/bolgeler/kayseri-cam-toptan</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/bolgeler/kayseri-cam-toptan" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/bolgeler/kayseri-cam-toptan" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/bolgeler/kayseri-cam-toptan?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/bolgeler/kayseri-cam-toptan?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/bolgeler/nigde-cam-sevkiyati</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/bolgeler/nigde-cam-sevkiyati" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/bolgeler/nigde-cam-sevkiyati" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/bolgeler/nigde-cam-sevkiyati?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/bolgeler/nigde-cam-sevkiyati?lang=ar" />
+  </url>
+
+  <!-- 6. Teknik Rehber & Kurumsal Sayfalar -->
+  <url>
+    <loc>https://www.acarpen.com.tr/rehber</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/rehber" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/rehber" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/rehber?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/rehber?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/projeler</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/projeler" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/projeler" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/projeler?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/projeler?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/uretim-teknolojisi</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/uretim-teknolojisi" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/uretim-teknolojisi" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/uretim-teknolojisi?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/uretim-teknolojisi?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/hakkimizda</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/hakkimizda" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/hakkimizda" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/hakkimizda?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/hakkimizda?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/iletisim</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/iletisim" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/iletisim" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/iletisim?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/iletisim?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/siparis-takip</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/siparis-takip" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/siparis-takip" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/siparis-takip?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/siparis-takip?lang=ar" />
+  </url>
+
+  <!-- 7. Referans Proje Detay Sayfaları -->
+  <url>
+    <loc>https://www.acarpen.com.tr/projeler/mersin-tower-plaza</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/projeler/mersin-tower-plaza" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/projeler/mersin-tower-plaza" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/projeler/mersin-tower-plaza?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/projeler/mersin-tower-plaza?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/projeler/seyhan-modern-rezidans</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/projeler/seyhan-modern-rezidans" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/projeler/seyhan-modern-rezidans" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/projeler/seyhan-modern-rezidans?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/projeler/seyhan-modern-rezidans?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/projeler/cukurova-panoramik-villa</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/projeler/cukurova-panoramik-villa" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/projeler/cukurova-panoramik-villa" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/projeler/cukurova-panoramik-villa?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/projeler/cukurova-panoramik-villa?lang=ar" />
+  </url>
+  <url>
+    <loc>https://www.acarpen.com.tr/projeler/gaziantep-osb-tekstil-fabrikasi</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/projeler/gaziantep-osb-tekstil-fabrikasi" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/projeler/gaziantep-osb-tekstil-fabrikasi" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/projeler/gaziantep-osb-tekstil-fabrikasi?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/projeler/gaziantep-osb-tekstil-fabrikasi?lang=ar" />
+  </url>
+</urlset>

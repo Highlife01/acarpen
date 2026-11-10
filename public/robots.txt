@@ -1,0 +1,51 @@
+# Robots.txt for Acarpen — Fıratpen Yetkili Üretici Bayi (https://www.acarpen.com.tr)
+# Generative Engine Optimization (GEO) & Search Engine Crawlers
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+# AI Search Engines & Foundation Model Crawlers (GEO)
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+# LLM Documentation & Machine-Readable Specifications
+# LLMs Summary: https://www.acarpen.com.tr/llms.txt
+# LLMs Full Knowledge Base: https://www.acarpen.com.tr/llms-full.txt
+
+Sitemap: https://www.acarpen.com.tr/sitemap.xml
+Host: https://www.acarpen.com.tr

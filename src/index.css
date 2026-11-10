@@ -1,0 +1,782 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Fresh Luminous Architectural Palette: Pure Glass, Sky Blue, Crisp Slate & Emerald */
+    --background: 210 40% 98%; /* #F8FAFC Soft Crisp Slate/Sky White */
+    --foreground: 222 47% 11%; /* #0F172A Deep Architectural Navy/Slate */
+
+    --card: 0 0% 100%; /* #FFFFFF Pure White */
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 206 85% 42%; /* #0B4F9C Rich Architectural Brand Blue */
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 160 84% 39%; /* #10B981 Fresh Emerald/Mint */
+
+    --secondary: 210 40% 96%; /* #F1F5F9 Fresh Ice Slate */
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%; /* #64748B Crisp Readable Slate */
+
+    --accent: 199 89% 48%; /* #0284C7 Vibrant Azure Cyan */
+    --accent-foreground: 0 0% 100%;
+
+    --gold: 38 95% 50%;
+
+    --destructive: 359 90% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%; /* #E2E8F0 Clean Crisp Border */
+    --input: 214 32% 91%;
+    --ring: 206 85% 42%;
+
+    --radius: 1.25rem;
+
+    /* Fresh Architectural Gradients */
+    --gradient-hero: radial-gradient(ellipse at 50% -10%, rgba(56, 189, 248, 0.2) 0%, transparent 65%),
+                     radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 55%),
+                     linear-gradient(180deg, #F0F9FF 0%, #F8FAFC 50%, #FFFFFF 100%);
+    --gradient-text: linear-gradient(135deg, #0F172A 0%, #0369A1 50%, #0284C7 100%);
+    --gradient-gold-text: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+    --gradient-primary: linear-gradient(135deg, #0B4F9C 0%, #0284C7 50%, #059669 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 249, 255, 0.9) 100%);
+    --gradient-card: linear-gradient(160deg, #FFFFFF 0%, #F8FAFC 100%);
+    --gradient-border: linear-gradient(135deg, rgba(2, 132, 199, 0.4), rgba(16, 185, 129, 0.35), rgba(226, 232, 240, 0.9));
+
+    /* Crisp High-Definition Shadows */
+    --shadow-glow: 0 10px 30px -8px rgba(2, 132, 199, 0.3);
+    --shadow-glow-cyan: 0 10px 30px -8px rgba(56, 189, 248, 0.3);
+    --shadow-elegant: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 1px 1px rgba(15, 23, 42, 0.05);
+    --shadow-card: 0 10px 30px -10px rgba(15, 23, 42, 0.06), 0 0 1px 1px rgba(15, 23, 42, 0.04);
+
+    /* Transitions */
+    --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+  }
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased selection:bg-sky-500/20 selection:text-sky-950;
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    font-feature-settings: "ss01", "cv11";
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Safe Text Wrapping and High Legibility */
+  p, h1, h2, h3, h4, h5, h6, span {
+    overflow-wrap: break-word;
+  }
+
+  /* Custom Clean Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #F1F5F9;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(2, 132, 199, 0.35);
+    border-radius: 9999px;
+    border: 2px solid #F1F5F9;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(2, 132, 199, 0.65);
+  }
+}
+
+@layer utilities {
+  .font-serif { font-family: 'Playfair Display', Georgia, serif; }
+  .text-gradient {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-gold {
+    background: var(--gradient-gold-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-cyan {
+    background: linear-gradient(135deg, #0F172A 0%, #0284C7 50%, #0369A1 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-emerald {
+    background: linear-gradient(135deg, #0F172A 0%, #059669 50%, #047857 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-sunset {
+    background: linear-gradient(135deg, #D97706 0%, #EA580C 50%, #E11D48 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-purple {
+    background: linear-gradient(135deg, #9333EA 0%, #7C3AED 50%, #4F46E5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-rainbow {
+    background: linear-gradient(90deg, #0284C7 0%, #10B981 25%, #F59E0B 50%, #F97316 75%, #8B5CF6 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .animate-gradient-text {
+    animation: gradientShift 6s ease infinite;
+  }
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .bg-gradient-hero { background: var(--gradient-hero); }
+  .bg-gradient-primary { background: var(--gradient-primary); }
+  .bg-gradient-glass { background: var(--gradient-glass); }
+  .bg-gradient-card { background: var(--gradient-card); }
+
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+  .shadow-glow-cyan { box-shadow: var(--shadow-glow-cyan); }
+  .shadow-glow-emerald { box-shadow: 0 10px 30px -8px rgba(16, 185, 129, 0.35); }
+  .shadow-glow-purple { box-shadow: 0 10px 30px -8px rgba(147, 51, 234, 0.3); }
+  .shadow-elegant { box-shadow: var(--shadow-elegant); }
+  .shadow-card { box-shadow: var(--shadow-card); }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(226, 232, 240, 0.85);
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+  }
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);
+  }
+  .glass-crystal {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 249, 255, 0.88) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(186, 230, 253, 0.7);
+    box-shadow: 0 8px 24px -4px rgba(2, 132, 199, 0.08);
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(2, 132, 199, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(2, 132, 199, 0.07) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 65%, transparent 95%);
+  }
+
+  .nav-link {
+    @apply relative text-sm tracking-wide text-slate-700 transition-colors hover:text-sky-600 font-semibold;
+  }
+  .nav-link::after {
+    content: '';
+    @apply absolute left-0 -bottom-1 h-[2px] w-0 bg-gradient-primary transition-all duration-300 rounded-full;
+  }
+  .nav-link:hover::after { @apply w-full; }
+
+  .reveal-border {
+    position: relative;
+  }
+  .reveal-border::before {
+    content: '';
+    position: absolute; inset: 0;
+    padding: 1.5px;
+    border-radius: inherit;
+    background: var(--gradient-border);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  /* Interactive Hover Card Lift & Sheen */
+  .glass-hover-effect {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+  }
+  /* Google Translate widget reset & clean integration */
+  .goog-te-banner-frame.skiptranslate,
+  .goog-te-banner-frame {
+    display: none !important;
+  }
+  body {
+    top: 0px !important;
+  }
+  .skiptranslate iframe {
+    display: none !important;
+  }
+  #goog-gt-tt,
+  .goog-te-balloon-frame {
+    display: none !important;
+  }
+  .goog-text-highlight {
+    background: none !important;
+    box-shadow: none !important;
+  }
+
+  /* RTL Support for Arabic, Persian, Hebrew, Urdu */
+  html[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+  }
+  html[dir="rtl"] .ltr-only {
+    direction: ltr;
+    text-align: left;
+  }
+  .glass-hover-effect:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 20px 35px -10px rgba(2, 132, 199, 0.15), 0 0 15px 1px rgba(16, 185, 129, 0.1);
+  }
+
+  /* Shimmering Ambient Light on Glass Cards */
+  .shimmer-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .shimmer-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      60deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 70%
+    );
+    transform: rotate(30deg) translateY(-100%);
+    transition: transform 0.8s ease-in-out;
+  }
+  .shimmer-card:hover::after {
+    transform: rotate(30deg) translateY(100%);
+  }
+
+  /* Mobil yatay kaydırma alanlarında kaydırma çubuğunu gizle */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Mobil cihazlarda yüksek backdrop-blur kaynaklı ekran kopmalarını ve takılmaları önle */
+  @media (max-width: 768px) {
+    .glass,
+    .glass-strong,
+    .glass-crystal {
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+  }
+}
+
+
+/* ==========================================================================
+   ADMIN ERP + CRM YÜKSEK KONTRASTLI KURUMSAL TEMA (HIGH-CONTRAST LIGHT MODE)
+   ========================================================================== */
+.admin-light-theme {
+  /* Belirgin mimari gri-mavi zemin: Beyaz kartların net biçimde öne çıkmasını sağlar */
+  background: linear-gradient(180deg, #dbeafe 0%, #e2e8f0 35%, #cbd5e1 100%) !important;
+  color: #020617 !important;
+}
+
+/* Sol Menü (Sidebar): Yüksek Kontrastlı Aydınlık Kurumsal Görünüm */
+.admin-light-theme aside {
+  background-color: #ffffff !important;
+  border-right: 2px solid #64748b !important;
+  box-shadow: 6px 0 24px -4px rgba(15, 23, 42, 0.14) !important;
+}
+
+.admin-light-theme aside .admin-sidebar-header {
+  background-color: #f1f5f9 !important;
+  border-bottom: 2px solid #94a3b8 !important;
+}
+
+.admin-light-theme aside .admin-sidebar-footer {
+  background-color: #f8fafc !important;
+  border-top: 2px solid #94a3b8 !important;
+}
+
+.admin-light-theme aside .admin-nav-btn {
+  background-color: #f8fafc !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+.admin-light-theme aside .admin-nav-btn svg {
+  color: #0284c7 !important;
+}
+
+.admin-light-theme aside .admin-nav-btn:hover {
+  background-color: #e0f2fe !important;
+  border-color: #0284c7 !important;
+  color: #0369a1 !important;
+  transform: translateX(2px);
+}
+
+.admin-light-theme aside .admin-nav-btn-active {
+  background-color: #0284c7 !important;
+  border: 1.5px solid #0369a1 !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35) !important;
+}
+
+.admin-light-theme aside .admin-nav-btn-active span,
+.admin-light-theme aside .admin-nav-btn-active svg {
+  color: #ffffff !important;
+}
+
+.admin-light-theme aside .admin-nav-badge {
+  background-color: #e0f2fe !important;
+  color: #0369a1 !important;
+  border: 1px solid #7dd3fc !important;
+  font-weight: 800 !important;
+}
+
+.admin-light-theme aside .admin-nav-badge-active {
+  background-color: #ffffff !important;
+  color: #0284c7 !important;
+  font-weight: 800 !important;
+}
+
+/* Üst Hızlı Modül Gezinme Çubuğu (Quick Nav Bar) */
+.admin-light-theme .admin-quick-nav {
+  background-color: #f8fafc !important;
+  border-bottom: 2px solid #94a3b8 !important;
+}
+
+.admin-light-theme .admin-quick-pill {
+  background-color: #ffffff !important;
+  border: 1.5px solid #94a3b8 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+.admin-light-theme .admin-quick-pill:hover {
+  background-color: #e0f2fe !important;
+  border-color: #0284c7 !important;
+  color: #0369a1 !important;
+}
+
+.admin-light-theme .admin-quick-pill-active {
+  background-color: #0284c7 !important;
+  border: 1.5px solid #0369a1 !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3) !important;
+}
+
+.admin-light-theme .admin-quick-pill-active span,
+.admin-light-theme .admin-quick-pill-active svg {
+  color: #ffffff !important;
+}
+
+/* Üst Bar (Header): Saf beyaz zemin ve net alt sınır */
+.admin-light-theme header {
+  background-color: #ffffff !important;
+  border-bottom: 2px solid #94a3b8 !important;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.1) !important;
+}
+
+/* Ana Kartlar: Saf beyaz zemin, güçlü çerçeve ve derin gölge */
+.admin-light-theme main .bg-slate-900,
+.admin-light-theme main .bg-slate-900\/95,
+.admin-light-theme main .bg-slate-900\/90,
+.admin-light-theme main .bg-slate-900\/80,
+.admin-light-theme main .bg-slate-900\/70,
+.admin-light-theme main .bg-slate-900\/60,
+.admin-light-theme main .bg-slate-900\/50,
+.admin-light-theme main .bg-slate-900\/40,
+.admin-light-theme .fixed:not(aside) .bg-slate-900,
+.admin-light-theme .fixed:not(aside) .bg-slate-900\/95,
+.admin-light-theme .fixed:not(aside) .bg-slate-900\/90,
+.admin-light-theme .fixed:not(aside) .bg-slate-900\/80 {
+  background-color: #ffffff !important;
+  border: 1.5px solid #94a3b8 !important;
+  color: #020617 !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 4px 10px -4px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* İç Paneller & Alt Kutular: Karttan net ayrışan açık gri-mavi zemin */
+.admin-light-theme main .bg-slate-950:not(.fixed),
+.admin-light-theme main .bg-slate-950\/90,
+.admin-light-theme main .bg-slate-950\/85,
+.admin-light-theme main .bg-slate-950\/80,
+.admin-light-theme main .bg-slate-950\/70,
+.admin-light-theme main .bg-slate-950\/60,
+.admin-light-theme main .bg-slate-950\/50,
+.admin-light-theme main .bg-slate-950\/40,
+.admin-light-theme header .bg-slate-950,
+.admin-light-theme .fixed:not(aside) .bg-slate-950:not(.fixed),
+.admin-light-theme .fixed:not(aside) .bg-slate-950\/80:not(.fixed),
+.admin-light-theme .fixed:not(aside) .bg-slate-950\/60:not(.fixed) {
+  background-color: #f1f5f9 !important;
+  border: 1.5px solid #94a3b8 !important;
+  color: #020617 !important;
+}
+
+.admin-light-theme .fixed.bg-slate-950\/85,
+.admin-light-theme .fixed.bg-slate-950\/80,
+.admin-light-theme .fixed.bg-slate-950\/60 {
+  background-color: rgba(2, 6, 23, 0.65) !important;
+}
+
+/* İkincil Butonlar, Sekme Barları ve İç Etiket Kutuları */
+.admin-light-theme main .bg-slate-800,
+.admin-light-theme main .bg-slate-800\/80,
+.admin-light-theme main .bg-slate-800\/70,
+.admin-light-theme main .bg-slate-800\/60,
+.admin-light-theme main .bg-slate-800\/50,
+.admin-light-theme main .bg-slate-800\/40,
+.admin-light-theme main .bg-slate-700,
+.admin-light-theme header .bg-slate-800,
+.admin-light-theme .fixed:not(aside) .bg-slate-800,
+.admin-light-theme .fixed:not(aside) .bg-slate-800\/80,
+.admin-light-theme .fixed:not(aside) .bg-slate-800\/70,
+.admin-light-theme .fixed:not(aside) .bg-slate-800\/40,
+.admin-light-theme .fixed:not(aside) .bg-slate-700 {
+  background-color: #e2e8f0 !important;
+  color: #020617 !important;
+  border: 1px solid #94a3b8 !important;
+  font-weight: 700 !important;
+}
+
+.admin-light-theme main .hover\:bg-slate-800\/40:hover,
+.admin-light-theme main .hover\:bg-slate-800\/70:hover,
+.admin-light-theme main .hover\:bg-slate-800:hover,
+.admin-light-theme header .hover\:bg-slate-700:hover {
+  background-color: #bae6fd !important;
+  color: #0369a1 !important;
+}
+
+/* Kırmızı / Alarm Uyarı Panelleri (bg-rose-950 vb.) */
+.admin-light-theme .bg-rose-950,
+.admin-light-theme .bg-rose-950\/60,
+.admin-light-theme .bg-rose-950\/30,
+.admin-light-theme .bg-rose-950\/25 {
+  background-color: #ffe4e6 !important;
+  border: 1.5px solid #f43f5e !important;
+  color: #881337 !important;
+}
+
+.admin-light-theme .text-rose-200,
+.admin-light-theme .text-rose-200\/80 {
+  color: #9f1239 !important;
+  font-weight: 700 !important;
+}
+
+/* Çerçeveler ve Tablo Çizgileri: Yüksek görünürlük */
+.admin-light-theme main .border-slate-800,
+.admin-light-theme main .border-slate-800\/60,
+.admin-light-theme main .border-slate-700,
+.admin-light-theme header .border-slate-800,
+.admin-light-theme .fixed:not(aside) .border-slate-800,
+.admin-light-theme .fixed:not(aside) .border-slate-700 {
+  border-color: #94a3b8 !important;
+}
+
+.admin-light-theme .divide-slate-800\/60 > :not([hidden]) ~ :not([hidden]),
+.admin-light-theme .divide-slate-800 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #cbd5e1 !important;
+}
+
+/* Tablo Başlıkları (thead): Güçlü zemin ve simsiyah kalın yazı */
+.admin-light-theme thead tr {
+  background-color: #e2e8f0 !important;
+  border-bottom: 2px solid #64748b !important;
+}
+
+.admin-light-theme thead th {
+  color: #020617 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em;
+}
+
+/* Tipografi: Maksimum Okunabilirlik ve Keskinlik */
+.admin-light-theme main .text-white:not(.bg-rose-600):not(.bg-rose-500):not(.bg-slate-900):not(.bg-sky-600):not(.bg-sky-500):not(.bg-emerald-600):not(.bg-emerald-500):not(.bg-amber-500):not(.bg-indigo-500),
+.admin-light-theme header .text-white:not(.bg-rose-500):not(.bg-sky-500):not(.bg-emerald-500),
+.admin-light-theme .fixed:not(aside) .text-white:not(.bg-rose-600):not(.bg-rose-500):not(.bg-sky-600):not(.bg-sky-500):not(.bg-emerald-600):not(.bg-emerald-500):not(.bg-amber-500):not(.bg-indigo-500),
+.admin-light-theme main .text-slate-100,
+.admin-light-theme main .text-slate-200,
+.admin-light-theme header .text-slate-200,
+.admin-light-theme .fixed:not(aside) .text-slate-100,
+.admin-light-theme .fixed:not(aside) .text-slate-200 {
+  color: #020617 !important;
+}
+
+.admin-light-theme main .text-slate-300,
+.admin-light-theme header .text-slate-300,
+.admin-light-theme .fixed:not(aside) .text-slate-300 {
+  color: #0f172a !important;
+  font-weight: 600;
+}
+
+.admin-light-theme main .text-slate-400,
+.admin-light-theme header .text-slate-400,
+.admin-light-theme .fixed:not(aside) .text-slate-400 {
+  color: #1e293b !important;
+  font-weight: 600;
+}
+
+.admin-light-theme main .text-slate-500,
+.admin-light-theme header .text-slate-500,
+.admin-light-theme .fixed:not(aside) .text-slate-500 {
+  color: #334155 !important;
+  font-weight: 600;
+}
+
+/* Vurgu Renkleri: Beyaz Üzerinde Yüksek Kontrastlı Koyu Tonlar */
+.admin-light-theme main .text-sky-400,
+.admin-light-theme main .text-sky-300,
+.admin-light-theme header .text-sky-400,
+.admin-light-theme .fixed:not(aside) .text-sky-400,
+.admin-light-theme .fixed:not(aside) .text-sky-300 {
+  color: #0369a1 !important;
+  font-weight: 700;
+}
+
+.admin-light-theme main .text-emerald-400,
+.admin-light-theme main .text-emerald-300,
+.admin-light-theme header .text-emerald-400,
+.admin-light-theme .fixed:not(aside) .text-emerald-400,
+.admin-light-theme .fixed:not(aside) .text-emerald-300 {
+  color: #047857 !important;
+  font-weight: 700;
+}
+
+.admin-light-theme main .text-amber-400,
+.admin-light-theme main .text-amber-300,
+.admin-light-theme header .text-amber-400,
+.admin-light-theme .fixed:not(aside) .text-amber-400,
+.admin-light-theme .fixed:not(aside) .text-amber-300 {
+  color: #b45309 !important;
+  font-weight: 700;
+}
+
+.admin-light-theme main .text-rose-400,
+.admin-light-theme main .text-rose-300,
+.admin-light-theme main .text-rose-500,
+.admin-light-theme header .text-rose-400,
+.admin-light-theme .fixed:not(aside) .text-rose-400,
+.admin-light-theme .fixed:not(aside) .text-rose-300 {
+  color: #be123c !important;
+  font-weight: 700;
+}
+
+.admin-light-theme main .text-purple-400,
+.admin-light-theme main .text-purple-300,
+.admin-light-theme .fixed:not(aside) .text-purple-400 {
+  color: #6d28d9 !important;
+  font-weight: 700;
+}
+
+.admin-light-theme main .text-indigo-400,
+.admin-light-theme main .text-indigo-300,
+.admin-light-theme .fixed:not(aside) .text-indigo-400 {
+  color: #3730a3 !important;
+  font-weight: 700;
+}
+
+.admin-light-theme main .text-cyan-400,
+.admin-light-theme .fixed:not(aside) .text-cyan-400 {
+  color: #0e7490 !important;
+  font-weight: 700;
+}
+
+.admin-light-theme main .text-orange-400,
+.admin-light-theme .fixed:not(aside) .text-orange-400 {
+  color: #c2410c !important;
+  font-weight: 700;
+}
+
+/* Birincil Aksiyon Butonları: Koyu Zemin ve Beyaz Yazı */
+.admin-light-theme .bg-sky-500,
+.admin-light-theme .bg-sky-400 {
+  background-color: #0284c7 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35) !important;
+}
+
+.admin-light-theme .bg-sky-500 span,
+.admin-light-theme .bg-sky-500 svg,
+.admin-light-theme .bg-sky-400 span,
+.admin-light-theme .bg-sky-400 svg {
+  color: #ffffff !important;
+}
+
+.admin-light-theme .bg-sky-500:hover,
+.admin-light-theme .bg-sky-400:hover {
+  background-color: #0369a1 !important;
+}
+
+.admin-light-theme .bg-emerald-500,
+.admin-light-theme .bg-emerald-600,
+.admin-light-theme .bg-emerald-400 {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35) !important;
+}
+
+.admin-light-theme .bg-emerald-500 span,
+.admin-light-theme .bg-emerald-500 svg,
+.admin-light-theme .bg-emerald-600 span,
+.admin-light-theme .bg-emerald-600 svg {
+  color: #ffffff !important;
+}
+
+.admin-light-theme .bg-emerald-500:hover,
+.admin-light-theme .bg-emerald-600:hover {
+  background-color: #047857 !important;
+}
+
+.admin-light-theme .bg-amber-500,
+.admin-light-theme .bg-amber-400 {
+  background-color: #d97706 !important;
+  color: #ffffff !important;
+}
+
+.admin-light-theme .bg-amber-500 span,
+.admin-light-theme .bg-amber-500 svg {
+  color: #ffffff !important;
+}
+
+.admin-light-theme .bg-rose-500,
+.admin-light-theme .bg-rose-600 {
+  background-color: #e11d48 !important;
+  color: #ffffff !important;
+}
+
+.admin-light-theme .bg-rose-500 span,
+.admin-light-theme .bg-rose-500 svg,
+.admin-light-theme .bg-rose-600 span,
+.admin-light-theme .bg-rose-600 svg {
+  color: #ffffff !important;
+}
+
+.admin-light-theme .bg-indigo-500 {
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+}
+
+/* Rozet ve Uyarı Kutuları Kontrast Güçlendirmesi */
+.admin-light-theme main .bg-sky-500\/10,
+.admin-light-theme main .bg-sky-500\/15,
+.admin-light-theme main .bg-sky-500\/20,
+.admin-light-theme main .bg-sky-500\/30 {
+  background-color: #e0f2fe !important;
+  border-color: #38bdf8 !important;
+}
+
+.admin-light-theme main .bg-emerald-500\/10,
+.admin-light-theme main .bg-emerald-500\/15,
+.admin-light-theme main .bg-emerald-500\/20 {
+  background-color: #d1fae5 !important;
+  border-color: #34d399 !important;
+}
+
+.admin-light-theme main .bg-amber-500\/10,
+.admin-light-theme main .bg-amber-500\/15,
+.admin-light-theme main .bg-amber-500\/20 {
+  background-color: #fef3c7 !important;
+  border-color: #fbbf24 !important;
+}
+
+.admin-light-theme main .bg-rose-500\/10,
+.admin-light-theme main .bg-rose-500\/15,
+.admin-light-theme main .bg-rose-500\/20,
+.admin-light-theme main .bg-rose-500\/30 {
+  background-color: #ffe4e6 !important;
+  border-color: #fb7185 !important;
+}
+
+.admin-light-theme main .bg-purple-500\/15 {
+  background-color: #f3e8ff !important;
+  border-color: #c084fc !important;
+}
+
+.admin-light-theme main .bg-indigo-500\/15 {
+  background-color: #e0e7ff !important;
+  border-color: #818cf8 !important;
+}
+
+.admin-light-theme main .bg-cyan-500\/15 {
+  background-color: #cffafe !important;
+  border-color: #22d3ee !important;
+}
+
+.admin-light-theme main .bg-orange-500\/15 {
+  background-color: #ffedd5 !important;
+  border-color: #fb923c !important;
+}
+
+/* Form Girdileri (Input, Select, Textarea): Keskin Çerçeve ve Net Yazı */
+.admin-light-theme input,
+.admin-light-theme select,
+.admin-light-theme textarea {
+  background-color: #ffffff !important;
+  border: 1.5px solid #64748b !important;
+  color: #020617 !important;
+  font-weight: 600 !important;
+}
+
+.admin-light-theme input:focus,
+.admin-light-theme select:focus,
+.admin-light-theme textarea:focus {
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25) !important;
+  outline: none !important;
+}
+
+.admin-light-theme input::placeholder,
+.admin-light-theme textarea::placeholder {
+  color: #475569 !important;
+  font-weight: 500 !important;
+}
+
+.admin-light-theme option {
+  background-color: #ffffff !important;
+  color: #020617 !important;
+  font-weight: 600 !important;
+}
