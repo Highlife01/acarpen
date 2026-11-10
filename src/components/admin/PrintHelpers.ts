@@ -56,13 +56,26 @@ export function printProposalDocument(q: QuoteItem): void {
   header.className = "header";
 
   const leftH = doc.createElement("div");
+  leftH.style.display = "flex";
+  leftH.style.alignItems = "center";
+  leftH.style.gap = "12px";
+
+  const logoImg = doc.createElement("img");
+  logoImg.src = `${window.location.origin}/favicon.svg`;
+  logoImg.alt = "Acarpen Logo";
+  logoImg.width = 44;
+  logoImg.height = 44;
+  logoImg.style.borderRadius = "9px";
+
+  const leftText = doc.createElement("div");
   const brand = doc.createElement("div");
   brand.className = "brand";
   brand.textContent = "ACARPEN — FIRATPEN YETKİLİ ÜRETİCİ BAYİ";
   const sub = doc.createElement("div");
   sub.className = "sub";
   sub.textContent = "Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / ADANA • Tel & WhatsApp: 0533 625 36 11";
-  leftH.append(brand, sub);
+  leftText.append(brand, sub);
+  leftH.append(logoImg, leftText);
 
   const rightH = doc.createElement("div");
   rightH.style.textAlign = "right";

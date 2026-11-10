@@ -522,7 +522,12 @@ export const SEO = ({
         alternateName: ["Acarpen", "Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti."],
         legalName: "ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ",
         url: BASE_URL,
-        logo: `${BASE_URL}/favicon.svg`,
+        logo: {
+          "@type": "ImageObject",
+          url: `${BASE_URL}/assets/acarpen-logo.png`,
+          width: 512,
+          height: 512,
+        },
         image: absoluteUrl(ogImage),
         description: resolvedDescription,
         telephone: "+90 533 625 36 11",

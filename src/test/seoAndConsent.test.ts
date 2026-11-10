@@ -126,4 +126,30 @@ describe("4. International SEO & GEO (AI Search Engines)", () => {
     expect(content).toContain("<loc>https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi</loc>");
     expect(content).toContain("2026-10-26");
   });
+
+  it("all Acarpen favicon, app icon, manifest and Organization logo assets should exist and be linked", () => {
+    const publicDir = path.resolve(__dirname, "../../public");
+    const requiredAssets = [
+      "favicon.svg",
+      "favicon.ico",
+      "favicon-32x32.png",
+      "favicon-16x16.png",
+      "apple-touch-icon.png",
+      "pwa-192x192.png",
+      "pwa-512x512.png",
+      "masked-icon.svg",
+      "site.webmanifest",
+      "assets/acarpen-logo.png",
+    ];
+    for (const rel of requiredAssets) {
+      expect(fs.existsSync(path.join(publicDir, rel))).toBe(true);
+    }
+
+    const indexHtml = fs.readFileSync(path.resolve(__dirname, "../../index.html"), "utf-8");
+    expect(indexHtml).toContain('href="/favicon.svg"');
+    expect(indexHtml).toContain('href="/favicon-32x32.png"');
+    expect(indexHtml).toContain('href="/favicon.ico"');
+    expect(indexHtml).toContain('href="/apple-touch-icon.png"');
+    expect(indexHtml).toContain('href="/site.webmanifest"');
+  });
 });

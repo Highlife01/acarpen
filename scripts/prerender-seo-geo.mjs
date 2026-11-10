@@ -56,7 +56,12 @@ const ORGANIZATION_BASE_SCHEMA = {
   name: "Acarpen — Fıratpen Yetkili Üretici Bayi",
   legalName: "ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ",
   url: BASE_URL,
-  logo: `${BASE_URL}/favicon.svg`,
+  logo: {
+    "@type": "ImageObject",
+    url: `${BASE_URL}/assets/acarpen-logo.png`,
+    width: 512,
+    height: 512,
+  },
   image: DEFAULT_IMAGE,
   telephone: "+90 533 625 36 11",
   email: "info@acarpen.com.tr",
@@ -744,9 +749,10 @@ function buildSemanticHTML(route) {
       : "";
 
   return `
-    <header class="prerender-header" style="background:#0f172a;color:#ffffff;padding:1.25rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1e293b;">
-      <a href="/" style="color:#ffffff;text-decoration:none;font-size:1.5rem;font-weight:bold;letter-spacing:-0.02em;">
-        ACAR <span style="color:#38bdf8;">PEN</span>
+    <header class="prerender-header" style="background:#040f26;color:#ffffff;padding:1.25rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1e293b;">
+      <a href="/" style="color:#ffffff;text-decoration:none;font-size:1.55rem;font-weight:800;letter-spacing:-0.03em;display:inline-flex;align-items:center;gap:0.55rem;">
+        <img src="/favicon.svg" alt="Acarpen Logo" width="34" height="34" style="border-radius:7px;" />
+        <span>acar<span style="color:#009dff;">pen</span></span>
       </a>
       <nav aria-label="Ana Menü" style="display:flex;gap:1.5rem;font-size:0.925rem;">
         <a href="/hizmetler" style="color:#cbd5e1;text-decoration:none;">Ürünlerimiz</a>

@@ -45,6 +45,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/site/Logo";
 import {
   QuoteItem,
   ContactMessage,
@@ -426,11 +427,15 @@ export default function AdminDashboard() {
         }`}
       >
         <div className="max-w-md w-full rounded-3xl bg-slate-900 border border-slate-800 p-8 shadow-2xl space-y-6">
-          <div className="text-center space-y-2">
-            <div className="h-14 w-14 rounded-2xl bg-sky-500/15 border border-sky-500/30 text-sky-400 grid place-items-center mx-auto">
-              <Lock className="h-7 w-7" />
-            </div>
-            <h1 className="text-xl font-bold text-white">Acarpen — ERP + CRM Sistemi</h1>
+          <div className="text-center space-y-3">
+            <Logo
+              size="lg"
+              layout="stacked"
+              theme={lightTheme ? "light" : "dark"}
+              showSubtitle={true}
+              className="mx-auto"
+            />
+            <h1 className="text-base font-bold text-white pt-1">ERP + CRM Yönetim Sistemi</h1>
             <p className="text-xs text-slate-400">
               11 Modüllü Fabrika Üretim, Kalite, Kasa/Çek Muhasebe ve Müşteri 360° Yönetim Platformu
             </p>
@@ -563,10 +568,8 @@ export default function AdminDashboard() {
       >
         <div className="admin-sidebar-header p-4 border-b border-slate-800 flex items-center justify-between">
           <div>
-            <div className="text-sm font-black tracking-wide text-slate-900 dark:text-white">
-              ACARPEN ERP
-            </div>
-            <div className="text-[11px] font-bold text-sky-600 dark:text-sky-400">
+            <Logo size="sm" theme={lightTheme ? "light" : "dark"} />
+            <div className="text-[10.5px] font-bold text-sky-600 dark:text-sky-400 mt-1">
               11 Modüllü MES • CRM • Kasa/Çek
             </div>
           </div>
