@@ -310,87 +310,141 @@
   }
 }
 
+/* ==========================================================================
+   ADMIN ERP + CRM EVRENSEL OKUNABİLİRLİK KATMANI (.admin-shell)
+   ========================================================================== */
+.admin-shell {
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-shell .text-\[10px\] {
+  font-size: 0.76rem !important;
+  line-height: 1.4 !important;
+}
+
+.admin-shell .text-\[11px\] {
+  font-size: 0.8125rem !important;
+  line-height: 1.45 !important;
+}
+
+.admin-shell .text-xs {
+  font-size: 0.85rem !important;
+  line-height: 1.45 !important;
+}
+
+.admin-shell table th,
+.admin-shell table td {
+  vertical-align: middle;
+}
 
 /* ==========================================================================
-   ADMIN ERP + CRM YÜKSEK KONTRASTLI KURUMSAL TEMA (HIGH-CONTRAST LIGHT MODE)
+   ADMIN ERP + CRM YÜKSEK KONTRASTLI AYDINLIK TEMA (.admin-light-theme)
    ========================================================================== */
 .admin-light-theme {
-  /* Belirgin mimari gri-mavi zemin: Beyaz kartların net biçimde öne çıkmasını sağlar */
-  background: linear-gradient(180deg, #dbeafe 0%, #e2e8f0 35%, #cbd5e1 100%) !important;
+  /* Net mimari açık gri zemin: Saf beyaz kartların keskin biçimde ayrışmasını sağlar */
+  background: #dfe7f0 !important;
   color: #020617 !important;
 }
 
-/* Sol Menü (Sidebar): Yüksek Kontrastlı Aydınlık Kurumsal Görünüm */
+/* Giriş Ekranı (Login Card) Aydınlık Tema Kontrastı */
+.admin-light-theme .admin-login-card {
+  background-color: #ffffff !important;
+  border: 2px solid #64748b !important;
+  color: #020617 !important;
+  box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.22) !important;
+}
+
+.admin-light-theme .admin-login-card h1,
+.admin-light-theme .admin-login-card label {
+  color: #020617 !important;
+  font-weight: 700 !important;
+}
+
+.admin-light-theme .admin-login-card p {
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+
+/* Sol Menü (Sidebar): Yüksek Kontrastlı Aydınlık Görünüm */
 .admin-light-theme aside {
   background-color: #ffffff !important;
-  border-right: 2px solid #64748b !important;
+  border-right: 2px solid #475569 !important;
   box-shadow: 6px 0 24px -4px rgba(15, 23, 42, 0.14) !important;
 }
 
 .admin-light-theme aside .admin-sidebar-header {
   background-color: #f1f5f9 !important;
-  border-bottom: 2px solid #94a3b8 !important;
+  border-bottom: 2px solid #64748b !important;
 }
 
 .admin-light-theme aside .admin-sidebar-footer {
-  background-color: #f8fafc !important;
-  border-top: 2px solid #94a3b8 !important;
+  background-color: #f1f5f9 !important;
+  border-top: 2px solid #64748b !important;
+}
+
+.admin-light-theme aside .admin-group-label {
+  color: #334155 !important;
+  font-weight: 800 !important;
 }
 
 .admin-light-theme aside .admin-nav-btn {
   background-color: #f8fafc !important;
-  border: 1.5px solid #cbd5e1 !important;
-  color: #0f172a !important;
+  border: 1.5px solid #94a3b8 !important;
+  color: #020617 !important;
   font-weight: 700 !important;
 }
 
 .admin-light-theme aside .admin-nav-btn svg {
-  color: #0284c7 !important;
+  color: #0369a1 !important;
+}
+
+.admin-light-theme aside .admin-nav-btn .admin-nav-sub {
+  color: #334155 !important;
 }
 
 .admin-light-theme aside .admin-nav-btn:hover {
   background-color: #e0f2fe !important;
   border-color: #0284c7 !important;
   color: #0369a1 !important;
-  transform: translateX(2px);
 }
 
 .admin-light-theme aside .admin-nav-btn-active {
-  background-color: #0284c7 !important;
-  border: 1.5px solid #0369a1 !important;
+  background-color: #0369a1 !important;
+  border: 2px solid #075985 !important;
   color: #ffffff !important;
   font-weight: 800 !important;
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35) !important;
+  box-shadow: 0 4px 14px rgba(3, 105, 161, 0.35) !important;
 }
 
 .admin-light-theme aside .admin-nav-btn-active span,
-.admin-light-theme aside .admin-nav-btn-active svg {
+.admin-light-theme aside .admin-nav-btn-active svg,
+.admin-light-theme aside .admin-nav-btn-active .admin-nav-sub {
   color: #ffffff !important;
 }
 
 .admin-light-theme aside .admin-nav-badge {
-  background-color: #e0f2fe !important;
+  background-color: #dbeafe !important;
   color: #0369a1 !important;
-  border: 1px solid #7dd3fc !important;
+  border: 1.5px solid #38bdf8 !important;
   font-weight: 800 !important;
 }
 
 .admin-light-theme aside .admin-nav-badge-active {
   background-color: #ffffff !important;
-  color: #0284c7 !important;
-  font-weight: 800 !important;
+  color: #0369a1 !important;
+  font-weight: 900 !important;
 }
 
-/* Üst Hızlı Modül Gezinme Çubuğu (Quick Nav Bar) */
+/* Üst Hızlı Araç / Modül Çubuğu */
 .admin-light-theme .admin-quick-nav {
-  background-color: #f8fafc !important;
-  border-bottom: 2px solid #94a3b8 !important;
+  background-color: #f1f5f9 !important;
+  border-bottom: 2px solid #64748b !important;
 }
 
 .admin-light-theme .admin-quick-pill {
   background-color: #ffffff !important;
-  border: 1.5px solid #94a3b8 !important;
-  color: #0f172a !important;
+  border: 1.5px solid #64748b !important;
+  color: #020617 !important;
   font-weight: 700 !important;
 }
 
@@ -401,11 +455,10 @@
 }
 
 .admin-light-theme .admin-quick-pill-active {
-  background-color: #0284c7 !important;
-  border: 1.5px solid #0369a1 !important;
+  background-color: #0369a1 !important;
+  border: 1.5px solid #075985 !important;
   color: #ffffff !important;
   font-weight: 800 !important;
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3) !important;
 }
 
 .admin-light-theme .admin-quick-pill-active span,
@@ -413,14 +466,21 @@
   color: #ffffff !important;
 }
 
-/* Üst Bar (Header): Saf beyaz zemin ve net alt sınır */
+/* Üst Bar (Header) & Araçlar Popover */
 .admin-light-theme header {
   background-color: #ffffff !important;
-  border-bottom: 2px solid #94a3b8 !important;
-  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.1) !important;
+  border-bottom: 2px solid #64748b !important;
+  box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.1) !important;
 }
 
-/* Ana Kartlar: Saf beyaz zemin, güçlü çerçeve ve derin gölge */
+.admin-light-theme .admin-tools-popover {
+  background-color: #ffffff !important;
+  border: 2px solid #475569 !important;
+  color: #020617 !important;
+  box-shadow: 0 20px 38px -6px rgba(15, 23, 42, 0.25) !important;
+}
+
+/* Ana Kartlar: Saf Beyaz Zemin + Güçlü #64748b Çerçeve */
 .admin-light-theme main .bg-slate-900,
 .admin-light-theme main .bg-slate-900\/95,
 .admin-light-theme main .bg-slate-900\/90,
@@ -434,12 +494,12 @@
 .admin-light-theme .fixed:not(aside) .bg-slate-900\/90,
 .admin-light-theme .fixed:not(aside) .bg-slate-900\/80 {
   background-color: #ffffff !important;
-  border: 1.5px solid #94a3b8 !important;
+  border: 2px solid #64748b !important;
   color: #020617 !important;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 4px 10px -4px rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 8px 22px -6px rgba(15, 23, 42, 0.12) !important;
 }
 
-/* İç Paneller & Alt Kutular: Karttan net ayrışan açık gri-mavi zemin */
+/* İç Paneller & Alt Kutular: Karttan Net Ayrışan #f1f5f9 Zemin */
 .admin-light-theme main .bg-slate-950:not(.fixed),
 .admin-light-theme main .bg-slate-950\/90,
 .admin-light-theme main .bg-slate-950\/85,
@@ -453,14 +513,14 @@
 .admin-light-theme .fixed:not(aside) .bg-slate-950\/80:not(.fixed),
 .admin-light-theme .fixed:not(aside) .bg-slate-950\/60:not(.fixed) {
   background-color: #f1f5f9 !important;
-  border: 1.5px solid #94a3b8 !important;
+  border: 1.5px solid #64748b !important;
   color: #020617 !important;
 }
 
 .admin-light-theme .fixed.bg-slate-950\/85,
 .admin-light-theme .fixed.bg-slate-950\/80,
 .admin-light-theme .fixed.bg-slate-950\/60 {
-  background-color: rgba(2, 6, 23, 0.65) !important;
+  background-color: rgba(2, 6, 23, 0.7) !important;
 }
 
 /* İkincil Butonlar, Sekme Barları ve İç Etiket Kutuları */
@@ -479,7 +539,7 @@
 .admin-light-theme .fixed:not(aside) .bg-slate-700 {
   background-color: #e2e8f0 !important;
   color: #020617 !important;
-  border: 1px solid #94a3b8 !important;
+  border: 1.5px solid #64748b !important;
   font-weight: 700 !important;
 }
 
@@ -487,17 +547,17 @@
 .admin-light-theme main .hover\:bg-slate-800\/70:hover,
 .admin-light-theme main .hover\:bg-slate-800:hover,
 .admin-light-theme header .hover\:bg-slate-700:hover {
-  background-color: #bae6fd !important;
+  background-color: #dbeafe !important;
   color: #0369a1 !important;
 }
 
-/* Kırmızı / Alarm Uyarı Panelleri (bg-rose-950 vb.) */
+/* Kırmızı / Alarm Uyarı Panelleri */
 .admin-light-theme .bg-rose-950,
 .admin-light-theme .bg-rose-950\/60,
 .admin-light-theme .bg-rose-950\/30,
 .admin-light-theme .bg-rose-950\/25 {
   background-color: #ffe4e6 !important;
-  border: 1.5px solid #f43f5e !important;
+  border: 2px solid #e11d48 !important;
   color: #881337 !important;
 }
 
@@ -507,37 +567,47 @@
   font-weight: 700 !important;
 }
 
-/* Çerçeveler ve Tablo Çizgileri: Yüksek görünürlük */
+/* Çerçeveler ve Tablo Satır Çizgileri: Yüksek Kontrast */
 .admin-light-theme main .border-slate-800,
 .admin-light-theme main .border-slate-800\/60,
 .admin-light-theme main .border-slate-700,
 .admin-light-theme header .border-slate-800,
+.admin-light-theme header .border-slate-700,
 .admin-light-theme .fixed:not(aside) .border-slate-800,
 .admin-light-theme .fixed:not(aside) .border-slate-700 {
-  border-color: #94a3b8 !important;
+  border-color: #64748b !important;
 }
 
 .admin-light-theme .divide-slate-800\/60 > :not([hidden]) ~ :not([hidden]),
 .admin-light-theme .divide-slate-800 > :not([hidden]) ~ :not([hidden]) {
-  border-color: #cbd5e1 !important;
+  border-color: #94a3b8 !important;
 }
 
-/* Tablo Başlıkları (thead): Güçlü zemin ve simsiyah kalın yazı */
+/* Tablo Okunabilirliği: Koyu Başlık + Zebra Satır + Hover Vurgusu */
 .admin-light-theme thead tr {
-  background-color: #e2e8f0 !important;
-  border-bottom: 2px solid #64748b !important;
+  background-color: #cbd5e1 !important;
+  border-bottom: 2px solid #334155 !important;
 }
 
 .admin-light-theme thead th {
   color: #020617 !important;
   font-weight: 800 !important;
+  font-size: 0.78rem !important;
   letter-spacing: 0.02em;
 }
 
-/* Tipografi: Maksimum Okunabilirlik ve Keskinlik */
-.admin-light-theme main .text-white:not(.bg-rose-600):not(.bg-rose-500):not(.bg-slate-900):not(.bg-sky-600):not(.bg-sky-500):not(.bg-emerald-600):not(.bg-emerald-500):not(.bg-amber-500):not(.bg-indigo-500),
-.admin-light-theme header .text-white:not(.bg-rose-500):not(.bg-sky-500):not(.bg-emerald-500),
-.admin-light-theme .fixed:not(aside) .text-white:not(.bg-rose-600):not(.bg-rose-500):not(.bg-sky-600):not(.bg-sky-500):not(.bg-emerald-600):not(.bg-emerald-500):not(.bg-amber-500):not(.bg-indigo-500),
+.admin-light-theme tbody tr:nth-child(even) {
+  background-color: #f8fafc !important;
+}
+
+.admin-light-theme tbody tr:hover {
+  background-color: #e0f2fe !important;
+}
+
+/* Tipografi: Simsiyah Birincil Metin ve Koyu Okunaklı İkincil Metin */
+.admin-light-theme main .text-white:not(.bg-rose-600):not(.bg-rose-500):not(.bg-slate-900):not(.bg-sky-600):not(.bg-sky-500):not(.bg-emerald-600):not(.bg-emerald-500):not(.bg-amber-600):not(.bg-amber-500):not(.bg-indigo-600):not(.bg-indigo-500):not(.bg-purple-600):not(.bg-purple-500),
+.admin-light-theme header .text-white:not(.bg-rose-600):not(.bg-rose-500):not(.bg-sky-600):not(.bg-sky-500):not(.bg-emerald-600):not(.bg-emerald-500),
+.admin-light-theme .fixed:not(aside) .text-white:not(.bg-rose-600):not(.bg-rose-500):not(.bg-slate-900):not(.bg-sky-600):not(.bg-sky-500):not(.bg-emerald-600):not(.bg-emerald-500):not(.bg-amber-600):not(.bg-amber-500):not(.bg-indigo-600):not(.bg-indigo-500),
 .admin-light-theme main .text-slate-100,
 .admin-light-theme main .text-slate-200,
 .admin-light-theme header .text-slate-200,
@@ -550,7 +620,7 @@
 .admin-light-theme header .text-slate-300,
 .admin-light-theme .fixed:not(aside) .text-slate-300 {
   color: #0f172a !important;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .admin-light-theme main .text-slate-400,
@@ -567,14 +637,14 @@
   font-weight: 600;
 }
 
-/* Vurgu Renkleri: Beyaz Üzerinde Yüksek Kontrastlı Koyu Tonlar */
+/* Vurgu Renkleri: Beyaz Zemin Üzerinde WCAG AAA Uyumlu Koyu Tonlar */
 .admin-light-theme main .text-sky-400,
 .admin-light-theme main .text-sky-300,
 .admin-light-theme header .text-sky-400,
 .admin-light-theme .fixed:not(aside) .text-sky-400,
 .admin-light-theme .fixed:not(aside) .text-sky-300 {
   color: #0369a1 !important;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .admin-light-theme main .text-emerald-400,
@@ -583,7 +653,7 @@
 .admin-light-theme .fixed:not(aside) .text-emerald-400,
 .admin-light-theme .fixed:not(aside) .text-emerald-300 {
   color: #047857 !important;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .admin-light-theme main .text-amber-400,
@@ -592,7 +662,7 @@
 .admin-light-theme .fixed:not(aside) .text-amber-400,
 .admin-light-theme .fixed:not(aside) .text-amber-300 {
   color: #b45309 !important;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .admin-light-theme main .text-rose-400,
@@ -602,43 +672,47 @@
 .admin-light-theme .fixed:not(aside) .text-rose-400,
 .admin-light-theme .fixed:not(aside) .text-rose-300 {
   color: #be123c !important;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .admin-light-theme main .text-purple-400,
 .admin-light-theme main .text-purple-300,
 .admin-light-theme .fixed:not(aside) .text-purple-400 {
   color: #6d28d9 !important;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .admin-light-theme main .text-indigo-400,
 .admin-light-theme main .text-indigo-300,
 .admin-light-theme .fixed:not(aside) .text-indigo-400 {
   color: #3730a3 !important;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .admin-light-theme main .text-cyan-400,
 .admin-light-theme .fixed:not(aside) .text-cyan-400 {
   color: #0e7490 !important;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .admin-light-theme main .text-orange-400,
 .admin-light-theme .fixed:not(aside) .text-orange-400 {
   color: #c2410c !important;
-  font-weight: 700;
+  font-weight: 800;
 }
 
-/* Birincil Aksiyon Butonları: Koyu Zemin ve Beyaz Yazı */
+/* Birincil Dolu Butonlar: Koyu Zemin + Net Beyaz Yazı */
+.admin-light-theme .bg-sky-600,
 .admin-light-theme .bg-sky-500,
 .admin-light-theme .bg-sky-400 {
-  background-color: #0284c7 !important;
+  background-color: #0369a1 !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35) !important;
+  border-color: #075985 !important;
+  box-shadow: 0 4px 12px rgba(3, 105, 161, 0.3) !important;
 }
 
+.admin-light-theme .bg-sky-600 span,
+.admin-light-theme .bg-sky-600 svg,
 .admin-light-theme .bg-sky-500 span,
 .admin-light-theme .bg-sky-500 svg,
 .admin-light-theme .bg-sky-400 span,
@@ -646,57 +720,69 @@
   color: #ffffff !important;
 }
 
+.admin-light-theme .bg-sky-600:hover,
 .admin-light-theme .bg-sky-500:hover,
 .admin-light-theme .bg-sky-400:hover {
-  background-color: #0369a1 !important;
+  background-color: #075985 !important;
 }
 
-.admin-light-theme .bg-emerald-500,
 .admin-light-theme .bg-emerald-600,
+.admin-light-theme .bg-emerald-500,
 .admin-light-theme .bg-emerald-400 {
-  background-color: #059669 !important;
-  color: #ffffff !important;
-  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35) !important;
-}
-
-.admin-light-theme .bg-emerald-500 span,
-.admin-light-theme .bg-emerald-500 svg,
-.admin-light-theme .bg-emerald-600 span,
-.admin-light-theme .bg-emerald-600 svg {
-  color: #ffffff !important;
-}
-
-.admin-light-theme .bg-emerald-500:hover,
-.admin-light-theme .bg-emerald-600:hover {
   background-color: #047857 !important;
+  color: #ffffff !important;
+  border-color: #065f46 !important;
+  box-shadow: 0 4px 12px rgba(4, 120, 87, 0.3) !important;
 }
 
+.admin-light-theme .bg-emerald-600 span,
+.admin-light-theme .bg-emerald-600 svg,
+.admin-light-theme .bg-emerald-500 span,
+.admin-light-theme .bg-emerald-500 svg {
+  color: #ffffff !important;
+}
+
+.admin-light-theme .bg-emerald-600:hover,
+.admin-light-theme .bg-emerald-500:hover {
+  background-color: #065f46 !important;
+}
+
+.admin-light-theme .bg-amber-600,
 .admin-light-theme .bg-amber-500,
 .admin-light-theme .bg-amber-400 {
-  background-color: #d97706 !important;
+  background-color: #b45309 !important;
   color: #ffffff !important;
 }
 
+.admin-light-theme .bg-amber-600 span,
+.admin-light-theme .bg-amber-600 svg,
 .admin-light-theme .bg-amber-500 span,
 .admin-light-theme .bg-amber-500 svg {
   color: #ffffff !important;
 }
 
-.admin-light-theme .bg-rose-500,
-.admin-light-theme .bg-rose-600 {
-  background-color: #e11d48 !important;
+.admin-light-theme .bg-rose-600,
+.admin-light-theme .bg-rose-500 {
+  background-color: #be123c !important;
   color: #ffffff !important;
 }
 
-.admin-light-theme .bg-rose-500 span,
-.admin-light-theme .bg-rose-500 svg,
 .admin-light-theme .bg-rose-600 span,
-.admin-light-theme .bg-rose-600 svg {
+.admin-light-theme .bg-rose-600 svg,
+.admin-light-theme .bg-rose-500 span,
+.admin-light-theme .bg-rose-500 svg {
   color: #ffffff !important;
 }
 
+.admin-light-theme .bg-indigo-600,
 .admin-light-theme .bg-indigo-500 {
-  background-color: #4f46e5 !important;
+  background-color: #4338ca !important;
+  color: #ffffff !important;
+}
+
+.admin-light-theme .bg-purple-600,
+.admin-light-theme .bg-purple-500 {
+  background-color: #6d28d9 !important;
   color: #ffffff !important;
 }
 
@@ -704,79 +790,157 @@
 .admin-light-theme main .bg-sky-500\/10,
 .admin-light-theme main .bg-sky-500\/15,
 .admin-light-theme main .bg-sky-500\/20,
-.admin-light-theme main .bg-sky-500\/30 {
+.admin-light-theme main .bg-sky-500\/30,
+.admin-light-theme .fixed:not(aside) .bg-sky-500\/15,
+.admin-light-theme .fixed:not(aside) .bg-sky-500\/20 {
   background-color: #e0f2fe !important;
-  border-color: #38bdf8 !important;
+  border-color: #0284c7 !important;
 }
 
 .admin-light-theme main .bg-emerald-500\/10,
 .admin-light-theme main .bg-emerald-500\/15,
 .admin-light-theme main .bg-emerald-500\/20 {
   background-color: #d1fae5 !important;
-  border-color: #34d399 !important;
+  border-color: #059669 !important;
 }
 
 .admin-light-theme main .bg-amber-500\/10,
 .admin-light-theme main .bg-amber-500\/15,
-.admin-light-theme main .bg-amber-500\/20 {
+.admin-light-theme main .bg-amber-500\/20,
+.admin-light-theme .fixed:not(aside) .bg-amber-500\/15 {
   background-color: #fef3c7 !important;
-  border-color: #fbbf24 !important;
+  border-color: #d97706 !important;
 }
 
 .admin-light-theme main .bg-rose-500\/10,
 .admin-light-theme main .bg-rose-500\/15,
 .admin-light-theme main .bg-rose-500\/20,
-.admin-light-theme main .bg-rose-500\/30 {
+.admin-light-theme main .bg-rose-500\/30,
+.admin-light-theme .fixed:not(aside) .bg-rose-500\/15 {
   background-color: #ffe4e6 !important;
-  border-color: #fb7185 !important;
+  border-color: #e11d48 !important;
 }
 
 .admin-light-theme main .bg-purple-500\/15 {
   background-color: #f3e8ff !important;
-  border-color: #c084fc !important;
+  border-color: #7c3aed !important;
 }
 
 .admin-light-theme main .bg-indigo-500\/15 {
   background-color: #e0e7ff !important;
-  border-color: #818cf8 !important;
+  border-color: #4f46e5 !important;
 }
 
 .admin-light-theme main .bg-cyan-500\/15 {
   background-color: #cffafe !important;
-  border-color: #22d3ee !important;
+  border-color: #0891b2 !important;
 }
 
 .admin-light-theme main .bg-orange-500\/15 {
   background-color: #ffedd5 !important;
-  border-color: #fb923c !important;
+  border-color: #ea580c !important;
 }
 
-/* Form Girdileri (Input, Select, Textarea): Keskin Çerçeve ve Net Yazı */
+/* Form Girdileri (Input, Select, Textarea): Kalın Çerçeve ve Simsiyah Yazı */
 .admin-light-theme input,
 .admin-light-theme select,
 .admin-light-theme textarea {
   background-color: #ffffff !important;
-  border: 1.5px solid #64748b !important;
+  border: 2px solid #475569 !important;
   color: #020617 !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
 }
 
 .admin-light-theme input:focus,
 .admin-light-theme select:focus,
 .admin-light-theme textarea:focus {
   border-color: #0284c7 !important;
-  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25) !important;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.28) !important;
   outline: none !important;
 }
 
 .admin-light-theme input::placeholder,
 .admin-light-theme textarea::placeholder {
   color: #475569 !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
 }
 
 .admin-light-theme option {
   background-color: #ffffff !important;
   color: #020617 !important;
+  font-weight: 700 !important;
+}
+
+/* ==========================================================================
+   ADMIN ERP + CRM YÜKSEK KONTRASTLI KOYU TEMA (.admin-dark-theme)
+   ========================================================================== */
+.admin-dark-theme {
+  background-color: #020617 !important;
+  color: #f8fafc !important;
+}
+
+.admin-dark-theme aside {
+  background-color: #0b1324 !important;
+  border-right: 1.5px solid #334155 !important;
+}
+
+.admin-dark-theme header {
+  background-color: #0b1324 !important;
+  border-bottom: 1.5px solid #334155 !important;
+}
+
+.admin-dark-theme main .bg-slate-900,
+.admin-dark-theme main .bg-slate-900\/95,
+.admin-dark-theme main .bg-slate-900\/90,
+.admin-dark-theme .fixed:not(aside) .bg-slate-900 {
+  background-color: #0f172a !important;
+  border: 1.5px solid #475569 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+.admin-dark-theme main .bg-slate-950:not(.fixed),
+.admin-dark-theme .fixed:not(aside) .bg-slate-950:not(.fixed) {
+  background-color: #020617 !important;
+  border: 1.5px solid #334155 !important;
+}
+
+.admin-dark-theme main .text-slate-400,
+.admin-dark-theme main .text-slate-500,
+.admin-dark-theme header .text-slate-400 {
+  color: #cbd5e1 !important;
+}
+
+.admin-dark-theme thead tr {
+  background-color: #1e293b !important;
+  border-bottom: 2px solid #64748b !important;
+}
+
+.admin-dark-theme thead th {
+  color: #f8fafc !important;
+  font-weight: 800 !important;
+}
+
+.admin-dark-theme tbody tr:nth-child(even) {
+  background-color: rgba(30, 41, 59, 0.45) !important;
+}
+
+.admin-dark-theme tbody tr:hover {
+  background-color: rgba(14, 116, 144, 0.25) !important;
+}
+
+.admin-dark-theme input,
+.admin-dark-theme select,
+.admin-dark-theme textarea {
+  background-color: #020617 !important;
+  border: 1.5px solid #64748b !important;
+  color: #ffffff !important;
   font-weight: 600 !important;
+}
+
+.admin-dark-theme input:focus,
+.admin-dark-theme select:focus,
+.admin-dark-theme textarea:focus {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
+  outline: none !important;
 }

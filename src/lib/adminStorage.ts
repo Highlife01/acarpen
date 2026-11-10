@@ -508,6 +508,8 @@ export interface FactoryServiceItem {
 export const INITIAL_PRICES: FactoryPriceItem[] = [
   { id: "isicam-s", name: "Fıratpen Selenit 75 PVC Pencere (4+16+4 Isıcam)", m2Price: 1450, thickness: "4+16+4 mm", category: "Çift Cam", stock: "Mevcut", version: "2026-Liste-v1" },
   { id: "isicam-k", name: "Fıratpen Redonit 85 PVC Pencere (Renkli/Konfor Isıcam)", m2Price: 1680, thickness: "6+16+6 mm", category: "Güneş Kontrol", stock: "Mevcut", version: "2026-Liste-v1" },
+  { id: "winsa-dorado76", name: "Winsa Dorado 76 PVC Pencere (4+16+4 Isıcam)", m2Price: 1520, thickness: "4+16+4 mm", category: "Winsa PVC", stock: "Mevcut", version: "2026-Liste-v1" },
+  { id: "pimapen-nirvana80", name: "Pimapen Nirvana 80 PVC Pencere (4+16+4 Isıcam)", m2Price: 1590, thickness: "4+16+4 mm", category: "Pimapen PVC", stock: "Mevcut", version: "2026-Liste-v1" },
   { id: "balkon-8mm", name: "8mm Rodajlı Katlanır Balkon Camı", m2Price: 1250, thickness: "8 mm Temperli", category: "Balkon Camı", stock: "Mevcut", version: "2026-Liste-v1" },
   { id: "balkon-10mm", name: "10mm Sürgülü / Giyotin Balkon Camı", m2Price: 1550, thickness: "10 mm Temperli", category: "Giyotin Cam", stock: "Mevcut", version: "2026-Liste-v1" },
   { id: "jaluzili", name: "Jaluzili Isıcam (Mıknatıslı/Motorlu)", m2Price: 2850, thickness: "6+22+6 mm", category: "Jaluzili", stock: "Sipariş Üzeri", version: "2026-Liste-v1" },
