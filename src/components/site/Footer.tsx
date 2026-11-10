@@ -1,6 +1,21 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { MapPin, Phone, Mail, ShieldCheck, ArrowUpRight, Lock, FileText, X } from "lucide-react";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  ShieldCheck,
+  ArrowUpRight,
+  Lock,
+  FileText,
+  X,
+  Calculator,
+  PackageSearch,
+  BookOpen,
+  Cpu,
+  MessageCircle,
+  Clock,
+} from "lucide-react";
 import { Logo } from "./Logo";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -9,37 +24,113 @@ export const Footer = () => {
   const [legalModal, setLegalModal] = useState<"kvkk" | "cookies" | "terms" | null>(null);
 
   return (
-    <footer className="border-t border-slate-200 bg-slate-900 text-slate-200 pt-16 pb-10 relative">
+    <footer className="border-t border-slate-800 bg-[#040f26] text-slate-200 pt-12 pb-10 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-slate-800">
-          {/* Brand Column */}
-          <div className="lg:col-span-4 space-y-4">
+        {/* Quick Access & Utility Bar (Moved from Navbar to keep Header Clean) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pb-10 mb-10 border-b border-slate-800/90">
+          <Link
+            to="/hesaplama"
+            className="group flex items-center justify-between gap-3 rounded-2xl bg-slate-900/80 hover:bg-sky-950/70 border border-slate-800 hover:border-sky-700/70 p-4 transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center shrink-0">
+                <Calculator className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-white group-hover:text-sky-300 transition-colors">
+                  Ölçü & Fiyat Robotu
+                </div>
+                <div className="text-[11px] text-slate-400">Online PVC & Cam Balkon Hesapla</div>
+              </div>
+            </div>
+            <ArrowUpRight className="h-4 w-4 text-slate-500 group-hover:text-sky-400 shrink-0 transition-colors" />
+          </Link>
+
+          <Link
+            to="/siparis-takip"
+            className="group flex items-center justify-between gap-3 rounded-2xl bg-slate-900/80 hover:bg-emerald-950/50 border border-slate-800 hover:border-emerald-700/60 p-4 transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center shrink-0">
+                <PackageSearch className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
+                  Canlı Sipariş Takibi
+                </div>
+                <div className="text-[11px] text-slate-400">Üretim & Sevkiyat Durumu Sorgula</div>
+              </div>
+            </div>
+            <ArrowUpRight className="h-4 w-4 text-slate-500 group-hover:text-emerald-400 shrink-0 transition-colors" />
+          </Link>
+
+          <Link
+            to="/rehber"
+            className="group flex items-center justify-between gap-3 rounded-2xl bg-slate-900/80 hover:bg-amber-950/40 border border-slate-800 hover:border-amber-700/60 p-4 transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center shrink-0">
+                <BookOpen className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors">
+                  PVC & Cam Balkon Rehberi
+                </div>
+                <div className="text-[11px] text-slate-400">Seri Karşılaştırma & Isıcam Seçimi</div>
+              </div>
+            </div>
+            <ArrowUpRight className="h-4 w-4 text-slate-500 group-hover:text-amber-400 shrink-0 transition-colors" />
+          </Link>
+
+          <Link
+            to="/uretim-teknolojisi"
+            className="group flex items-center justify-between gap-3 rounded-2xl bg-slate-900/80 hover:bg-indigo-950/50 border border-slate-800 hover:border-indigo-700/60 p-4 transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center shrink-0">
+                <Cpu className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-white group-hover:text-indigo-300 transition-colors">
+                  Üretim & Kalite Süreci
+                </div>
+                <div className="text-[11px] text-slate-400">CNC Kesim, Kaynak & TSE Standartları</div>
+              </div>
+            </div>
+            <ArrowUpRight className="h-4 w-4 text-slate-500 group-hover:text-indigo-400 shrink-0 transition-colors" />
+          </Link>
+        </div>
+
+        {/* Main 5-Column Footer Navigation Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-6 pb-12 border-b border-slate-800/90">
+          {/* Col 1: Brand & Official Producer Credential */}
+          <div className="lg:col-span-3 space-y-4">
             <Link to="/" className="inline-block">
               <Logo size="lg" showSubtitle={true} theme="dark" />
             </Link>
-            <p className="text-sm text-slate-300 max-w-sm leading-relaxed font-normal">
-              Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti. olarak Adana Seyhan Gülbahçesi Mahallesi'ndeki tesisimizde; Fıratpen PVC Pencere & Kapı Sistemleri, Sürme Sistemler, Düz/L/U Cam Balkon, Panjur, Sineklik ve Montaj Malzemeleri üretimi yapıyoruz.
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+              Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti. olarak Adana Seyhan Gülbahçesi Mahallesi'ndeki tesisimizde Fıratpen PVC Pencere, Kapı, Hebeschiebe Sürme, Renkli Isıcam ve Cam Balkon sistemleri üretiyoruz.
             </p>
-            <div className="inline-flex items-center gap-2 text-xs text-sky-300 font-semibold bg-sky-950/80 px-3.5 py-2 rounded-xl border border-sky-800">
+            <div className="inline-flex items-center gap-2 text-[11px] text-sky-300 font-semibold bg-sky-950/70 px-3 py-2 rounded-xl border border-sky-800/80">
               <ShieldCheck className="h-4 w-4 shrink-0 text-sky-400" />
-              <span>Fıratpen Yetkili Üretici Bayi • TS EN 12608-1 & 4+16+4 Isıcam</span>
+              <span>TS EN 12608-1 & TSE EN 1279 Isıcam</span>
             </div>
           </div>
 
-          {/* Products Column */}
+          {/* Col 2: Product Systems */}
           <div className="lg:col-span-3 space-y-3">
             <h3 className="text-xs font-mono uppercase tracking-widest text-sky-400 font-bold">
-              Ürün Kategorilerimiz
+              Ürün Sistemlerimiz
             </h3>
-            <ul className="space-y-2.5 text-sm text-slate-300">
+            <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
               <li>
                 <Link to="/urunler/cift-cam" className="hover:text-sky-400 transition-colors">
-                  PVC Pencereler (70'lik & 75'lik Sistemler)
+                  PVC Pencereler (70'lik & 75'lik)
                 </Link>
               </li>
               <li>
                 <Link to="/urunler/temperli-cam" className="hover:text-sky-400 transition-colors">
-                  PVC Sürme Pencereler & Sürme Kapılar
+                  Hebeschiebe & PVC Sürme Kapılar
                 </Link>
               </li>
               <li>
@@ -49,68 +140,61 @@ export const Footer = () => {
               </li>
               <li>
                 <Link to="/urunler/jaluzili-isicam" className="hover:text-sky-400 transition-colors">
-                  PVC Balkon Kapıları & PVC WC Kapıları
-                </Link>
-              </li>
-              <li>
-                <Link to="/urunler/dis-cephe-camlari" className="hover:text-sky-400 transition-colors">
-                  B2B Müteahhit, Şantiye & Toplu Sipariş
-                </Link>
-              </li>
-              <li>
-                <Link to="/urunler/lamine-cam" className="hover:text-sky-400 transition-colors">
-                  Pencere Kolları, Sineklik & Montaj Malzemeleri
+                  PVC Balkon & WC Kapıları, Panjur
                 </Link>
               </li>
               <li>
                 <Link to="/urunler/renkli-camlar" className="hover:text-sky-400 transition-colors">
-                  Renk Seçenekleri (Beyaz / Antrasit / Altınmeşe)
+                  19 PVC Renk & Renkli Isıcamlar
+                </Link>
+              </li>
+              <li>
+                <Link to="/urunler/lamine-cam" className="hover:text-sky-400 transition-colors">
+                  Plise Sineklik & Pencere Aksesuarları
+                </Link>
+              </li>
+              <li>
+                <Link to="/urunler/dis-cephe-camlari" className="hover:text-sky-400 transition-colors">
+                  B2B Müteahhit & Toplu Şantiye
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Quick Links Column */}
+          {/* Col 3: Corporate & Knowledge Center */}
           <div className="lg:col-span-2 space-y-3">
             <h3 className="text-xs font-mono uppercase tracking-widest text-sky-400 font-bold">
-              Kurumsal & Araçlar
+              Kurumsal & Bilgi
             </h3>
-            <ul className="space-y-2.5 text-sm text-slate-300">
-              <li>
-                <Link to="/uretim-teknolojisi" className="hover:text-sky-400 transition-colors font-medium text-white">
-                  Üretim & Kalite Süreci
-                </Link>
-              </li>
-              <li>
-                <Link to="/rehber" className="hover:text-sky-400 transition-colors font-semibold text-amber-300">
-                  PVC & Cam Balkon Rehberi
-                </Link>
-              </li>
-              <li>
-                <Link to="/bolgeler" className="hover:text-sky-400 transition-colors font-semibold text-emerald-300">
-                  Hizmet Bölgelerimiz
-                </Link>
-              </li>
+            <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
               <li>
                 <Link to="/hakkimizda" className="hover:text-sky-400 transition-colors">
                   Hakkımızda / Kurumsal
                 </Link>
               </li>
               <li>
+                <Link to="/uretim-teknolojisi" className="hover:text-sky-400 transition-colors">
+                  Üretim & Kalite Süreci
+                </Link>
+              </li>
+              <li>
+                <Link to="/rehber" className="hover:text-sky-400 transition-colors">
+                  Teknik Seçim Rehberi
+                </Link>
+              </li>
+              <li>
                 <Link to="/projeler" className="hover:text-sky-400 transition-colors">
-                  Referans Projeler
+                  Referans Projelerimiz
                 </Link>
               </li>
               <li>
-                <Link to="/hesaplama" className="hover:text-sky-400 transition-colors flex items-center gap-1 text-sky-400 font-semibold">
-                  <span>Pencere Ölçü Robotu</span>
-                  <ArrowUpRight className="h-3.5 w-3.5" />
+                <Link to="/hesaplama" className="hover:text-sky-400 transition-colors text-sky-300 font-medium">
+                  Pencere Ölçü Robotu
                 </Link>
               </li>
               <li>
-                <Link to="/siparis-takip" className="hover:text-sky-400 transition-colors flex items-center gap-1 text-emerald-400 font-semibold">
-                  <span>Canlı Sipariş Takibi</span>
-                  <ArrowUpRight className="h-3.5 w-3.5" />
+                <Link to="/siparis-takip" className="hover:text-sky-400 transition-colors text-emerald-300 font-medium">
+                  Sipariş & Üretim Takibi
                 </Link>
               </li>
               <li>
@@ -121,36 +205,95 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Column */}
-          <div className="lg:col-span-3 space-y-3">
+          {/* Col 4: Service Regions (Moved from Navbar & Expanded) */}
+          <div className="lg:col-span-2 space-y-3">
             <h3 className="text-xs font-mono uppercase tracking-widest text-sky-400 font-bold">
-              Merkez & İletişim
+              Hizmet Bölgelerimiz
             </h3>
-            <ul className="space-y-3 text-sm text-slate-300">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="h-4 w-4 text-sky-400 shrink-0 mt-1" />
-                <span>Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan - Seyhan / ADANA</span>
+            <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
+              <li>
+                <Link to="/bolgeler/adana-cam-fabrikasi" className="hover:text-sky-400 transition-colors">
+                  Adana Merkez (Seyhan / Çukurova)
+                </Link>
               </li>
-              <li className="flex items-center gap-2.5">
+              <li>
+                <Link to="/bolgeler/mersin-cam-imalati" className="hover:text-sky-400 transition-colors">
+                  Mersin & Tarsus PVC Sistemleri
+                </Link>
+              </li>
+              <li>
+                <Link to="/bolgeler/osmaniye-cam-ureticisi" className="hover:text-sky-400 transition-colors">
+                  Osmaniye & Kadirli Doğrama
+                </Link>
+              </li>
+              <li>
+                <Link to="/bolgeler/hatay-cam-firmalari" className="hover:text-sky-400 transition-colors">
+                  Hatay & İskenderun Tedarik
+                </Link>
+              </li>
+              <li>
+                <Link to="/bolgeler/gaziantep-cam-cozumleri" className="hover:text-sky-400 transition-colors">
+                  Gaziantep Şantiye Çözümleri
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/bolgeler"
+                  className="inline-flex items-center gap-1 text-sky-400 hover:text-sky-300 font-semibold transition-colors pt-0.5"
+                >
+                  <span>Tüm Hizmet İllerimiz</span>
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 5: Factory & Direct Contact */}
+          <div className="lg:col-span-2 space-y-3">
+            <h3 className="text-xs font-mono uppercase tracking-widest text-sky-400 font-bold">
+              Fabrika & İletişim
+            </h3>
+            <ul className="space-y-2.5 text-xs sm:text-sm text-slate-300">
+              <li className="flex items-start gap-2">
+                <MapPin className="h-4 w-4 text-sky-400 shrink-0 mt-0.5" />
+                <span>Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / ADANA</span>
+              </li>
+              <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-sky-400 shrink-0" />
                 <a href="tel:+905336253611" className="hover:text-white transition-colors font-semibold">
                   0533 625 36 11
                 </a>
               </li>
-              <li className="flex items-center gap-2.5">
+              <li className="flex items-center gap-2">
+                <MessageCircle className="h-4 w-4 text-emerald-400 shrink-0" />
+                <a
+                  href="https://wa.me/905336253611"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-400 hover:text-emerald-300 transition-colors font-semibold"
+                >
+                  WhatsApp Hattı
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-sky-400 shrink-0" />
                 <a href="mailto:info@acarpen.com.tr" className="hover:text-white transition-colors">
                   info@acarpen.com.tr
                 </a>
+              </li>
+              <li className="flex items-center gap-2 text-slate-400 text-xs pt-0.5">
+                <Clock className="h-3.5 w-3.5 text-sky-400 shrink-0" />
+                <span>Pzt – Cmt: 08:00 – 19:00</span>
               </li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Legal & Admin Link Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        <div className="pt-7 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <p>
-            © {new Date().getFullYear()} Acarpen — Acar Pen İnşaat San. ve Tic. Ltd. Şti. {t("footerRights", "Tüm hakları saklıdır.")}
+            © {new Date().getFullYear()} Acarpen — Acar Pen İnşaat San. ve Tic. Ltd. Şti.{" "}
+            {t("footerRights", "Tüm hakları saklıdır.")}
           </p>
           <div className="flex flex-wrap items-center gap-4">
             <button

@@ -755,12 +755,12 @@ function buildSemanticHTML(route) {
         <span>acar<span style="color:#009dff;">pen</span></span>
       </a>
       <nav aria-label="Ana Menü" style="display:flex;gap:1.5rem;font-size:0.925rem;">
+        <a href="/" style="color:#cbd5e1;text-decoration:none;">Ana Sayfa</a>
         <a href="/hizmetler" style="color:#cbd5e1;text-decoration:none;">Ürünlerimiz</a>
-        <a href="/urunler/renkli-camlar" style="color:#cbd5e1;text-decoration:none;">19 Renk Kartelası</a>
-        <a href="/hesaplama" style="color:#38bdf8;text-decoration:none;font-weight:600;">Ölçü & Teklif Al</a>
-        <a href="/rehber" style="color:#cbd5e1;text-decoration:none;">Teknik Rehber</a>
-        <a href="/projeler" style="color:#cbd5e1;text-decoration:none;">Projeler</a>
+        <a href="/projeler" style="color:#cbd5e1;text-decoration:none;">Referanslar</a>
+        <a href="/hakkimizda" style="color:#cbd5e1;text-decoration:none;">Kurumsal</a>
         <a href="/iletisim" style="color:#cbd5e1;text-decoration:none;">İletişim</a>
+        <a href="/hesaplama" style="color:#38bdf8;text-decoration:none;font-weight:600;">Ölçü & Fiyat Hesapla</a>
       </nav>
     </header>
 
@@ -799,19 +799,13 @@ function buildSemanticHTML(route) {
       </section>
     </main>
 
-    <footer class="prerender-footer" style="background:#020617;color:#94a3b8;padding:3rem 2rem;border-top:1px solid #1e293b;margin-top:4rem;font-family:system-ui,-apple-system,sans-serif;font-size:0.875rem;">
-      <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;">
+    <footer class="prerender-footer" style="background:#040f26;color:#94a3b8;padding:3rem 2rem;border-top:1px solid #1e293b;margin-top:4rem;font-family:system-ui,-apple-system,sans-serif;font-size:0.875rem;">
+      <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem;">
         <div>
           <strong style="color:#ffffff;font-size:1.1rem;display:block;margin-bottom:0.75rem;">ACAR PEN İNŞAAT SANAYİ VE TİCARET LTD. ŞTİ.</strong>
           <p style="margin:0.25rem 0;">GÜLBAHÇESİ MAH. 13428 SOK. NO:16/17 SEYHAN - SEYHAN / ADANA</p>
           <p style="margin:0.25rem 0;">Telefon & WhatsApp: 0533 625 36 11</p>
           <p style="margin:0.25rem 0;">E-Posta: info@acarpen.com.tr</p>
-        </div>
-        <div>
-          <strong style="color:#ffffff;display:block;margin-bottom:0.75rem;">Kalite Standartları</strong>
-          <p style="margin:0.25rem 0;">• Fıratpen Resmi Yetkili Üretici Bayi</p>
-          <p style="margin:0.25rem 0;">• TS EN 12608-1 A Sınıfı PVC Profil</p>
-          <p style="margin:0.25rem 0;">• 1.00 mm+ Destek Sacı & 4+16+4 Isıcam</p>
         </div>
         <div>
           <strong style="color:#ffffff;display:block;margin-bottom:0.75rem;">Ürün Sistemlerimiz</strong>
@@ -821,6 +815,14 @@ function buildSemanticHTML(route) {
           <p style="margin:0.25rem 0;"><a href="/urunler/jaluzili-isicam" style="color:#38bdf8;text-decoration:none;">PVC Balkon & WC Kapıları, Panjur</a></p>
           <p style="margin:0.25rem 0;"><a href="/urunler/renkli-camlar" style="color:#38bdf8;text-decoration:none;">19 PVC Renk & Renkli Isıcamlar</a></p>
           <p style="margin:0.25rem 0;"><a href="/urunler/lamine-cam" style="color:#38bdf8;text-decoration:none;">Plise Sineklik & Aksesuar</a></p>
+        </div>
+        <div>
+          <strong style="color:#ffffff;display:block;margin-bottom:0.75rem;">Kurumsal & Bilgi Merkezi</strong>
+          <p style="margin:0.25rem 0;"><a href="/hakkimizda" style="color:#38bdf8;text-decoration:none;">Hakkımızda / Kurumsal</a></p>
+          <p style="margin:0.25rem 0;"><a href="/uretim-teknolojisi" style="color:#38bdf8;text-decoration:none;">Üretim & Kalite Süreci</a></p>
+          <p style="margin:0.25rem 0;"><a href="/rehber" style="color:#38bdf8;text-decoration:none;">PVC & Cam Balkon Rehberi</a></p>
+          <p style="margin:0.25rem 0;"><a href="/hesaplama" style="color:#38bdf8;text-decoration:none;">Online Ölçü & Fiyat Robotu</a></p>
+          <p style="margin:0.25rem 0;"><a href="/siparis-takip" style="color:#38bdf8;text-decoration:none;">Canlı Sipariş Takibi</a></p>
         </div>
         <div>
           <strong style="color:#ffffff;display:block;margin-bottom:0.75rem;">Hizmet Bölgelerimiz</strong>
