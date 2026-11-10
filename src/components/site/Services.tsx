@@ -15,21 +15,21 @@ import imgTech from "@/assets/firatpen-cnc-uretim-hatti.jpg";
 const services = [
   {
     icon: Layers,
-    title: "PVC Pencereler (70'lik & 75'lik Sistemler)",
-    badge: "Hazır & Özel Ölçü",
+    title: "PVC Pencereler (Fıratpen • Winsa • Pimapen)",
+    badge: "70 / 75 / 80 mm Seriler",
     href: "/urunler/cift-cam",
     image: imgVillaWindow,
-    desc: "70 mm ve 75 mm Fıratpen sistem genişliği, galvanizli destek sacı, 2.5 mm - 3.0 mm profil et kalınlığı ve 4+16+4 ısıcam ile ısı yalıtımı ve dayanımı dengeler. Tek bölmeli, ortadan kanatlı ve bir sabit bir açılır modeller.",
-    specs: ["19 Farklı Renk Alternatifi", "Sağ / Sol • Tek / Çift Açılım", "4+16+4 Isıcam & Destek Sacı"],
+    desc: "Fıratpen (Selenit 75, Redonit 85), Winsa (Dorado 76, Safir 76, Revotech) ve Pimapen (Nirvana 80, Carisma 70) profilleriyle; galvaniz destek sacı ve 4+16+4 ısıcamlı tek kanat, ortadan kanatlı ve sabit-açılır modeller.",
+    specs: ["Fıratpen • Winsa • Pimapen", "19 Renk & Renkli Isıcam", "4+16+4 Isıcam & Destek Sacı"],
   },
   {
     icon: Blinds,
-    title: "PVC Sürme Pencereler & Sürme Kapılar",
-    badge: "Çift Kanat & Hebeschiebe",
+    title: "PVC Sürme Pencereler & Hebeschiebe",
+    badge: "Çift Kanat & Kaldır-Sür",
     href: "/urunler/temperli-cam",
     image: imgArchitecture,
-    desc: "Normal pencere açılımının dar olduğu balkon, teras ve mutfaklar için 120×120 cm, 140×120 cm çift kanat PVC sürme pencereler, Volkswagen sürme ve 300 kg kapasiteli Hebeschiebe sistemleri.",
-    specs: ["Çift Kanat PVC Sürme", "EPDM Contalı & Fırçalı", "4+16+4 Isıcamlı Sistem"],
+    desc: "Fıratpen Zenia Slide, Winsa Panorama HS 76 / Lotus ve Pimapen Albatros / Infinity sürme serileri ile 120×120 cm, 140×120 cm çift kanat sürme ve 300 kg kapasiteli Hebeschiebe sistemleri.",
+    specs: ["Zenia • Panorama • Albatros", "EPDM Contalı & Fırçalı", "4+16+4 Isıcamlı Sistem"],
   },
   {
     icon: Sun,
@@ -101,8 +101,54 @@ export const Services = () => {
             </span>
           </h2>
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed font-normal">
-            Dayanımı ve yalıtımı dengeli Fıratpen PVC pencere, balkon kapısı, WC kapısı, çift kanat sürme pencere ve Düz/L/U cam balkon seçeneklerini hem standart hazır ölçülerde hem de projenize özel ölçülerde üretiyoruz.
+            <strong>Fıratpen, Winsa ve Pimapen</strong> markalarının yüksek yalıtımlı PVC pencere, balkon kapısı, WC kapısı, çift kanat sürme pencere ve Düz/L/U cam balkon seçeneklerini hem standart hazır ölçülerde hem de projenize özel ölçülerde üretiyoruz.
           </p>
+        </div>
+
+        {/* 3 Major PVC Brands Highlight Strip */}
+        <div className="mb-12 grid md:grid-cols-3 gap-5">
+          {[
+            {
+              brand: "Fıratpen",
+              tag: "Yetkili Üretici Bayi",
+              series: "Selenit 75 • Elegance 80 • Redonit 85 • Zenia Slide",
+              desc: "70 mm, 75 mm ve 85 mm çok odacıklı A sınıfı uPVC profil yapısı, orta conta teknolojisi ve maksimum ısı/ses yalıtımı.",
+            },
+            {
+              brand: "Winsa",
+              tag: "Premium PVC Sistemleri",
+              series: "Dorado 76 • Safir 76 • Revotech 84 • Panorama HS",
+              desc: "76 mm ve 84 mm kasa genişliği, 5 ila 7 odacıklı yüksek enerji tasarruflu seri seçenekleri ve modern mimari çizgiler.",
+            },
+            {
+              brand: "Pimapen",
+              tag: "Klasik & Yeni Nesil Seriler",
+              series: "Nirvana 80 • Carisma 70 • Dynamic • Albatros Sürme",
+              desc: "Türkiye'nin köklü PVC pencere teknolojisi; 70 mm ve 80 mm yalıtımlı kasa-kanat profilleri ve uzun ömürlü EPDM conta sistemi.",
+            },
+          ].map((b) => (
+            <div
+              key={b.brand}
+              className="rounded-3xl bg-white border border-slate-200 hover:border-sky-400 p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-2.5">
+                  <span className="font-serif text-2xl font-extrabold text-slate-900">{b.brand}</span>
+                  <span className="text-[10px] font-mono uppercase font-bold px-2.5 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+                    {b.tag}
+                  </span>
+                </div>
+                <div className="text-xs font-mono font-bold text-sky-700 mb-2">{b.series}</div>
+                <p className="text-xs text-slate-600 leading-relaxed">{b.desc}</p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-sky-600">
+                <span>19 Lamine Renk & 4+16+4 Isıcam</span>
+                <Link to="/hesaplama" className="hover:text-sky-800">
+                  {b.brand} Teklifi Al →
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* 6 Main Product Cards */}

@@ -36,7 +36,7 @@ const CiftCam = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="PVC Pencere Sistemleri (70'lik & 75'lik Hazır ve Özel Ölçü) | Acarpen — Fıratpen Bayi"
+        title="PVC Pencere Sistemleri (Fıratpen • Winsa • Pimapen) | Acarpen Adana"
         description="Adana Fıratpen yetkili üretici bayi Acarpen'de 40x40'tan 220x210 cm'e hazır standart ve özel ölçü PVC pencereler, 1.00 mm+ destek sacı, 2.5 mm+ et kalınlığı, 4+16+4 ısıcam ve 19 renk seçeneği."
         canonicalPath="/urunler/cift-cam"
         schemaType="Product"
@@ -55,10 +55,10 @@ const CiftCam = () => {
           <div className="container mx-auto px-4 lg:px-8 relative z-10"><div className="grid lg:grid-cols-12 gap-10 items-center"><div className="lg:col-span-7">
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/20 text-accent text-xs font-medium tracking-wider uppercase mb-6">
                 <Thermometer className="w-3.5 h-3.5" />
-                70 mm & 75 mm Fıratpen PVC Pencere Sistemleri
+                Fıratpen • Winsa • Pimapen PVC Pencere Sistemleri
               </span>
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                Standart Hazır & Özel Ölçü <span className="text-accent">PVC Pencereler</span>
+                Fıratpen, Winsa & Pimapen <span className="text-accent">PVC Pencereler</span>
               </h1>
               <p className="text-lg text-primary-foreground/80 leading-relaxed mb-8">
                 Acarpen fabrikasında TS EN 12608-1 A sınıfı standartlarında üretilen Fıratpen Selenit 75, Elegance 80 ve
@@ -105,8 +105,8 @@ const CiftCam = () => {
               {[
                 {
                   icon: Layers,
-                  title: "70 mm & 75 mm 5-6 Odacıklı Sistem",
-                  desc: "Fıratpen Selenit 75 ve Elegance serileri ile 0.90 W/m²K'ye varan üstün Uw ısı geçirgenlik katsayısı.",
+                  title: "Fıratpen, Winsa & Pimapen Serileri",
+                  desc: "Fıratpen (Selenit 75, Redonit 85), Winsa (Dorado 76, Safir 76, Revotech) ve Pimapen (Nirvana 80, Carisma 70) serileriyle üstün ısı ve ses yalıtımı.",
                 },
                 {
                   icon: Shield,

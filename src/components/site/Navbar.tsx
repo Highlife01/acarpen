@@ -16,7 +16,7 @@ import { LanguageSelector } from "../LanguageSelector";
 import { useLanguage } from "@/context/LanguageContext";
 
 const productLinks = [
-  { label: "PVC Pencereler (70'lik & 75'lik Sistemler)", href: "/urunler/cift-cam", badge: "Hazır & Özel" },
+  { label: "PVC Pencereler (Fıratpen • Winsa • Pimapen)", href: "/urunler/cift-cam", badge: "70 / 75 / 80 mm" },
   { label: "PVC Sürme Pencereler & Hebeschiebe", href: "/urunler/temperli-cam", badge: "Çift Kanat" },
   { label: "Düz, L ve U Cam Balkon Sistemleri", href: "/urunler/balkon-cami", badge: "Katlanır / Sürme" },
   { label: "PVC Balkon & WC Kapıları, Panjur", href: "/urunler/jaluzili-isicam", badge: "85×198 / 85×210" },
@@ -59,7 +59,7 @@ export const Navbar = () => {
           <div className="flex items-center gap-5">
             <span className="flex items-center gap-1.5 font-medium">
               <ShieldCheck className="h-3.5 w-3.5 text-sky-400" />
-              Fıratpen Yetkili Üretici Bayi • TS EN 12608-1 & 4+16+4 Isıcam
+              Fıratpen • Winsa • Pimapen PVC Sistemleri • TS EN 12608-1 & 4+16+4 Isıcam
             </span>
             <span className="text-slate-700">|</span>
             <span className="flex items-center gap-1.5 text-slate-300">

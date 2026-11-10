@@ -61,8 +61,8 @@ Telefon & WhatsApp: 0533 625 36 11 | Web: https://www.acarpen.com.tr
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 pt-28">
       <SEO
-        title="PVC Pencere, Balkon Kapısı, Sürme & Cam Balkon Kataloğu | Acarpen Adana"
-        description="Acarpen Fıratpen Yetkili Üretici Bayi ürün kataloğu: 70'lik ve 75'lik PVC Pencereler, PVC Balkon Kapıları, PVC WC Kapıları, Çift Kanat Sürme Sistemler, Düz/L/U Cam Balkon ve Montaj Malzemeleri."
+        title="Fıratpen, Winsa & Pimapen PVC Pencere, Kapı ve Cam Balkon Kataloğu | Acarpen Adana"
+        description="Acarpen ürün kataloğu: Fıratpen, Winsa ve Pimapen 70/75/80 mm PVC Pencereler, PVC Balkon & WC Kapıları, Hebeschiebe Sürme Sistemler, 19 Renk & Renkli Isıcamlar ve Düz/L/U Cam Balkon."
         canonicalPath="/hizmetler"
         schemaType="CollectionPage"
         breadcrumbs={[{ name: "Ürünlerimiz", path: "/hizmetler" }]}
@@ -74,13 +74,13 @@ Telefon & WhatsApp: 0533 625 36 11 | Web: https://www.acarpen.com.tr
         <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div>
             <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
-              // Acarpen — Fıratpen Yetkili Üretici Bayi Kataloğu
+              // Acarpen — Fıratpen • Winsa • Pimapen Sistem Kataloğu
             </span>
             <h1 className="font-serif text-4xl sm:text-6xl font-bold text-slate-900 max-w-3xl">
               PVC Pencere, Kapı & <span className="text-gradient italic">Cam Balkon Çözümleri</span>
             </h1>
             <p className="mt-4 text-slate-600 max-w-2xl text-base sm:text-lg font-normal">
-              Gülbahçesi Mah. Seyhan / Adana tesisimizde standart hazır ölçülerde ve özel ölçülerde üretilen Fıratpen PVC doğrama, sürme sistem ve cam balkon gruplarımız.
+              Gülbahçesi Mah. Seyhan / Adana tesisimizde Fıratpen, Winsa ve Pimapen profil sistemleriyle standart ve özel ölçülerde üretilen PVC doğrama, sürme sistem ve cam balkon gruplarımız.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">

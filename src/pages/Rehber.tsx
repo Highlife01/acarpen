@@ -19,9 +19,9 @@ import {
 
 const guideFaqs: FAQItem[] = [
   {
-    question: "70'lik PVC pencere ile 75'lik Selenit ve 85'lik Redonit arasındaki fark nedir?",
+    question: "Fıratpen, Winsa ve Pimapen profil serileri arasındaki temel özellikler nelerdir?",
     answer:
-      "70 mm sistem (5 odacıklı, 2.5mm+ et kalınlığı, 1.00mm+ destek sacı ve 4+16+4 ısıcam) standart konut ve hızlı yenileme projelerinde ekonomik ve dengeli yalıtım sunar. Fıratpen Selenit 75 (75 mm, 6 odacıklı, 3 contalı) ve Redonit 85 (85 mm, 7 odacıklı) ise daha geniş cam üniteleri ve ekstra orta conta yapısıyla maksimum ısı ve ses yalıtımı sağlar.",
+      "Acarpen'de her üç lider markanın da üst segment serileri CNC hassasiyetiyle üretilir: Fıratpen'de Selenit 75 (75 mm, 6 odacıklı) ve Redonit 85 (85 mm, 7 odacıklı); Winsa'da Dorado 76, Safir 76 (76 mm, 5 odacıklı, 3 contalı) ve Revotech (84 mm, 7 odacıklı); Pimapen'de ise Nirvana (80 mm, 6 odacıklı, 3 contalı) ve Carisma (70 mm, 5 odacıklı) konut ve villa ihtiyaçlarına göre seçilebilir.",
   },
   {
     question: "PVC pencere siparişinde hangi seçenekler belirlenmelidir?",

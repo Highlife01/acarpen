@@ -149,11 +149,11 @@ export const Logo: React.FC<LogoProps> = ({
         </div>
         {showSubtitle && (
           <span
-            className={`mt-1 text-[10px] font-bold uppercase tracking-[0.16em] ${
+            className={`mt-1 text-[10px] font-bold uppercase tracking-[0.14em] ${
               isDarkBg ? "text-sky-400/95" : "text-sky-700"
             }`}
           >
-            Fıratpen Yetkili Üretici Bayi
+            Fıratpen • Winsa • Pimapen
           </span>
         )}
       </div>
@@ -181,11 +181,11 @@ export const Logo: React.FC<LogoProps> = ({
 
         {showSubtitle && (
           <span
-            className={`mt-1 text-[9.5px] sm:text-[10px] font-bold uppercase tracking-[0.15em] leading-none ${
+            className={`mt-1 text-[9.5px] sm:text-[10px] font-bold uppercase tracking-[0.13em] leading-none ${
               isDarkBg ? "text-sky-400/95" : "text-sky-700"
             }`}
           >
-            Fıratpen Yetkili Üretici Bayi
+            Fıratpen • Winsa • Pimapen
           </span>
         )}
       </div>

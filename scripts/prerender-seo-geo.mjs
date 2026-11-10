@@ -38,7 +38,7 @@ function buildPrerenderProductSchema(params) {
     mpn: params.sku || "AP-PVC-01",
     image: [DEFAULT_IMAGE],
     url: params.url,
-    brand: { "@type": "Brand", name: "Acarpen & Fıratpen" },
+    brand: { "@type": "Brand", name: "Acarpen • Fıratpen • Winsa • Pimapen" },
     manufacturer: { "@id": `${BASE_URL}/#organization` },
     aggregateRating: {
       "@type": "AggregateRating",
@@ -104,10 +104,10 @@ const ORGANIZATION_BASE_SCHEMA = {
 const ROUTES = [
   {
     path: "/",
-    title: "Acarpen | Adana Fıratpen Yetkili Üretici Bayi — PVC Pencere, Kapı, Sürme & Cam Balkon",
+    title: "Acarpen | Adana Fıratpen, Winsa & Pimapen PVC Pencere, Kapı, Sürme ve Cam Balkon",
     description:
-      "Acarpen (Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana), Fıratpen Yetkili Üretici Bayisi olarak 70'lik & 75'lik PVC Pencereler, Balkon Kapıları, WC Kapıları, Çift Kanat Sürme Sistemler ve Düz/L/U Cam Balkon üretimi yapmaktadır.",
-    keywords: "acarpen, adana fıratpen bayisi, fıratpen adana, adana pvc pencere, pvc balkon kapısı, pvc sürme pencere, cam balkon adana",
+      "Acarpen (Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana); Fıratpen, Winsa ve Pimapen PVC Pencere Sistemleri, Balkon & WC Kapıları, Hebeschiebe Sürme, Renkli Isıcamlar ve Düz/L/U Cam Balkon üretimi yapmaktadır.",
+    keywords: "acarpen, adana fıratpen bayisi, adana winsa bayisi, adana pimapen, winsa dorado 76, pimapen nirvana, adana pvc pencere, cam balkon adana",
     geoRegion: "TR-01",
     geoPlacename: "Adana",
     geoPosition: "36.9850;35.2880",

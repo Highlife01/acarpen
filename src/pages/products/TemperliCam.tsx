@@ -16,7 +16,7 @@ import {
 
 const SLIDING_MODELS = [
   {
-    name: "Fıratpen Zenia Slide & Hebeschiebe (Kaldır-Sür)",
+    name: "Fıratpen Zenia Slide, Winsa Panorama HS & Pimapen Albatros (Hebeschiebe)",
     dims: "Özel Ölçü Panoramik Cephe & Teras Kapıları",
     desc: "300 kg'a kadar kanat taşıma kapasitesi, engelsiz alt eşik ve tam sızdırmaz EPDM conta teknolojisiyle villa ve teraslar için üst segment sürme sistemi.",
   },
@@ -60,7 +60,7 @@ const TemperliCam = () => {
           <div className="container mx-auto px-4 lg:px-8 relative z-10"><div className="grid lg:grid-cols-12 gap-10 items-center"><div className="lg:col-span-7">
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/20 text-accent text-xs font-medium tracking-wider uppercase mb-6">
                 <Maximize2 className="w-3.5 h-3.5" />
-                Fıratpen Sürme Sistemleri & Hebeschiebe
+                Fıratpen • Winsa • Pimapen Sürme & Hebeschiebe
               </span>
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
                 PVC Sürme Pencereler ve <span className="text-accent">Hebeschiebe Kapılar</span>

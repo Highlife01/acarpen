@@ -109,11 +109,11 @@ export const Footer = () => {
               <Logo size="lg" showSubtitle={true} theme="dark" />
             </Link>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-              Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti. olarak Adana Seyhan Gülbahçesi Mahallesi'ndeki tesisimizde Fıratpen PVC Pencere, Kapı, Hebeschiebe Sürme, Renkli Isıcam ve Cam Balkon sistemleri üretiyoruz.
+              Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti. olarak Adana Seyhan Gülbahçesi Mahallesi'ndeki tesisimizde <strong>Fıratpen, Winsa ve Pimapen</strong> PVC Pencere, Kapı, Hebeschiebe Sürme, Renkli Isıcam ve Cam Balkon sistemleri üretiyoruz.
             </p>
             <div className="inline-flex items-center gap-2 text-[11px] text-sky-300 font-semibold bg-sky-950/70 px-3 py-2 rounded-xl border border-sky-800/80">
               <ShieldCheck className="h-4 w-4 shrink-0 text-sky-400" />
-              <span>TS EN 12608-1 & TSE EN 1279 Isıcam</span>
+              <span>Fıratpen • Winsa • Pimapen | TS EN 12608-1</span>
             </div>
           </div>
 
@@ -125,7 +125,7 @@ export const Footer = () => {
             <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
               <li>
                 <Link to="/urunler/cift-cam" className="hover:text-sky-400 transition-colors">
-                  PVC Pencereler (70'lik & 75'lik)
+                  PVC Pencereler (Fıratpen • Winsa • Pimapen)
                 </Link>
               </li>
               <li>

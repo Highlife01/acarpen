@@ -11,6 +11,7 @@ import { trackEvent } from "@/lib/analytics";
 
 interface CalcRow {
   id: number;
+  brand: string;
   widthCm: number;
   heightCm: number;
   qty: number;
@@ -20,12 +21,18 @@ interface CalcRow {
   accessory: string;
 }
 
+const BRAND_LIST = [
+  "Fıratpen (Selenit 75 / Redonit 85)",
+  "Winsa (Dorado 76 / Safir 76 / Revotech)",
+  "Pimapen (Nirvana 80 / Carisma 70)",
+];
+
 const PRODUCT_TYPES = [
-  "70'lik / 75'lik Fıratpen Standart PVC Pencere (4+16+4 Isıcam)",
+  "70'lik / 75'lik / 80'lik Standart PVC Pencere (4+16+4 Isıcam)",
   "Ortadan Kanatlı PVC Pencere (4+16+4 Isıcam)",
   "Bir Sabit Bir Açılır PVC Pencere (4+16+4 Isıcam)",
   "Çift Kanat PVC Sürme Pencere & Kapı",
-  "Fıratpen Hebeschiebe (Kaldır-Sür) Sürme Sistem",
+  "Hebeschiebe (Kaldır-Sür) Sürme Sistem (Zenia / Panorama / Albatros)",
   "PVC Pencere Balkon Kapısı (85×198 / 85×210)",
   "PVC WC & Banyo Kapısı (85×200)",
   "Düz / L / U Katlanır Cam Balkon (8mm / 10mm Temperli)",
@@ -37,6 +44,7 @@ export default function Hesaplama() {
   const [rows, setRows] = useState<CalcRow[]>([
     {
       id: 1,
+      brand: BRAND_LIST[0],
       widthCm: 120,
       heightCm: 120,
       qty: 2,
@@ -47,6 +55,7 @@ export default function Hesaplama() {
     },
     {
       id: 2,
+      brand: BRAND_LIST[1],
       widthCm: 150,
       heightCm: 140,
       qty: 2,
@@ -66,6 +75,7 @@ export default function Hesaplama() {
       ...prev,
       {
         id: Date.now(),
+        brand: BRAND_LIST[0],
         widthCm: 100,
         heightCm: 100,
         qty: 1,
@@ -115,7 +125,7 @@ export default function Hesaplama() {
       customerName: customerName.trim(),
       phone: phone.trim(),
       city,
-      glassType: calculatedRows[0]?.productType || "Fıratpen PVC Pencere & Kapı",
+      glassType: `${calculatedRows[0]?.brand || "Fıratpen"} — ${calculatedRows[0]?.productType || "PVC Pencere & Kapı"}`,
       thickness: `${calculatedRows[0]?.color || "Beyaz"} • ${calculatedRows[0]?.accessory || "Çift Açılım"}`,
       dimensions: summaryDims,
       totalArea: grandTotalArea,
@@ -136,12 +146,12 @@ export default function Hesaplama() {
     const wpLines = calculatedRows
       .map(
         (r, i) =>
-          `${i + 1}) ${r.productType} — ${r.widthCm}x${r.heightCm} cm x ${r.qty} Adet (${r.totalArea} m²) | Renk: ${r.color} | ${r.direction} | ${r.accessory}`
+          `${i + 1}) [${r.brand}] ${r.productType} — ${r.widthCm}x${r.heightCm} cm x ${r.qty} Adet (${r.totalArea} m²) | Renk: ${r.color} | ${r.direction} | ${r.accessory}`
       )
       .join("\n");
 
     const wpMessage = encodeURIComponent(
-      `Merhaba Acarpen (Fıratpen Yetkili Bayi),\nWeb sitenizdeki Çoklu Pencere & Cam Balkon Ölçü Robotundan fiyat teklifi rica ediyorum:\n\n` +
+      `Merhaba Acarpen,\nWeb sitenizdeki Çoklu Pencere & Cam Balkon Ölçü Robotundan fiyat teklifi rica ediyorum:\n\n` +
         `• Talep No: ${created.id}\n` +
         `• Müşteri / Firma: ${customerName}\n` +
         `• Telefon: ${phone}\n` +
@@ -190,7 +200,7 @@ export default function Hesaplama() {
     const leftHeader = doc.createElement("div");
     const brand = doc.createElement("div");
     brand.className = "brand";
-    brand.textContent = "acar | pen — Fıratpen Yetkili Üretici Bayi";
+    brand.textContent = "acarpen — Fıratpen • Winsa • Pimapen";
     const sub1 = doc.createElement("div");
     sub1.className = "sub";
     sub1.textContent = "Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti. • Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana";
@@ -232,7 +242,7 @@ export default function Hesaplama() {
       const tr = doc.createElement("tr");
       const cells = [
         String(idx + 1),
-        r.productType,
+        `[${r.brand}] ${r.productType}`,
         r.color,
         `${r.direction} / ${r.accessory}`,
         `${r.widthCm} x ${r.heightCm} cm`,
@@ -402,7 +412,23 @@ export default function Hesaplama() {
                       </div>
                     </div>
 
-                    <div className="grid sm:grid-cols-3 gap-3 pt-1">
+                    <div className="grid sm:grid-cols-4 gap-3 pt-1">
+                      <div>
+                        <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                          PVC Profil Markası
+                        </label>
+                        <select
+                          value={row.brand}
+                          onChange={(e) => updateRow(row.id, "brand", e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs font-semibold"
+                        >
+                          {BRAND_LIST.map((b) => (
+                            <option key={b} value={b}>
+                              {b}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                       <div>
                         <label className="text-[11px] font-bold text-slate-700 block mb-1">
                           Renk Alternatifi (19 Desen)

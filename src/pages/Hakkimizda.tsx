@@ -26,10 +26,10 @@ export default function Hakkimizda() {
             // Kurumsal Hikayemiz & Vizyonumuz
           </span>
           <h1 className="font-serif text-4xl sm:text-6xl font-bold text-slate-900 max-w-4xl leading-tight">
-            Doğrudan Üretim, Hızlı Tedarik ve <span className="text-gradient italic">Fıratpen Güvencesi.</span>
+            Doğrudan Üretim, Hızlı Tedarik ve <span className="text-gradient italic">Üç Lider Marka Güvencesi.</span>
           </h1>
           <p className="mt-4 text-slate-600 max-w-3xl text-base sm:text-lg leading-relaxed font-normal">
-            <strong className="text-slate-900 font-bold">Acar Pen İnşaat Sanayi ve Ticaret Limited Şirketi (Acarpen)</strong> olarak, Adana Seyhan Gülbahçesi Mahallesi'ndeki üretim ve showroom merkezimizde; Fıratpen PVC Pencere & Kapı Sistemleri, Sürme Sistemler, Düz/L/U Cam Balkon, Panjur, Sineklik ve Montaj Malzemeleri üretimini tek çatı altında sunuyoruz.
+            <strong className="text-slate-900 font-bold">Acar Pen İnşaat Sanayi ve Ticaret Limited Şirketi (Acarpen)</strong> olarak, Adana Seyhan Gülbahçesi Mahallesi'ndeki üretim ve showroom merkezimizde; <strong>Fıratpen, Winsa ve Pimapen</strong> PVC Pencere & Kapı Sistemleri, Sürme Sistemler, Düz/L/U Cam Balkon, Panjur ve Sineklik üretimini tek çatı altında sunuyoruz.
           </p>
         </div>
       </section>

@@ -10,9 +10,9 @@ export const HOME_GEO_FAQS: FAQItem[] = [
       "Evet, Acarpen (Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti.), Fıratpen resmi yetkili üretici bayisidir. CNC otomasyonlu üretim fabrikamız ve showroom merkezimiz Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan - Seyhan / Adana adresinde hizmet vermektedir.",
   },
   {
-    question: "Hangi Fıratpen PVC pencere, kapı ve sürme serilerini üretiyorsunuz?",
+    question: "Acarpen'de Fıratpen dışında Winsa ve Pimapen PVC pencere serileri de üretiliyor mu?",
     answer:
-      "70 mm, 75 mm ve 85 mm sistem genişliğine sahip Fıratpen Selenit 75, Elegance 80, Redonit 85 ve Zenia Slide Hebeschiebe serilerini üretiyoruz. 40×40 cm banyo vasistas pencerelerden 220×210 cm salon doğramalarına, 85×198 / 85×210 cm balkon kapılarına ve 85×200 cm WC kapılarına kadar hem standart hazır ölçülerde hem de özel ölçülerde imalat yapıyoruz.",
+      "Evet. Acarpen'in Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana adresindeki CNC otomasyonlu fabrikasında Fıratpen (Selenit 75, Elegance 80, Redonit 85, Zenia Slide) serilerinin yanı sıra Winsa (Dorado 76, Safir 76, Revotech, Panorama HS) ve Pimapen (Nirvana 80, Carisma 70, Albatros Sürme) PVC pencere, kapı ve sürme sistemleri de üretilip uygulanmaktadır.",
   },
   {
     question: "PVC pencerelerde renkli cam (füme, bronz, reflekte, buzlu) ve lamine profil seçenekleri nelerdir?",
@@ -79,8 +79,8 @@ export const SeoGeoFaqSection = () => {
                 id="faq-heading"
                 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-slate-900"
               >
-                Adana Fıratpen PVC Pencere &{" "}
-                <span className="text-gradient italic">Cam Balkon Bilgi Merkezi</span>
+                Fıratpen, Winsa & Pimapen{" "}
+                <span className="text-gradient italic">Bilgi Merkezi</span>
               </h2>
             </div>
 
@@ -92,7 +92,7 @@ export const SeoGeoFaqSection = () => {
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 <strong>Acarpen (Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti.)</strong>, Adana Seyhan{" "}
                 <strong>Gülbahçesi Mah. 13428 Sok. No:16/17</strong> adresindeki fabrikasında{" "}
-                <strong>Fıratpen Yetkili Üretici Bayisi</strong> olarak TS EN 12608-1 A sınıfı PVC pencereler,
+                <strong>Fıratpen, Winsa ve Pimapen</strong> markalı TS EN 12608-1 A sınıfı PVC pencereler,
                 Hebeschiebe sürme sistemler, 19 lamine renk, füme/bronz reflekte renkli ısıcamlar, motorlu panjur,
                 plise sineklik ve Düz/L/U cam balkon sistemleri üretmektedir.
               </p>

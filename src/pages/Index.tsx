@@ -19,12 +19,17 @@ const Index = () => {
   return (
     <main className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <SEO
-        title="Acarpen | Adana Fıratpen Yetkili Üretici Bayi — PVC Pencere, Kapı, Sürme & Cam Balkon"
-        description="Acarpen (Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana), Fıratpen Yetkili Üretici Bayisi olarak 70'lik & 75'lik PVC Pencereler, Balkon Kapıları, WC Kapıları, Renkli Isıcamlar, Çift Kanat Sürme Sistemler ve Düz/L/U Cam Balkon üretimi yapmaktadır."
+        title="Acarpen | Adana Fıratpen, Winsa & Pimapen PVC Pencere, Kapı, Sürme ve Cam Balkon"
+        description="Acarpen (Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana); Fıratpen, Winsa ve Pimapen PVC Pencere Sistemleri, Balkon & WC Kapıları, Renkli Isıcamlar, Hebeschiebe Sürme ve Düz/L/U Cam Balkon üretimi yapmaktadır."
         canonicalPath="/"
         keywords={[
           "acarpen",
           "adana fıratpen bayisi",
+          "adana winsa bayisi",
+          "adana pimapen",
+          "winsa pvc pencere adana",
+          "pimapen nirvana adana",
+          "winsa dorado 76",
           "fıratpen adana",
           "adana pvc pencere",
           "seyhan pvc doğrama",

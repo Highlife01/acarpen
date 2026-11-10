@@ -51,10 +51,17 @@ const QUICK_MODELS = [
   { id: "cam-balkon", name: "Düz / L / U Katlanır & Sürme Cam Balkon Sistemi", w: 350, h: 190 },
 ];
 
+const BRAND_OPTIONS = [
+  { id: "Fıratpen", series: "Selenit 75 / Redonit 85" },
+  { id: "Winsa", series: "Dorado 76 / Safir 76" },
+  { id: "Pimapen", series: "Nirvana 80 / Carisma 70" },
+];
+
 export const Hero = () => {
   const { t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  const [selectedBrand, setSelectedBrand] = useState("Fıratpen");
   const [selectedModelId, setSelectedModelId] = useState(QUICK_MODELS[0].id);
   const [widthCm, setWidthCm] = useState<number>(120);
   const [heightCm, setHeightCm] = useState<number>(120);
@@ -97,8 +104,8 @@ export const Hero = () => {
       customerName: customerName.trim(),
       phone: customerPhone.trim(),
       city: "Adana (Hızlı Ölçü Robotu)",
-      glassType: `${selectedModel.name} [${color}]`,
-      thickness: `${direction} • ${accessory} • 4+16+4 Isıcam`,
+      glassType: `[${selectedBrand}] ${selectedModel.name} [${color}]`,
+      thickness: `${selectedBrand} • ${direction} • ${accessory} • 4+16+4 Isıcam`,
       dimensions: `${widthCm}x${heightCm} cm (${qty} Adet)`,
       totalArea,
       estimatedPrice: 0,
@@ -108,10 +115,11 @@ export const Hero = () => {
     toast.success(`Talebiniz (#${created.id}) Acarpen sistemine kaydedildi!`);
 
     const wpText = encodeURIComponent(
-      `Merhaba Acarpen (Fıratpen Yetkili Bayi),\nWeb sitenizdeki Pencere & Kapı Yapılandırıcıdan fiyat teklifi rica ediyorum:\n\n` +
+      `Merhaba Acarpen,\nWeb sitenizdeki Pencere & Kapı Yapılandırıcıdan fiyat teklifi rica ediyorum:\n\n` +
         `• Talep No: ${created.id}\n` +
         `• Ad Soyad: ${customerName}\n` +
         `• Telefon: ${customerPhone}\n` +
+        `• Tercih Edilen Marka: ${selectedBrand}\n` +
         `• Ürün Modeli: ${selectedModel.name}\n` +
         `• Ölçü & Adet: ${widthCm}x${heightCm} cm (${qty} Adet — Toplam ${totalArea} m²)\n` +
         `• Renk Seçimi: ${color}\n` +
@@ -180,7 +188,7 @@ export const Hero = () => {
             </h1>
 
             <p className="text-base sm:text-lg text-white max-w-2xl leading-relaxed font-medium bg-slate-900/55 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-white/20 shadow-xl">
-              Adana Seyhan Gülbahçesi Mahallesi'ndeki üretim merkezimizde; Fıratpen PVC Pencereler, PVC Balkon Kapıları, PVC WC Kapıları, Çift Kanat PVC Sürme Sistemler, Düz/L/U Cam Balkon ve Montaj & İzolasyon çözümlerini doğrudan üretici güvencesiyle sunuyoruz.
+              Adana Seyhan Gülbahçesi Mahallesi'ndeki üretim merkezimizde; <strong>Fıratpen, Winsa ve Pimapen</strong> PVC Pencereler, PVC Balkon & WC Kapıları, Hebeschiebe Sürme Sistemler, Renkli Isıcam ve Düz/L/U Cam Balkon çözümlerini doğrudan üretici güvencesiyle sunuyoruz.
             </p>
 
             <div className="flex flex-wrap items-center gap-3.5 pt-1">
@@ -211,7 +219,7 @@ export const Hero = () => {
 
             <div className="pt-2 grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-2xl">
               {[
-                { icon: ShieldCheck, label: "Doğrudan Üretim", sub: "Fıratpen Yetkili Bayi" },
+                { icon: ShieldCheck, label: "3 Lider Marka", sub: "Fıratpen • Winsa • Pimapen" },
                 { icon: Award, label: "Hızlı Üretim", sub: "Hazır & Özel Ölçü" },
                 { icon: Sparkles, label: "Düzenli Tedarik", sub: "B2B Şantiye & Bayi" },
                 { icon: CheckCircle2, label: "Tek Muhatap", sub: "Ölçü, İmalat & Montaj" },
@@ -276,8 +284,36 @@ export const Hero = () => {
 
               <form onSubmit={handleQuickOrder} className="space-y-3.5">
                 <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                    1. Profil Markası Seçin
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {BRAND_OPTIONS.map((b) => {
+                      const active = selectedBrand === b.id;
+                      return (
+                        <button
+                          key={b.id}
+                          type="button"
+                          onClick={() => setSelectedBrand(b.id)}
+                          className={`rounded-xl border px-2.5 py-2 text-left transition-all ${
+                            active
+                              ? "border-sky-600 bg-sky-50 ring-2 ring-sky-500/20"
+                              : "border-slate-200 bg-slate-50 hover:border-sky-300"
+                          }`}
+                        >
+                          <div className={`text-xs font-extrabold ${active ? "text-sky-700" : "text-slate-900"}`}>
+                            {b.id}
+                          </div>
+                          <div className="text-[9.5px] font-mono text-slate-500 truncate">{b.series}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1">
-                    1. Ürün Kategorisi & Model Seçin
+                    2. Ürün Kategorisi & Model Seçin
                   </label>
                   <select
                     value={selectedModelId}
@@ -409,7 +445,7 @@ export const Hero = () => {
                       Toplam Metraj: <span className="text-slate-900 font-mono font-bold">{totalArea} m²</span> ({qty} Adet)
                     </div>
                     <div className="text-[11px] text-sky-800 font-medium mt-0.5">
-                      {color} • {direction} • {accessory} • 4+16+4 Isıcam
+                      {selectedBrand} • {color} • {direction} • {accessory}
                     </div>
                   </div>
                   <div className="text-right">
