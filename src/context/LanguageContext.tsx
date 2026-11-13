@@ -41,6 +41,22 @@ function getInitialLanguage(): SupportedLanguageCode {
   }
 }
 
+interface WindowWithGoogleTranslate extends Window {
+  googleTranslateElementInit?: () => void;
+  google?: {
+    translate?: {
+      TranslateElement?: new (
+        options: {
+          pageLanguage: string;
+          includedLanguages: string;
+          autoDisplay: boolean;
+        },
+        elementId: string
+      ) => unknown;
+    };
+  };
+}
+
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentCode, setCurrentCode] = useState<SupportedLanguageCode>(getInitialLanguage);
 
@@ -67,16 +83,20 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
           s.async = true;
           document.body.appendChild(s);
 
-          (window as any).googleTranslateElementInit = () => {
+          const win = window as WindowWithGoogleTranslate;
+          win.googleTranslateElementInit = () => {
             try {
-              new (window as any).google.translate.TranslateElement(
-                {
-                  pageLanguage: "tr",
-                  includedLanguages: "tr,en,ar",
-                  autoDisplay: false,
-                },
-                "google_translate_element"
-              );
+              const TranslateElement = win.google?.translate?.TranslateElement;
+              if (TranslateElement) {
+                new TranslateElement(
+                  {
+                    pageLanguage: "tr",
+                    includedLanguages: "tr,en,ar",
+                    autoDisplay: false,
+                  },
+                  "google_translate_element"
+                );
+              }
               setTimeout(() => {
                 const el = document.querySelector(".goog-te-combo") as HTMLSelectElement | null;
                 if (el) {

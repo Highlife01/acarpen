@@ -70,7 +70,7 @@ export function printProposalDocument(q: QuoteItem): void {
   const leftText = doc.createElement("div");
   const brand = doc.createElement("div");
   brand.className = "brand";
-  brand.textContent = "ACARPEN — FIRATPEN YETKİLİ ÜRETİCİ BAYİ";
+  brand.textContent = "ACARPEN — FIRATPEN, WİNSA & PİMAPEN YETKİLİ BAYİ";
   const sub = doc.createElement("div");
   sub.className = "sub";
   sub.textContent = "Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / ADANA • Tel & WhatsApp: 0533 625 36 11";

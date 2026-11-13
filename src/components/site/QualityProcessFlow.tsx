@@ -45,17 +45,17 @@ export const QualityProcessFlow = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200">
-            // 6 Aşamalı Acarpen Üretim & Montaj Süreci
+            6 Aşamalı Acarpen Üretim & Montaj Süreci
           </span>
           <h2 className="font-serif text-4xl sm:text-5xl font-bold text-slate-900">
-            Ölçüden Montaja <span className="text-gradient italic">Kusursuz İşAkışı</span>
+            Ölçüden Montaja <span className="text-gradient italic">Kusursuz İş Akışı</span>
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-normal">
             Ürettiğimiz her PVC pencere, balkon kapısı, sürme sistem ve cam balkon; TS EN 12608-1 profil ve TSE EN 1279 ısıcam standartlarına uygun olarak 6 aşamalı kalite kontrol sürecinden geçer.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-5 relative">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
           {steps.map((item, idx) => {
             const Icon = item.icon;
             return (

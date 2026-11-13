@@ -39,7 +39,7 @@ export const ProductionTech = () => {
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-14 gap-6">
           <div className="space-y-4 max-w-2xl">
             <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100 px-3.5 py-1.5 rounded-full border border-sky-200">
-              // Fıratpen Üretim & Montaj Teknolojimiz
+              CNC Üretim & Montaj Teknolojimiz
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-900 break-words">
               CNC Otomasyonlu <span className="text-gradient italic">PVC Doğrama</span> & Cam Balkon İmalatı

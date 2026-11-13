@@ -6,7 +6,7 @@ import { SEO } from "@/components/SEO";
 
 export default function Iletisim() {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28">
+    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
         title="İletişim, Adres & Ücretsiz Keşif | Acarpen — Seyhan / Adana Fıratpen Bayisi"
         description="Acarpen (Acar Pen İnşaat San. ve Tic. Ltd. Şti.) iletişim bilgileri: Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana. Telefon & WhatsApp: 0533 625 36 11."
@@ -18,7 +18,7 @@ export default function Iletisim() {
       <section className="py-12 border-b border-slate-200 bg-gradient-to-b from-sky-50 via-white to-slate-50">
         <div className="max-w-7xl mx-auto px-6">
           <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
-            // İletişim, Teklif & Showroom
+            İletişim, Teklif & Showroom
           </span>
           <h1 className="font-serif text-4xl sm:text-6xl font-bold text-slate-900">
             Bize <span className="text-gradient italic">Ulaşın</span>

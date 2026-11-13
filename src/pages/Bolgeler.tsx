@@ -27,7 +27,7 @@ const SECTORS = [
 
 export default function Bolgeler() {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28">
+    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
         title="Hizmet Bölgelerimiz: Adana, Mersin, Osmaniye, Hatay, Gaziantep, Kayseri, Niğde | Acarpen"
         description="Adana Seyhan'daki (Gülbahçesi Mah. 13428 Sok. No:16/17) Fıratpen üretim tesisimizden Adana, Mersin, Osmaniye, Hatay, Gaziantep, Kayseri ve Niğde illerine PVC pencere, kapı ve cam balkon sevkiyatı."

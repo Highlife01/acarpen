@@ -40,7 +40,7 @@ export const TrustCertifications = () => {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-800">
           <div>
             <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-sky-400 font-bold block mb-1">
-              // 3 Lider Marka • Tek Üretim Merkezi • Uluslararası Kalite
+              3 Lider Marka • Tek Üretim Merkezi • Uluslararası Kalite
             </span>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white">
               Fıratpen, Winsa & Pimapen Sistem Standartlarımız

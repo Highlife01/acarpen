@@ -47,7 +47,7 @@ const guideFaqs: FAQItem[] = [
 
 export default function Rehber() {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28">
+    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
         title="Teknik PVC Pencere, Profil Serileri & Cam Balkon Seçim Rehberi | Acarpen Adana"
         description="Fıratpen 70'lik, Selenit 75 ve Redonit 85 PVC pencere karşılaştırması, standart hazır pencere ölçüleri, destek sacı, 4+16+4 ısıcam ve cam balkon seçim kılavuzu."

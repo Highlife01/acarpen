@@ -71,7 +71,7 @@ export const Contact = () => {
           {/* Left info */}
           <div className="lg:col-span-2 space-y-6">
             <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200">
-              // İletişim & Ücretsiz Keşif
+              İletişim & Ücretsiz Keşif
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-900 break-words">
               Projeniz İçin <span className="text-gradient italic">Teklif Alın</span>

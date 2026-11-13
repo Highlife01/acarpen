@@ -10,7 +10,7 @@ export const GoogleMapLocation = () => {
           <div className="lg:col-span-5 bg-white rounded-3xl p-8 border border-slate-200 shadow-lg flex flex-col justify-between space-y-6">
             <div>
               <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-50 px-3 py-1 rounded-full border border-sky-200 mb-3">
-                // Üretim & Showroom Konumu
+                Üretim & Showroom Konumu
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl font-bold text-slate-900 mb-3">
                 Adana Seyhan <span className="text-gradient italic">Acarpen Merkezimiz</span>

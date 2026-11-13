@@ -49,8 +49,8 @@ export const Navbar = () => {
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-white/95 backdrop-blur-xl shadow-md border-b border-slate-200"
-          : "bg-white/92 backdrop-blur-lg border-b border-slate-200/80"
+          ? "bg-white/98 backdrop-blur-xl shadow-md border-b border-slate-200"
+          : "bg-white/95 backdrop-blur-lg shadow-sm border-b border-slate-200/90"
       }`}
     >
       {/* Slim Top Corporate Bar */}
@@ -131,7 +131,7 @@ export const Navbar = () => {
             </Link>
 
             {dropdownOpen && (
-              <div className="absolute top-full left-0 w-84 pt-2 z-50">
+              <div className="absolute top-full left-0 w-[340px] pt-2 z-50">
                 <div className="bg-white rounded-2xl p-2 border border-slate-200 shadow-2xl space-y-1">
                   {productLinks.map((item) => (
                     <Link

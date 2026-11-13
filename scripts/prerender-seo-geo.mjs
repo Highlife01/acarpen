@@ -53,7 +53,7 @@ function buildPrerenderProductSchema(params) {
 const ORGANIZATION_BASE_SCHEMA = {
   "@type": ["LocalBusiness", "HomeAndConstructionBusiness", "Organization"],
   "@id": `${BASE_URL}/#organization`,
-  name: "Acarpen — Fıratpen Yetkili Üretici Bayi",
+  name: "Acarpen — Fıratpen, Winsa & Pimapen Yetkili Bayi",
   legalName: "ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ",
   url: BASE_URL,
   logo: {
@@ -844,7 +844,7 @@ function buildJSONLDSchemas(route) {
       "@type": "WebSite",
       "@id": `${BASE_URL}/#website`,
       url: BASE_URL,
-      name: "Acarpen — Fıratpen Yetkili Üretici Bayi",
+      name: "Acarpen — Fıratpen, Winsa & Pimapen Yetkili Bayi",
       inLanguage: ["tr", "en", "ar"],
       publisher: { "@id": `${BASE_URL}/#organization` },
       potentialAction: {

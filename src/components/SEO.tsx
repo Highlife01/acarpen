@@ -17,7 +17,16 @@ interface SEOProps {
   ogImage?: string;
   ogImageAlt?: string;
   faqs?: FAQItem[];
-  schemaType?: "LocalBusiness" | "Organization" | "Service" | "Product" | "Article" | "CollectionPage";
+  schemaType?:
+    | "LocalBusiness"
+    | "Organization"
+    | "Service"
+    | "Product"
+    | "Article"
+    | "CollectionPage"
+    | "AboutPage"
+    | "ContactPage"
+    | "TechArticle";
   serviceName?: string;
   breadcrumbs?: { name: string; path: string }[];
   noindex?: boolean;
@@ -28,7 +37,7 @@ interface SEOProps {
 
 const BASE_URL = "https://www.acarpen.com.tr";
 const DEFAULT_IMAGE = `${BASE_URL}/assets/firatpen-selenit-pvc-pencere.jpg`;
-const COMPANY_NAME = "Acarpen — Fıratpen Yetkili Üretici Bayi";
+const COMPANY_NAME = "Acarpen — Fıratpen, Winsa & Pimapen Yetkili Bayi";
 
 const DNS_GOOGLE_VERIFICATION_FALLBACK = "";
 
@@ -462,9 +471,7 @@ export const SEO = ({
     });
 
     const envGoogle =
-      (import.meta as any).env?.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
-      (import.meta as any).env?.VITE_GOOGLE_SITE_VERIFICATION ||
-      DNS_GOOGLE_VERIFICATION_FALLBACK;
+      import.meta.env.VITE_GOOGLE_SITE_VERIFICATION || DNS_GOOGLE_VERIFICATION_FALLBACK;
     if (envGoogle) setMeta("google-site-verification", envGoogle);
 
     let canonical = document.head.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
@@ -587,7 +594,14 @@ export const SEO = ({
         ],
       },
       {
-        "@type": schemaType === "CollectionPage" ? "CollectionPage" : "WebPage",
+        "@type":
+          schemaType === "CollectionPage"
+            ? "CollectionPage"
+            : schemaType === "AboutPage"
+            ? "AboutPage"
+            : schemaType === "ContactPage"
+            ? "ContactPage"
+            : "WebPage",
         "@id": `${selfCanonicalUrl}#webpage`,
         url: selfCanonicalUrl,
         name: resolvedTitle,
@@ -611,7 +625,7 @@ export const SEO = ({
         url: selfCanonicalUrl,
         brand: {
           "@type": "Brand",
-          name: "Acarpen & Fıratpen",
+          name: "Acarpen • Fıratpen • Winsa • Pimapen",
         },
         manufacturer: { "@id": `${BASE_URL}/#organization` },
         provider: { "@id": `${BASE_URL}/#organization` },

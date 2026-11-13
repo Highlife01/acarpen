@@ -59,7 +59,7 @@ Telefon & WhatsApp: 0533 625 36 11 | Web: https://www.acarpen.com.tr
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28">
+    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
         title="Fıratpen, Winsa & Pimapen PVC Pencere, Kapı ve Cam Balkon Kataloğu | Acarpen Adana"
         description="Acarpen ürün kataloğu: Fıratpen, Winsa ve Pimapen 70/75/80 mm PVC Pencereler, PVC Balkon & WC Kapıları, Hebeschiebe Sürme Sistemler, 19 Renk & Renkli Isıcamlar ve Düz/L/U Cam Balkon."
@@ -74,7 +74,7 @@ Telefon & WhatsApp: 0533 625 36 11 | Web: https://www.acarpen.com.tr
         <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div>
             <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
-              // Acarpen — Fıratpen • Winsa • Pimapen Sistem Kataloğu
+              Acarpen — Fıratpen • Winsa • Pimapen Sistem Kataloğu
             </span>
             <h1 className="font-serif text-4xl sm:text-6xl font-bold text-slate-900 max-w-3xl">
               PVC Pencere, Kapı & <span className="text-gradient italic">Cam Balkon Çözümleri</span>
@@ -110,7 +110,7 @@ Telefon & WhatsApp: 0533 625 36 11 | Web: https://www.acarpen.com.tr
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
               <span className="text-xs font-mono uppercase tracking-widest text-sky-700 font-bold">
-                // Mühendislik & Yalıtım Karşılaştırma Tablosu
+                Mühendislik & Yalıtım Karşılaştırma Tablosu
               </span>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-slate-900 mt-1">
                 Fıratpen PVC & Cam Balkon Teknik Performans Değerleri

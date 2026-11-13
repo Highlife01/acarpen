@@ -50,6 +50,13 @@ const INITIAL_STATS: VisitorTelemetryStats = {
   recentVisits: [],
 };
 
+export type AnalyticsEventParams = Record<string, string | number | boolean | undefined>;
+
+interface WindowWithGtag extends Window {
+  dataLayer?: unknown[];
+  gtag?: (...args: unknown[]) => void;
+}
+
 class AnalyticsManager {
   private listeners: Set<(stats: VisitorTelemetryStats) => void> = new Set();
   private consentListeners: Set<(consent: CookieConsentStatus) => void> = new Set();
@@ -143,16 +150,14 @@ class AnalyticsManager {
     if (this.gaInitialized || typeof window === "undefined") return;
 
     try {
-      const gaId =
-        (import.meta as any).env?.VITE_GA_MEASUREMENT_ID ||
-        (import.meta as any).env?.NEXT_PUBLIC_GA_MEASUREMENT_ID ||
-        DEFAULT_GA_ID;
+      const gaId = import.meta.env.VITE_GA_MEASUREMENT_ID || DEFAULT_GA_ID;
+      const win = window as WindowWithGtag;
 
-      (window as any).dataLayer = (window as any).dataLayer || [];
-      function gtag(...args: any[]) {
-        (window as any).dataLayer.push(args);
+      win.dataLayer = win.dataLayer || [];
+      function gtag(...args: unknown[]) {
+        win.dataLayer?.push(args);
       }
-      (window as any).gtag = gtag;
+      win.gtag = gtag;
 
       gtag("consent", "default", {
         analytics_storage: "granted",
@@ -193,15 +198,18 @@ class AnalyticsManager {
     const isTablet = /iPad|Tablet/i.test(userAgent);
     const deviceType: "Masaüstü" | "Mobil" | "Tablet" = isTablet ? "Tablet" : isMobile ? "Mobil" : "Masaüstü";
 
-    if (this.currentConsent === "granted" && typeof (window as any).gtag === "function") {
+    const win = window as WindowWithGtag;
+    if (this.currentConsent === "granted" && typeof win.gtag === "function") {
       try {
-        (window as any).gtag("event", "page_view", {
+        win.gtag("event", "page_view", {
           page_title: pageTitle,
           page_location: window.location.href,
           page_path: path,
           language: currentLang,
         });
-      } catch {}
+      } catch {
+        // Ignore analytics dispatch errors
+      }
     }
 
     this.stats.totalPageviews += 1;
@@ -260,11 +268,14 @@ class AnalyticsManager {
     this.notifyStatsListeners();
   }
 
-  public trackEvent(eventName: string, params: Record<string, any> = {}) {
-    if (this.currentConsent === "granted" && typeof (window as any).gtag === "function") {
+  public trackEvent(eventName: string, params: AnalyticsEventParams = {}) {
+    const win = window as WindowWithGtag;
+    if (this.currentConsent === "granted" && typeof win.gtag === "function") {
       try {
-        (window as any).gtag("event", eventName, params);
-      } catch {}
+        win.gtag("event", eventName, params);
+      } catch {
+        // Ignore analytics dispatch errors
+      }
     }
   }
 
@@ -288,7 +299,9 @@ class AnalyticsManager {
       if (typeof window !== "undefined" && window.localStorage) {
         window.localStorage.setItem(TELEMETRY_STORAGE_KEY, JSON.stringify(this.stats));
       }
-    } catch {}
+    } catch {
+      // Ignore storage quota errors
+    }
   }
 }
 
@@ -300,7 +313,8 @@ export const subscribeCookieConsent = (cb: (consent: CookieConsentStatus) => voi
   analyticsManager.subscribeConsent(cb);
 
 export const trackPageView = (path: string, title?: string) => analyticsManager.trackPageView(path, title);
-export const trackEvent = (name: string, params?: Record<string, any>) => analyticsManager.trackEvent(name, params);
+export const trackEvent = (name: string, params?: AnalyticsEventParams) =>
+  analyticsManager.trackEvent(name, params);
 
 export const getVisitorStats = () => analyticsManager.getStats();
 export const subscribeVisitorStats = (cb: (stats: VisitorTelemetryStats) => void) =>

@@ -9,7 +9,7 @@ import productionImg from "@/assets/firatpen-cnc-uretim-hatti.jpg";
 
 export default function Hakkimizda() {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28">
+    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
         title="Hakkımızda & Kurumsal Kimlik | Acarpen — Adana Fıratpen Yetkili Üretici Bayi"
         description="Acar Pen İnşaat Sanayi ve Ticaret Limited Şirketi (Acarpen), Adana Seyhan Gülbahçesi Mahallesi'ndeki üretim ve uygulama merkezinde Fıratpen Yetkili Üretici Bayisi olarak PVC pencere, kapı, sürme ve cam balkon sistemleri üretmektedir."
@@ -23,7 +23,7 @@ export default function Hakkimizda() {
       <section className="py-16 border-b border-slate-200 relative overflow-hidden bg-gradient-to-b from-sky-50 via-white to-slate-50">
         <div className="max-w-7xl mx-auto px-6">
           <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
-            // Kurumsal Hikayemiz & Vizyonumuz
+            Kurumsal Hikayemiz & Vizyonumuz
           </span>
           <h1 className="font-serif text-4xl sm:text-6xl font-bold text-slate-900 max-w-4xl leading-tight">
             Doğrudan Üretim, Hızlı Tedarik ve <span className="text-gradient italic">Üç Lider Marka Güvencesi.</span>

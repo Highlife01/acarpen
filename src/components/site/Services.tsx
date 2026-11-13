@@ -92,7 +92,7 @@ export const Services = () => {
         {/* Section Header */}
         <div className="max-w-3xl mb-14 space-y-4">
           <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200">
-            // {t("servicesBadge", "Fıratpen Ürün & Sistem Kataloğu")}
+            {t("servicesBadge", "Fıratpen, Winsa & Pimapen Ürün Kataloğu")}
           </span>
           <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-900 break-words">
             PVC Pencereler, Kapılar, Sürme &{" "}
@@ -233,9 +233,9 @@ export const Services = () => {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-12 gap-8 items-center">
+          <div className="grid lg:grid-cols-12 gap-8 items-stretch">
             {/* Left Column: 4 Feature Blocks */}
-            <div className="lg:col-span-4 space-y-4">
+            <div className="lg:col-span-4 space-y-4 flex flex-col justify-between">
               {WINDOW_COLOR_FEATURES.map((feat, i) => (
                 <div
                   key={i}

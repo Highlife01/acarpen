@@ -37,7 +37,7 @@ export const Testimonials = () => {
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-14 gap-6">
           <div className="space-y-4 max-w-2xl">
             <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-50 px-3.5 py-1.5 rounded-full border border-sky-200">
-              // Müşteri & Müteahhit Yorumları
+              Müşteri & Müteahhit Yorumları
             </span>
             <h2 className="font-serif text-4xl sm:text-5xl font-bold text-slate-900">
               İş Ortaklarımızın <span className="text-gradient italic">Acarpen Deneyimi</span>

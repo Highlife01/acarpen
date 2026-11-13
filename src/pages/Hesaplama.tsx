@@ -275,7 +275,7 @@ export default function Hesaplama() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28">
+    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
         title="PVC Pencere, Kapı & Cam Balkon Ölçü ve Teklif Robotu | Acarpen Adana"
         description="Adana Acarpen Fıratpen Yetkili Bayi online PVC pencere, balkon kapısı, sürme pencere ve cam balkon ölçü yapılandırıcı. Ölçü, renk (19 alternatif) ve açılım yönü seçerek anında teklif alın."
@@ -494,7 +494,7 @@ export default function Hesaplama() {
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl space-y-6">
               <div className="border-b border-slate-200 pb-4">
                 <span className="text-[11px] font-mono uppercase tracking-widest text-sky-700 font-bold">
-                  // Metraj & Teklif Özeti
+                  Metraj & Teklif Özeti
                 </span>
                 <div className="mt-2 flex items-baseline justify-between">
                   <span className="text-sm text-slate-600 font-medium">Toplam Alan ({totalPieceCount} Adet):</span>

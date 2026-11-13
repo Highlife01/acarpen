@@ -30,7 +30,7 @@ export default function BolgeDetay() {
   const otherRegions = REGIONS_DATA.filter((r) => r.slug !== region.slug);
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28">
+    <main className="min-h-screen bg-slate-50 text-slate-900 pt-20 lg:pt-28">
       <SEO
         title={region.metaTitle}
         description={region.metaDescription}

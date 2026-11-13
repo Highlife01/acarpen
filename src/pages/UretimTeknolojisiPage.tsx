@@ -40,7 +40,7 @@ const machineSpecs = [
 
 export default function UretimTeknolojisiPage() {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28">
+    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
         title="PVC Doğrama Üretim Teknolojimiz & Kalite Süreci | Acarpen Adana"
         description="Adana Seyhan Gülbahçesi Mah. Acarpen tesisimizde Fıratpen CNC profil kesim, çelik destek sacı, 4 köşe kaynak, 4+16+4 ısıcam ve cam balkon üretim teknolojileri."
@@ -59,7 +59,7 @@ export default function UretimTeknolojisiPage() {
       <section className="py-14 border-b border-slate-200 bg-gradient-to-b from-sky-50 via-white to-slate-50">
         <div className="max-w-7xl mx-auto px-6">
           <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
-            // CNC Doğrama Otomasyonu & Kalite Standartlarımız
+            CNC Doğrama Otomasyonu & Kalite Standartlarımız
           </span>
           <h1 className="font-serif text-4xl sm:text-6xl font-bold text-slate-900 max-w-4xl">
             Fıratpen Kalitesiyle <span className="text-gradient italic">Modern Üretim</span>
@@ -75,7 +75,7 @@ export default function UretimTeknolojisiPage() {
       <section className="py-20 max-w-7xl mx-auto px-6">
         <div className="max-w-3xl mb-12 space-y-3">
           <span className="text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold">
-            // İmalat Hattımız & Teknik Donanım
+            İmalat Hattımız & Teknik Donanım
           </span>
           <h2 className="font-serif text-3xl sm:text-4xl font-bold text-slate-900">
             4 Ana Üretim İstasyonumuz

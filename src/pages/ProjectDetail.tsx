@@ -62,7 +62,7 @@ Telefon & WhatsApp: 0533 625 36 11 | Web: https://www.acarpen.com.tr
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28">
+    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
         title={`${project.title} (${project.location}) | Acarpen Referans Projeler`}
         description={project.summary}

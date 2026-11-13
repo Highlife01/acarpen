@@ -1,4 +1,4 @@
-# Robots.txt for Acarpen — Fıratpen Yetkili Üretici Bayi (https://www.acarpen.com.tr)
+# Robots.txt for Acarpen — Fıratpen, Winsa & Pimapen Yetkili Bayi (https://www.acarpen.com.tr)
 # Search Engine Optimization (SEO) & Generative Engine Optimization (GEO)
 
 User-agent: *

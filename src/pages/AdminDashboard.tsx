@@ -147,7 +147,7 @@ function formatWhatsAppUrl(phone: string, text: string): string {
     ? `9${digits}`
     : digits.length === 10
     ? `90${digits}`
-    : "905518864995";
+    : "905336253611";
   return `https://wa.me/${normalized}?text=${encodeURIComponent(text)}`;
 }
 
@@ -568,7 +568,11 @@ export default function AdminDashboard() {
       <div
         className={`admin-shell min-h-screen bg-slate-950 flex items-center justify-center p-6 text-slate-100 ${themeClass}`}
       >
-        <SEO title="Yönetim Paneli Girişi | Acarpen" noindex />
+        <SEO
+          title="Yönetim Paneli Girişi | Acarpen"
+          description="Acarpen yetkili personel ERP ve CRM yönetim paneli giriş ekranı."
+          noindex
+        />
         <div className="admin-login-card max-w-md w-full rounded-3xl bg-slate-900 border-2 border-slate-700 p-8 shadow-2xl space-y-6">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <Link
@@ -777,7 +781,11 @@ export default function AdminDashboard() {
     <div
       className={`admin-shell min-h-screen bg-slate-950 text-slate-100 flex ${themeClass}`}
     >
-      <SEO title="Acarpen Yönetim Paneli | ERP + CRM" noindex />
+      <SEO
+        title="Acarpen Yönetim Paneli | ERP + CRM"
+        description="Acarpen üretim, teklif, sipariş, stok, çek/kasa finans ve CRM yönetim konsolu."
+        noindex
+      />
 
       {/* MOBILE SIDEBAR BACKDROP OVERLAY */}
       {sidebarOpen && (

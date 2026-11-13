@@ -1,7 +1,6 @@
 rules_version = '2';
 
-// Acar Pen — yalnızca "acarpen" adlı veritabanına dağıtılır (firebase.json).
-// Roller: superadmin > manager > sales | editor. Rol bilgisi users/{uid} belgesinden okunur.
+// Acar Pen — "acarpen" adlı Firestore veritabanına dağıtılır (firebase.json).
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -11,13 +10,19 @@ service cloud.firestore {
     function me() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
     }
+    function isPrimaryAdmin() {
+      return signedIn() && request.auth.token.email == 'admin@acarpen.com.tr';
+    }
     function isStaff() {
       return signedIn()
         && exists(/databases/$(database)/documents/users/$(request.auth.uid))
         && me().active == true;
     }
     function hasRole(roles) {
-      return isStaff() && me().role in roles;
+      return isPrimaryAdmin() || (isStaff() && me().role in roles);
+    }
+    function isAdminOrStaff() {
+      return isPrimaryAdmin() || isStaff();
     }
     function canManage() { return hasRole(['superadmin', 'manager']); }
     function canSell() { return hasRole(['superadmin', 'manager', 'sales']); }
@@ -60,6 +65,25 @@ service cloud.firestore {
         && (!('attachments' in d) || (d.attachments is list && d.attachments.size() <= 5));
     }
 
+    function validPublicQuote() {
+      let d = request.resource.data;
+      return d.keys().hasAll(['id', 'customerName', 'phone', 'status'])
+        && d.id is string && d.id.size() >= 5 && d.id.size() <= 64
+        && d.customerName is string && d.customerName.size() >= 1 && d.customerName.size() <= 120
+        && d.phone is string && d.phone.size() >= 7 && d.phone.size() <= 32
+        && d.status == 'new';
+    }
+
+    function validPublicMessage() {
+      let d = request.resource.data;
+      return d.keys().hasAll(['id', 'name', 'phone', 'subject', 'message'])
+        && d.id is string && d.id.size() >= 5 && d.id.size() <= 64
+        && d.name is string && d.name.size() >= 1 && d.name.size() <= 120
+        && d.phone is string && d.phone.size() >= 7 && d.phone.size() <= 32
+        && d.subject is string && d.subject.size() <= 200
+        && d.message is string && d.message.size() <= 3000;
+    }
+
     // Yayınlanan içerik herkese açık; taslaklar yalnızca içerik yetkililerine.
     match /services/{id} {
       allow read: if resource.data.status == 'published' || canEdit();
@@ -82,7 +106,7 @@ service cloud.firestore {
       allow write: if canManage();
     }
 
-    // CRM: ziyaretçi yalnızca doğrulanmış biçimde yeni talep oluşturabilir, okuyamaz.
+    // CRM: ziyaretçi yalnızca doğrulanmış biçimde yeni talep oluşturabilir, liste okuyamaz.
     match /leads/{id} {
       allow create: if validLead();
       allow read, update: if canSell();
@@ -98,6 +122,51 @@ service cloud.firestore {
       allow delete: if canManage();
     }
 
+    // Acarpen ERP Canlı Koleksiyonları (adminStorage.ts COLLECTIONS ile birebir uyumlu)
+    match /acarpen_quotes/{id} {
+      allow get: if true;
+      allow list, update, delete: if isAdminOrStaff();
+      allow create: if isAdminOrStaff() || validPublicQuote();
+    }
+    match /acarpen_messages/{id} {
+      allow read, update, delete: if isAdminOrStaff();
+      allow create: if isAdminOrStaff() || validPublicMessage();
+    }
+    match /acarpen_prices/{id} {
+      allow read, write: if isAdminOrStaff();
+    }
+    match /acarpen_services/{id} {
+      allow read, write: if isAdminOrStaff();
+    }
+    match /acarpen_customers/{id} {
+      allow read, write: if isAdminOrStaff();
+    }
+    match /acarpen_opportunities/{id} {
+      allow read, write: if isAdminOrStaff();
+    }
+    match /acarpen_activities/{id} {
+      allow read, write: if isAdminOrStaff();
+    }
+    match /acarpen_inventory/{id} {
+      allow read, write: if isAdminOrStaff();
+    }
+    match /acarpen_purchases/{id} {
+      allow read, write: if isAdminOrStaff();
+    }
+    match /acarpen_quality/{id} {
+      allow read, write: if isAdminOrStaff();
+    }
+    match /acarpen_checks/{id} {
+      allow read, write: if isAdminOrStaff();
+    }
+    match /acarpen_cash_ledger/{id} {
+      allow read, write: if isAdminOrStaff();
+    }
+    match /acarpen_audit_logs/{id} {
+      allow read, create: if isAdminOrStaff();
+      allow update, delete: if false;
+    }
+
     match /media/{id} {
       allow read, write: if canEdit();
     }
@@ -106,7 +175,7 @@ service cloud.firestore {
     }
 
     match /users/{uid} {
-      allow read: if signedIn() && (request.auth.uid == uid || canManage());
+      allow read: if signedIn() && (request.auth.uid == uid || isAdminOrStaff());
       allow write: if hasRole(['superadmin']);
     }
 

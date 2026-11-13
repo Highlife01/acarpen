@@ -46,7 +46,7 @@ export const WhyAcarpen = () => {
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-14 gap-6">
           <div className="space-y-4 max-w-2xl">
             <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-50 px-3.5 py-1.5 rounded-full border border-sky-200">
-              // Neden Acarpen & Fıratpen?
+              Neden Acarpen?
             </span>
             <h2 className="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-slate-900">
               Adana'da <span className="text-gradient italic">Acarpen'i</span> Tercih Etmeniz İçin 6 Güçlü Neden

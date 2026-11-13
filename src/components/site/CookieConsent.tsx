@@ -95,7 +95,7 @@ export const CookieConsent: React.FC = () => {
     <aside
       aria-label="Cookie Consent Banner"
       dir={isRTL ? "rtl" : "ltr"}
-      className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-xl z-50 animate-in fade-in slide-in-from-bottom-6 duration-300 pointer-events-auto"
+      className="fixed bottom-4 left-4 right-4 sm:left-5 sm:right-auto sm:max-w-lg z-50 animate-in fade-in slide-in-from-bottom-6 duration-300 pointer-events-auto"
     >
       <div className="bg-slate-900/95 backdrop-blur-xl text-white rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-700/60 ring-1 ring-white/10 flex flex-col gap-4">
         <div className="flex items-start justify-between gap-3">

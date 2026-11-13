@@ -92,7 +92,7 @@ export const PVC_COLOR_ALTERNATIVES: PvcColorOption[] = [
     id: "aluminyum-efekt",
     name: "Alüminyum Efekt",
     code: "Metalik",
-    previewImage: "/assets/renk/resim-180911_h800-1_h800.png",
+    previewImage: "/assets/renk/resim-180911_h800.png",
     swatchImage: "/assets/renk/aluminyum-efekt_w80_h80.jpg",
     category: "Metalik & Platin",
   },

@@ -134,7 +134,7 @@ export const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-[92vh] flex items-center overflow-hidden pt-28 pb-16 bg-slate-900">
+    <section className="relative min-h-[88vh] flex items-center overflow-hidden pt-28 lg:pt-36 pb-24 bg-[#040f26]">
       <div className="absolute inset-0 z-0">
         {heroSlides.map((slide, index) => (
           <div
@@ -154,24 +154,25 @@ export const Hero = () => {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(95deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.70) 52%, rgba(15, 23, 42, 0.45) 100%)",
+              "linear-gradient(95deg, rgba(4, 15, 38, 0.90) 0%, rgba(4, 15, 38, 0.72) 52%, rgba(4, 15, 38, 0.48) 100%)",
           }}
         />
         <div
           className="absolute inset-0"
           style={{
-            background: "linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, transparent 30%, rgba(248, 250, 252, 1) 100%)",
+            background:
+              "linear-gradient(180deg, rgba(4, 15, 38, 0.55) 0%, rgba(4, 15, 38, 0.15) 42%, rgba(4, 15, 38, 0.98) 100%)",
           }}
         />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-          <div className="lg:col-span-7 space-y-6 min-w-0">
+          <div className="lg:col-span-7 space-y-5 min-w-0">
             <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md border border-sky-200 shadow-lg max-w-full">
               <Sparkles className="h-4 w-4 text-sky-600 shrink-0" />
-              <span className="text-xs font-bold tracking-wider uppercase text-slate-900 truncate">
-                {t("heroBadge", "Fıratpen Yetkili Üretici Bayi • Seyhan / Adana")}
+              <span className="text-[11px] sm:text-xs font-bold tracking-wider uppercase text-slate-900 leading-snug">
+                {t("heroBadge", "Fıratpen, Winsa & Pimapen Yetkili Bayi • Seyhan / Adana")}
               </span>
             </div>
 
@@ -195,7 +196,7 @@ export const Hero = () => {
               <Link to="/iletisim">
                 <Button
                   size="lg"
-                  className="rounded-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold px-7 h-13 text-sm sm:text-base shadow-[0_10px_30px_rgba(14,165,233,0.45)] group transition-all"
+                  className="rounded-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold px-7 h-12 text-sm sm:text-base shadow-[0_10px_30px_rgba(14,165,233,0.45)] group transition-all"
                 >
                   {t("heroCtaQuote", "Ücretsiz Keşif & Teklif Al")}
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -209,7 +210,7 @@ export const Hero = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="rounded-full border-emerald-400/80 bg-emerald-600/90 hover:bg-emerald-500 text-white font-bold px-6 h-13 text-sm sm:text-base backdrop-blur-md shadow-lg"
+                  className="rounded-full border-emerald-400/80 bg-emerald-600/90 hover:bg-emerald-500 text-white font-bold px-6 h-12 text-sm sm:text-base backdrop-blur-md shadow-lg"
                 >
                   <MessageCircle className="mr-2 h-4 w-4" />
                   WhatsApp: 0533 625 36 11
@@ -262,10 +263,10 @@ export const Hero = () => {
           </div>
 
           <div className="lg:col-span-5">
-            <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-[0_24px_60px_rgba(15,23,42,0.35)] relative overflow-hidden">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+            <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-[0_24px_60px_rgba(15,23,42,0.35)] relative overflow-hidden">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3.5 mb-3.5">
                 <div className="flex items-center gap-3">
-                  <div className="h-11 w-11 rounded-2xl bg-sky-600 grid place-items-center text-white shadow-md">
+                  <div className="h-10 w-10 rounded-xl bg-sky-600 grid place-items-center text-white shadow-md">
                     <Calculator className="h-5 w-5" />
                   </div>
                   <div>
@@ -277,12 +278,12 @@ export const Hero = () => {
                     </h2>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
+                <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold shrink-0">
                   4+16+4 Isıcamlı
                 </span>
               </div>
 
-              <form onSubmit={handleQuickOrder} className="space-y-3.5">
+              <form onSubmit={handleQuickOrder} className="space-y-3">
                 <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1.5">
                     1. Profil Markası Seçin

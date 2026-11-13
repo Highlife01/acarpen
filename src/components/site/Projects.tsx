@@ -53,7 +53,7 @@ export const projectsData = [
   {
     slug: "cukurova-panoramik-villa",
     image: projectTech,
-    title: "Göl Маhallesi Lüks Villa — Sürme & Motorlu Panjur",
+    title: "Göl Mahallesi Lüks Villa — Sürme & Motorlu Panjur",
     location: "Çukurova, Adana",
     category: "Hebeschiebe Sürme & Somfy Panjur",
     area: "12 Müstakil Villa",
@@ -81,7 +81,7 @@ export const Projects = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
           <div className="space-y-4 max-w-2xl">
             <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200">
-              // Seçkin Referanslar & Uygulamalar
+              Seçkin Referanslar & Uygulamalar
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-900 break-words">
               İmza Attığımız <span className="text-gradient italic">Örnek Projeler</span>

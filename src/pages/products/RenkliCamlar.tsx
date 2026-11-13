@@ -16,7 +16,7 @@ export default function RenkliCamlar() {
   const [activeGlass, setActiveGlass] = useState(PVC_COLORED_GLASS_OPTIONS[0]);
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28">
+    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
         title="PVC Pencere Renk Alternatifleri (19 Desen) & PVC İçin Renkli Isıcamlar | Acarpen Adana"
         description="Acarpen Fıratpen 19 farklı PVC profil renk kartelası (Antrasit Gri, Altın Meşe, Vizon, Maun, Kuvars Platin) ve PVC pencereler ile cam balkonlar için Füme, Bronz, Mavi, Yeşil Reflekte ve Buzlu ısıcam seçenekleri."
@@ -57,9 +57,9 @@ export default function RenkliCamlar() {
       {/* Interactive 3-Column Color Previewer */}
       <section className="py-16 max-w-7xl mx-auto px-6 space-y-16">
         <div className="bg-white rounded-3xl p-7 sm:p-10 border border-slate-200 shadow-xl">
-          <div className="grid lg:grid-cols-12 gap-8 items-center">
+          <div className="grid lg:grid-cols-12 gap-8 items-stretch">
             {/* Left Column: 4 Feature Blocks */}
-            <div className="lg:col-span-4 space-y-4">
+            <div className="lg:col-span-4 space-y-4 flex flex-col justify-between">
               {WINDOW_COLOR_FEATURES.map((feat, i) => (
                 <div
                   key={i}

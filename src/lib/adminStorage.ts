@@ -1,10 +1,12 @@
 import {
   collection,
   doc,
+  getDoc,
   setDoc,
   updateDoc,
   deleteDoc,
   onSnapshot,
+  type Unsubscribe,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { db, auth, isFirebaseConfigured } from "./firebase";
@@ -464,6 +466,7 @@ export interface AuditEventItem {
     | "QUALITY_RELEASE"
     | "ORDER_CANCEL"
     | "INVOICE_CREATE"
+    | "INVOICE_ISSUE"
     | "RBAC_DENIED"
     | "DATA_EXPORT";
   actorEmail: string;
@@ -682,6 +685,7 @@ class ActiveDataStore {
 
   private pricesSeeded = false;
   private servicesSeeded = false;
+  private realtimeUnsubscribers: Unsubscribe[] = [];
 
   private quoteListeners: Set<(quotes: QuoteItem[]) => void> = new Set();
   private messageListeners: Set<(messages: ContactMessage[]) => void> = new Set();
@@ -782,10 +786,35 @@ class ActiveDataStore {
       onAuthStateChanged(auth, (user) => {
         this.sessionUid = user ? user.uid : null;
         this.notifySession();
+        if (user) {
+          this.attachRealtimeListeners();
+        } else {
+          this.detachRealtimeListeners();
+        }
       });
+    } catch {
+      // Fallback to in-memory state
+    }
+  }
 
+  private detachRealtimeListeners(): void {
+    if (this.realtimeUnsubscribers.length === 0) return;
+    this.realtimeUnsubscribers.forEach((unsub) => {
+      try {
+        unsub();
+      } catch {
+        // Ignore unsubscribe error
+      }
+    });
+    this.realtimeUnsubscribers = [];
+  }
+
+  private attachRealtimeListeners(): void {
+    if (this.realtimeUnsubscribers.length > 0 || !isFirebaseConfigured) return;
+
+    try {
       // 1. Quotes & Orders
-      onSnapshot(
+      this.realtimeUnsubscribers.push(onSnapshot(
         collection(db, COLLECTIONS.QUOTES),
         (snapshot) => {
           const remoteMap = new Map<string, QuoteItem>();
@@ -809,10 +838,10 @@ class ActiveDataStore {
           this.notifyQuotes();
         },
         () => {}
-      );
+      ));
 
       // 2. Contact Messages
-      onSnapshot(
+      this.realtimeUnsubscribers.push(onSnapshot(
         collection(db, COLLECTIONS.MESSAGES),
         (snapshot) => {
           const remoteMap = new Map<string, ContactMessage>();
@@ -836,10 +865,10 @@ class ActiveDataStore {
           this.notifyMessages();
         },
         () => {}
-      );
+      ));
 
       // 3. Factory Unit Prices
-      onSnapshot(
+      this.realtimeUnsubscribers.push(onSnapshot(
         collection(db, COLLECTIONS.PRICES),
         (snapshot) => {
           if (snapshot.empty) {
@@ -872,10 +901,10 @@ class ActiveDataStore {
           this.notifyPrices();
         },
         () => {}
-      );
+      ));
 
       // 4. Extra Services
-      onSnapshot(
+      this.realtimeUnsubscribers.push(onSnapshot(
         collection(db, COLLECTIONS.SERVICES),
         (snapshot) => {
           if (snapshot.empty) {
@@ -906,10 +935,10 @@ class ActiveDataStore {
           this.notifyServices();
         },
         () => {}
-      );
+      ));
 
       // 5. Customers (CRM 360)
-      onSnapshot(
+      this.realtimeUnsubscribers.push(onSnapshot(
         collection(db, COLLECTIONS.CUSTOMERS),
         (snapshot) => {
           const items: CustomerRecord[] = [];
@@ -922,10 +951,10 @@ class ActiveDataStore {
           this.notifyCustomers();
         },
         () => {}
-      );
+      ));
 
       // 6. Opportunities (Sales Funnel)
-      onSnapshot(
+      this.realtimeUnsubscribers.push(onSnapshot(
         collection(db, COLLECTIONS.OPPORTUNITIES),
         (snapshot) => {
           const items: OpportunityItem[] = [];
@@ -938,10 +967,10 @@ class ActiveDataStore {
           this.notifyOpportunities();
         },
         () => {}
-      );
+      ));
 
       // 7. Activities (CRM Tasks & Follow-ups)
-      onSnapshot(
+      this.realtimeUnsubscribers.push(onSnapshot(
         collection(db, COLLECTIONS.ACTIVITIES),
         (snapshot) => {
           const items: ActivityItem[] = [];
@@ -954,10 +983,10 @@ class ActiveDataStore {
           this.notifyActivities();
         },
         () => {}
-      );
+      ));
 
       // 8. Inventory (Raw Plates, Lots, Consumables, Racks)
-      onSnapshot(
+      this.realtimeUnsubscribers.push(onSnapshot(
         collection(db, COLLECTIONS.INVENTORY),
         (snapshot) => {
           const items: InventoryItem[] = [];
@@ -974,10 +1003,10 @@ class ActiveDataStore {
           this.notifyInventory();
         },
         () => {}
-      );
+      ));
 
       // 9. Purchases (MRP & Supplier Orders)
-      onSnapshot(
+      this.realtimeUnsubscribers.push(onSnapshot(
         collection(db, COLLECTIONS.PURCHASES),
         (snapshot) => {
           const items: PurchaseOrderItem[] = [];
@@ -990,10 +1019,10 @@ class ActiveDataStore {
           this.notifyPurchases();
         },
         () => {}
-      );
+      ));
 
       // 10. Quality Inspections
-      onSnapshot(
+      this.realtimeUnsubscribers.push(onSnapshot(
         collection(db, COLLECTIONS.QUALITY),
         (snapshot) => {
           const items: QualityInspectionItem[] = [];
@@ -1006,10 +1035,10 @@ class ActiveDataStore {
           this.notifyQuality();
         },
         () => {}
-      );
+      ));
 
       // 11. Immutable Audit Logs
-      onSnapshot(
+      this.realtimeUnsubscribers.push(onSnapshot(
         collection(db, COLLECTIONS.AUDIT_LOGS),
         (snapshot) => {
           const items: AuditEventItem[] = [];
@@ -1022,10 +1051,10 @@ class ActiveDataStore {
           this.notifyAuditLogs();
         },
         () => {}
-      );
+      ));
 
       // 12. Checks Portfolio (Alınan Çekler & Kesilen Çekler)
-      onSnapshot(
+      this.realtimeUnsubscribers.push(onSnapshot(
         collection(db, COLLECTIONS.CHECKS),
         (snapshot) => {
           const items: CheckInstrumentItem[] = [];
@@ -1043,10 +1072,10 @@ class ActiveDataStore {
           this.notifyChecks();
         },
         () => {}
-      );
+      ));
 
       // 13. Cash & Bank Ledger (Kasa & Banka Hareketleri)
-      onSnapshot(
+      this.realtimeUnsubscribers.push(onSnapshot(
         collection(db, COLLECTIONS.CASH_LEDGER),
         (snapshot) => {
           const items: CashLedgerItem[] = [];
@@ -1064,7 +1093,7 @@ class ActiveDataStore {
           this.notifyCashLedger();
         },
         () => {}
-      );
+      ));
     } catch {
       // Fallback to in-memory state
     }
@@ -2203,3 +2232,28 @@ export const subscribeActiveUserRole = (cb: (role: UserRole) => void) => liveSto
 export const getLiveSession = () => liveStore.getSession();
 export const setLiveSession = (uid: string | null) => liveStore.setSession(uid);
 export const subscribeLiveSession = (cb: (uid: string | null) => void) => liveStore.subscribeSession(cb);
+
+export async function fetchPublicQuoteById(id: string): Promise<QuoteItem | null> {
+  const cleanId = id.trim();
+  if (!cleanId) return null;
+  const localMatch = liveStore
+    .getQuotes()
+    .find((q) => q.id.toLowerCase() === cleanId.toLowerCase());
+  if (localMatch) return localMatch;
+  if (!isFirebaseConfigured) return null;
+
+  const candidates =
+    cleanId === cleanId.toUpperCase() ? [cleanId] : [cleanId, cleanId.toUpperCase()];
+  for (const docId of candidates) {
+    try {
+      const snap = await getDoc(doc(db, COLLECTIONS.QUOTES, docId));
+      if (snap.exists()) {
+        const data = snap.data() as QuoteItem;
+        return { ...data, id: data.id || snap.id };
+      }
+    } catch {
+      // Ignore permission or network failure on single-doc lookup
+    }
+  }
+  return null;
+}

@@ -54,18 +54,18 @@ const TemperliCam = () => {
 
       <Navbar />
 
-      <main className="pt-24">
-        <section className="relative py-20 lg:py-28 bg-primary text-primary-foreground overflow-hidden">
-          <div className="absolute inset-0 opacity-15 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-accent via-transparent to-transparent" />
+      <main className="pt-20 lg:pt-28">
+        <section className="relative py-16 lg:py-24 bg-[#040f26] text-white overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(14,165,233,0.22),transparent_60%)] pointer-events-none" />
           <div className="container mx-auto px-4 lg:px-8 relative z-10"><div className="grid lg:grid-cols-12 gap-10 items-center"><div className="lg:col-span-7">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/20 text-accent text-xs font-medium tracking-wider uppercase mb-6">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-500/20 border border-sky-400/30 text-sky-300 text-xs font-mono font-bold tracking-wider uppercase mb-6">
                 <Maximize2 className="w-3.5 h-3.5" />
                 Fıratpen • Winsa • Pimapen Sürme & Hebeschiebe
               </span>
-              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                PVC Sürme Pencereler ve <span className="text-accent">Hebeschiebe Kapılar</span>
+              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-white">
+                PVC Sürme Pencereler ve <span className="text-sky-300 italic">Hebeschiebe Kapılar</span>
               </h1>
-              <p className="text-lg text-primary-foreground/80 leading-relaxed mb-8">
+              <p className="text-lg text-slate-300 leading-relaxed mb-8">
                 Dar mekanlarda yer kazandıran <strong>120×120 cm</strong> ve <strong>140×120 cm çift kanat PVC sürme</strong>{" "}
                 pencerelerden, geniş teras ve bahçe açıklıkları için tasarlanan{" "}
                 <strong>Fıratpen Zenia Slide & Hebeschiebe</strong> kaldır-sür sistemlerine kadar tüm sürme doğrama
@@ -83,7 +83,7 @@ const TemperliCam = () => {
                 </a>
                 <a
                   href="tel:+905336253611"
-                  className="inline-flex items-center gap-2 border border-primary-foreground/30 hover:bg-primary-foreground/10 text-primary-foreground font-semibold px-7 py-4 rounded-xl transition-all"
+                  className="inline-flex items-center gap-2 border border-white/30 bg-white/10 hover:bg-white/20 text-white font-semibold px-7 py-4 rounded-xl transition-all"
                 >
                   <Phone className="w-4 h-4" />
                   0533 625 36 11

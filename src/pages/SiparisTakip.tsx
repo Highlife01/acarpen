@@ -1,10 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { getAdminQuotes, QuoteItem } from "@/lib/adminStorage";
+import {
+  getAdminQuotes,
+  subscribeAdminQuotes,
+  fetchPublicQuoteById,
+  QuoteItem,
+} from "@/lib/adminStorage";
 import {
   Search,
   PackageCheck,
@@ -29,10 +34,10 @@ const STAGES = [
     icon: FileText,
   },
   {
-    key: "review",
+    key: "in_review",
     step: 2,
     title: "CNC Profil & Destek Sacı Kesimi",
-    desc: "Fıratpen profiller ve galvanizli çelik destek sacları CNC hattında kesiliyor.",
+    desc: "Fıratpen, Winsa & Pimapen profiller ve galvanizli çelik destek sacları CNC hattında kesiliyor.",
     icon: Scissors,
   },
   {
@@ -65,18 +70,21 @@ const STAGES = [
   },
 ];
 
-function getActiveStepIndex(status: QuoteItem["status"]): number {
-  switch (status) {
+function getActiveStepIndex(quote: QuoteItem): number {
+  if (quote.status === "cancelled") return 0;
+  if (quote.status === "completed") return 6;
+  if (quote.productionStage && quote.productionStage >= 1 && quote.productionStage <= 6) {
+    return quote.productionStage;
+  }
+  switch (quote.status) {
     case "new":
       return 1;
-    case "review":
+    case "in_review":
       return 2;
     case "quoted":
       return 3;
     case "approved":
       return 4;
-    case "completed":
-      return 6;
     default:
       return 1;
   }
@@ -89,44 +97,60 @@ export default function SiparisTakip() {
   const [quotes, setQuotes] = useState<QuoteItem[]>(() => getAdminQuotes());
   const [matchedQuote, setMatchedQuote] = useState<QuoteItem | null>(null);
   const [searched, setSearched] = useState(false);
+  const [searchingRemote, setSearchingRemote] = useState(false);
 
   useEffect(() => {
-    const refresh = () => setQuotes(getAdminQuotes());
-    window.addEventListener("acarpen-store-updated", refresh);
-    return () => window.removeEventListener("acarpen-store-updated", refresh);
+    return subscribeAdminQuotes(setQuotes);
   }, []);
+
+  const handleSearchValue = useCallback(
+    async (val: string) => {
+      const trimmed = val.trim();
+      const clean = trimmed.toLowerCase();
+      if (!clean) return;
+      const normalizedCleanPhone = clean.replace(/\s+/g, "");
+
+      const localMatch = quotes.find(
+        (q) =>
+          q.id.toLowerCase() === clean ||
+          (normalizedCleanPhone.length >= 7 &&
+            q.phone.replace(/\s+/g, "").includes(normalizedCleanPhone)) ||
+          q.customerName.toLowerCase().includes(clean)
+      );
+
+      if (localMatch) {
+        setMatchedQuote(localMatch);
+        setSearched(true);
+        return;
+      }
+
+      setSearchingRemote(true);
+      const remoteMatch = await fetchPublicQuoteById(trimmed);
+      setSearchingRemote(false);
+      setMatchedQuote(remoteMatch);
+      setSearched(true);
+    },
+    [quotes]
+  );
 
   useEffect(() => {
     if (initialQuery) {
-      handleSearchValue(initialQuery);
+      void handleSearchValue(initialQuery);
     }
-  }, [initialQuery, quotes]);
-
-  const handleSearchValue = (val: string) => {
-    const clean = val.trim().toLowerCase();
-    if (!clean) return;
-    setSearched(true);
-    const found = quotes.find(
-      (q) =>
-        q.id.toLowerCase() === clean ||
-        q.phone.replace(/\s+/g, "").includes(clean.replace(/\s+/g, "")) ||
-        q.customerName.toLowerCase().includes(clean)
-    );
-    setMatchedQuote(found || null);
-  };
+  }, [initialQuery, handleSearchValue]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleSearchValue(query);
+    void handleSearchValue(query);
   };
 
-  const currentStep = matchedQuote ? getActiveStepIndex(matchedQuote.status) : 0;
+  const currentStep = matchedQuote ? getActiveStepIndex(matchedQuote) : 0;
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28">
+    <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
         title="Canlı Sipariş & Üretim Takip Portalı | Acarpen Adana"
-        description="Acarpen Fıratpen PVC pencere, kapı ve cam balkon siparişinizin CNC kesim, köşe kaynak, ısıcam ve montaj aşamalarını sipariş numaranızla canlı takip edin."
+        description="Acarpen Fıratpen, Winsa ve Pimapen PVC pencere, kapı ve cam balkon siparişinizin CNC kesim, köşe kaynak, ısıcam ve montaj aşamalarını sipariş numaranızla canlı takip edin."
         canonicalPath="/siparis-takip"
         breadcrumbs={[{ name: "Sipariş Takip", path: "/siparis-takip" }]}
       />
@@ -158,9 +182,10 @@ export default function SiparisTakip() {
             </div>
             <Button
               type="submit"
+              disabled={searchingRemote}
               className="rounded-2xl bg-sky-600 hover:bg-sky-700 text-white font-bold px-7 h-12 shadow-md"
             >
-              Sorgula
+              {searchingRemote ? "Sorgulanıyor..." : "Sorgula"}
             </Button>
           </form>
         </div>
@@ -214,7 +239,7 @@ export default function SiparisTakip() {
                   {matchedQuote.totalArea} m²
                 </div>
                 <div className="text-xs text-slate-500 mt-0.5">
-                  Fıratpen Yetkili Bayi Garantisi
+                  Fıratpen, Winsa & Pimapen Yetkili Bayi Garantisi
                 </div>
               </div>
             </div>
@@ -229,10 +254,17 @@ export default function SiparisTakip() {
                     Gülbahçesi Mah. Seyhan / Adana Üretim Merkezi
                   </p>
                 </div>
-                <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
-                  <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                  Aşama {currentStep} / 6 Aktif
-                </span>
+                {matchedQuote.status === "cancelled" ? (
+                  <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold">
+                    <AlertCircle className="h-4 w-4 text-rose-600" />
+                    Sipariş İptal Edildi
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
+                    <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                    Aşama {currentStep} / 6 Aktif
+                  </span>
+                )}
               </div>
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
