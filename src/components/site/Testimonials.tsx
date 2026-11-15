@@ -36,11 +36,11 @@ export const Testimonials = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-14 gap-6">
           <div className="space-y-4 max-w-2xl">
-            <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-50 px-3.5 py-1.5 rounded-full border border-sky-200">
+            <span className="inline-block font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold bg-sky-50 px-3.5 py-1.5 rounded-full border border-sky-200">
               Müşteri & Müteahhit Yorumları
             </span>
-            <h2 className="font-serif text-4xl sm:text-5xl font-bold text-slate-900">
-              İş Ortaklarımızın <span className="text-gradient italic">Acarpen Deneyimi</span>
+            <h2 className="font-display text-4xl sm:text-5xl font-extrabold tracking-[-0.025em] text-slate-900">
+              İş Ortaklarımızın <span className="text-gradient">Acarpen Deneyimi</span>
             </h2>
           </div>
           <p className="text-slate-600 max-w-md text-sm sm:text-base font-normal">
@@ -64,7 +64,7 @@ export const Testimonials = () => {
                   <Quote className="h-8 w-8 text-sky-200" />
                 </div>
 
-                <p className="text-slate-700 text-sm leading-relaxed mb-6 italic font-normal">
+                <p className="text-slate-700 text-sm sm:text-[15px] leading-relaxed mb-6 font-normal">
                   "{t.comment}"
                 </p>
               </div>

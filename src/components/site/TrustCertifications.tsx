@@ -39,10 +39,10 @@ export const TrustCertifications = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-800">
           <div>
-            <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-sky-400 font-bold block mb-1">
+            <span className="font-display text-[11px] uppercase tracking-[0.16em] text-sky-400 font-bold block mb-1">
               3 Lider Marka • Tek Üretim Merkezi • Uluslararası Kalite
             </span>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white">
+            <h2 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
               Fıratpen, Winsa & Pimapen Sistem Standartlarımız
             </h2>
           </div>

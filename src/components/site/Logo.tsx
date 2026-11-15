@@ -140,7 +140,7 @@ export const Logo: React.FC<LogoProps> = ({
         <div
           className={`mt-1.5 flex items-baseline font-extrabold lowercase leading-none ${textSizeClasses[size]}`}
           style={{
-            fontFamily: "'DM Sans', 'Montserrat', system-ui, sans-serif",
+            fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif",
             letterSpacing: "-0.035em",
           }}
         >
@@ -171,7 +171,7 @@ export const Logo: React.FC<LogoProps> = ({
         <div
           className={`flex items-baseline font-extrabold lowercase leading-none ${textSizeClasses[size]}`}
           style={{
-            fontFamily: "'DM Sans', 'Montserrat', system-ui, sans-serif",
+            fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif",
             letterSpacing: "-0.035em",
           }}
         >

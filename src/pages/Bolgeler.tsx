@@ -63,11 +63,11 @@ export default function Bolgeler() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8 space-y-4">
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-sky-800 bg-sky-50 border border-sky-200 shadow-sm">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full font-display text-xs font-bold uppercase tracking-[0.12em] text-sky-800 bg-sky-50 border border-sky-200 shadow-sm">
                 <Truck className="h-3.5 w-3.5 text-sky-600" /> Adana • Mersin • Osmaniye • Hatay • Gaziantep • Kayseri • Niğde
               </span>
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight">
-                Bölgesel Sevkiyat & <span className="text-gradient italic">Proje Çözümleri</span>
+              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-[-0.025em]">
+                Bölgesel Sevkiyat & <span className="text-gradient">Proje Çözümleri</span>
               </h1>
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl">
                 Adana Seyhan'daki (<strong>Gülbahçesi Mah. 13428 Sok. No:16/17</strong>) Fıratpen yetkili üretim tesisimizden <strong>Adana, Mersin, Osmaniye, Hatay, Gaziantep, Kayseri ve Niğde</strong> illerindeki bireysel konutlara, müteahhit şantiyelerine ve kurumsal projelere PVC doğrama ve cam balkon sevkiyatı gerçekleştiriyoruz.

@@ -101,11 +101,11 @@ export const Contact = () => {
         <div className="grid lg:grid-cols-5 gap-10">
           {/* Left info */}
           <div className="lg:col-span-2 space-y-6">
-            <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200">
+            <span className="inline-block font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200">
               İletişim & Ücretsiz Keşif
             </span>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-900 break-words">
-              Projeniz İçin <span className="text-gradient italic">Teklif Alın</span>
+            <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-[-0.025em] text-slate-900 break-words">
+              Projeniz İçin <span className="text-gradient">Teklif Alın</span>
             </h2>
             <p className="text-slate-600 leading-relaxed text-sm sm:text-base font-normal">
               Standart hazır ölçü veya özel ölçü PVC pencere, balkon kapısı, WC kapısı, sürme sistem, cam balkon ve toplu şantiye siparişleriniz için bize ulaşın.
@@ -181,7 +181,7 @@ export const Contact = () => {
               />
             </div>
             <div className="border-b border-slate-100 pb-4">
-              <h3 className="font-serif text-2xl font-bold text-slate-900">Hızlı Fiyat & Keşif Talep Formu</h3>
+              <h3 className="font-display text-2xl font-extrabold tracking-tight text-slate-900">Hızlı Fiyat & Keşif Talep Formu</h3>
               <p className="text-xs text-slate-500 mt-1 font-normal">
                 Ölçülerinizi, renk (Beyaz / Antrasit / Altınmeşe) ve açılım tercihlerinizi yazın; hemen teklif hazırlayalım.
               </p>

@@ -339,12 +339,12 @@ export default function Hesaplama() {
 
       <section className="py-12 border-b border-slate-200 bg-gradient-to-b from-sky-50 via-white to-slate-50">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-100 border border-sky-200 text-xs font-mono uppercase tracking-wider text-sky-800 mb-3 font-bold">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-100 border border-sky-200 font-display text-xs uppercase tracking-[0.12em] text-sky-800 mb-3 font-bold">
             <Calculator className="h-3.5 w-3.5 text-sky-600" />
             Çoklu Pencere, Kapı & Cam Balkon Yapılandırıcı
           </div>
-          <h1 className="font-serif text-3xl sm:text-5xl font-bold text-slate-900">
-            Ölçü, Renk ve Açılım <span className="text-gradient italic">Listesi Oluşturun</span>
+          <h1 className="font-display text-3xl sm:text-5xl font-extrabold tracking-[-0.025em] text-slate-900">
+            Ölçü, Renk ve Açılım <span className="text-gradient">Listesi Oluşturun</span>
           </h1>
           <p className="text-slate-600 text-sm sm:text-base mt-2 max-w-2xl font-normal">
             Standart hazır ölçülerde veya özel ölçülerinizde PVC pencere, balkon kapısı, WC kapısı, sürme sistem ve cam balkon kalemlerinizi ekleyin; tek tıkla PDF metraj çıktısı alın veya WhatsApp'tan fiyat isteyin.

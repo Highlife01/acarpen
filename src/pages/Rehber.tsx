@@ -68,12 +68,12 @@ export default function Rehber() {
 
       <section className="py-16 bg-gradient-to-b from-sky-50 via-white to-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-100 border border-sky-200 text-xs font-mono uppercase tracking-wider text-sky-800 font-bold mb-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-100 border border-sky-200 font-display text-xs uppercase tracking-[0.12em] text-sky-800 font-bold mb-4">
             <BookOpen className="h-3.5 w-3.5 text-sky-600" />
             Acarpen Teknik Bilgi Bankası & Seçim Kılavuzu
           </div>
-          <h1 className="font-serif text-4xl sm:text-6xl font-bold text-slate-900 tracking-tight max-w-4xl">
-            PVC Pencere, Kapı ve <span className="text-gradient italic">Cam Balkon Rehberi</span>
+          <h1 className="font-display text-4xl sm:text-6xl font-extrabold text-slate-900 tracking-[-0.025em] max-w-4xl">
+            PVC Pencere, Kapı ve <span className="text-gradient">Cam Balkon Rehberi</span>
           </h1>
           <p className="geo-summary mt-4 text-slate-700 max-w-3xl text-base sm:text-lg leading-relaxed font-normal bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
             <strong>Hızlı Teknik Özet:</strong> Dayanımı ve yalıtımı dengeli bir PVC pencere sisteminde; <strong>70 mm veya 75 mm profil genişliği</strong>, minimum <strong>1.00 mm - 1.50 mm galvanizli çelik destek sacı</strong>, <strong>2.5 mm - 3.0 mm profil et kalınlığı</strong> ve <strong>4+16+4 mm Isıcam</strong> kombinasyonu temel standarttır.

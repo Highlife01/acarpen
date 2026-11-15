@@ -38,11 +38,11 @@ export const ProductionTech = () => {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-14 gap-6">
           <div className="space-y-4 max-w-2xl">
-            <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100 px-3.5 py-1.5 rounded-full border border-sky-200">
+            <span className="inline-block font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold bg-sky-100 px-3.5 py-1.5 rounded-full border border-sky-200">
               CNC Üretim & Montaj Teknolojimiz
             </span>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-900 break-words">
-              CNC Otomasyonlu <span className="text-gradient italic">PVC Doğrama</span> & Cam Balkon İmalatı
+            <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-[-0.025em] text-slate-900 break-words">
+              CNC Otomasyonlu <span className="text-gradient">PVC Doğrama</span> & Cam Balkon İmalatı
             </h2>
           </div>
           <p className="text-slate-600 max-w-md text-sm sm:text-base leading-relaxed font-normal">
@@ -63,7 +63,7 @@ export const ProductionTech = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/30 to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4 text-white space-y-2">
-                  <span className="inline-block text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded-full bg-sky-500 text-slate-950 font-extrabold">
+                  <span className="inline-block font-display text-[10px] uppercase tracking-[0.14em] px-2.5 py-1 rounded-full bg-sky-500 text-slate-950 font-extrabold">
                     Gülbahçesi Mah. Seyhan / Adana
                   </span>
                   <h3 className="font-serif text-xl sm:text-2xl font-bold">
@@ -99,11 +99,11 @@ export const ProductionTech = () => {
             <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-md mb-4">
               <div className="flex items-center gap-3 mb-2">
                 <ShieldCheck className="h-5 w-5 text-emerald-600 shrink-0" />
-                <span className="text-xs font-mono uppercase tracking-wider text-emerald-700 font-bold">
+                <span className="font-display text-xs uppercase tracking-[0.12em] text-emerald-700 font-bold">
                   Acarpen Kalite & Mühendislik Standartları
                 </span>
               </div>
-              <h3 className="font-serif text-2xl font-bold text-slate-900 mb-2">
+              <h3 className="font-display text-2xl font-extrabold tracking-tight text-slate-900 mb-2">
                 Ölçüden Montaja 4 Aşamalı Kusursuz Üretim
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">

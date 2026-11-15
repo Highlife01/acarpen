@@ -9,11 +9,11 @@ export const GoogleMapLocation = () => {
           {/* Left: Location & Logistics Info */}
           <div className="lg:col-span-5 bg-white rounded-3xl p-8 border border-slate-200 shadow-lg flex flex-col justify-between space-y-6">
             <div>
-              <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-50 px-3 py-1 rounded-full border border-sky-200 mb-3">
+              <span className="inline-block font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold bg-sky-50 px-3 py-1 rounded-full border border-sky-200 mb-3">
                 Üretim & Showroom Konumu
               </span>
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-slate-900 mb-3">
-                Adana Seyhan <span className="text-gradient italic">Acarpen Merkezimiz</span>
+              <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-[-0.025em] text-slate-900 mb-3">
+                Adana Seyhan <span className="text-gradient">Acarpen Merkezimiz</span>
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6 font-normal">
                 Gülbahçesi Mahallesi'ndeki üretim ve showroom merkezimizde Fıratpen PVC pencere ve kapı serilerini, renk kartelalarını ve cam balkon sistemlerimizi yakından inceleyebilirsiniz.

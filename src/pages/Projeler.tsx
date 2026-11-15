@@ -17,11 +17,11 @@ export default function Projeler() {
       <Navbar />
       <section className="py-12 border-b border-slate-200 bg-gradient-to-b from-sky-50 via-white to-slate-50">
         <div className="max-w-7xl mx-auto px-6">
-          <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
+          <span className="inline-block font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
             Mimari Portfolyo & Tamamlanan Uygulamalar
           </span>
-          <h1 className="font-serif text-4xl sm:text-6xl font-bold text-slate-900">
-            Referans <span className="text-gradient italic">Projelerimiz</span>
+          <h1 className="font-display text-4xl sm:text-6xl font-extrabold tracking-[-0.025em] text-slate-900">
+            Referans <span className="text-gradient">Projelerimiz</span>
           </h1>
           <p className="mt-4 text-slate-600 max-w-2xl text-base sm:text-lg font-normal">
             Adana ve çevre illerdeki toplu konut şantiyeleri, müstakil villalar ve daire yenileme projelerinde Acarpen kalitesiyle teslim ettiğimiz örnek çalışmalar.

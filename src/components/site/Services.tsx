@@ -91,12 +91,12 @@ export const Services = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 overflow-hidden">
         {/* Section Header */}
         <div className="max-w-3xl mb-14 space-y-4">
-          <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200">
+          <span className="inline-block font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200">
             {t("servicesBadge", "Fıratpen, Winsa & Pimapen Ürün Kataloğu")}
           </span>
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-900 break-words">
+          <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-[-0.025em] text-slate-900 break-words">
             PVC Pencereler, Kapılar, Sürme &{" "}
-            <span className="text-gradient italic">
+            <span className="text-gradient">
               Cam Balkon Sistemleri
             </span>
           </h2>
@@ -213,11 +213,11 @@ export const Services = () => {
         <div className="mt-20 bg-white rounded-3xl p-7 sm:p-10 border border-slate-200 shadow-xl">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-10 pb-6 border-b border-slate-100">
             <div>
-              <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-sky-700 font-bold mb-2">
+              <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold mb-2">
                 <Palette className="h-4 w-4 text-sky-600" />
                 Canlı Pencere Renk Önizleme • 19 Farklı Laminasyon & Folyo Seçeneği
               </span>
-              <h3 className="font-serif text-2xl sm:text-4xl font-bold text-slate-900">
+              <h3 className="font-display text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
                 Renk Alternatifleri
               </h3>
             </div>
@@ -356,11 +356,11 @@ export const Services = () => {
         <div className="mt-16 bg-white rounded-3xl p-7 sm:p-10 border border-slate-200 shadow-lg">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
             <div>
-              <span className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-sky-700 font-bold mb-2">
+              <span className="inline-flex items-center gap-1.5 font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold mb-2">
                 <CheckCircle2 className="h-4 w-4 text-sky-600" />
                 Standart Hazır Ölçüler & Özel Üretim Seçenekleri
               </span>
-              <h3 className="font-serif text-2xl sm:text-3xl font-bold text-slate-900">
+              <h3 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
                 Çok Tercih Edilen PVC Pencere, Sürme & Kapı Ölçüleri
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl">

@@ -73,11 +73,11 @@ Telefon & WhatsApp: 0533 625 36 11 | Web: https://www.acarpen.com.tr
       <section className="py-14 border-b border-slate-200 bg-gradient-to-b from-sky-50 via-white to-slate-50">
         <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div>
-            <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
+            <span className="inline-block font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
               Acarpen — Fıratpen • Winsa • Pimapen Sistem Kataloğu
             </span>
-            <h1 className="font-serif text-4xl sm:text-6xl font-bold text-slate-900 max-w-3xl">
-              PVC Pencere, Kapı & <span className="text-gradient italic">Cam Balkon Çözümleri</span>
+            <h1 className="font-display text-4xl sm:text-6xl font-extrabold tracking-[-0.025em] text-slate-900 max-w-3xl">
+              PVC Pencere, Kapı & <span className="text-gradient">Cam Balkon Çözümleri</span>
             </h1>
             <p className="mt-4 text-slate-600 max-w-2xl text-base sm:text-lg font-normal">
               Gülbahçesi Mah. Seyhan / Adana tesisimizde Fıratpen, Winsa ve Pimapen profil sistemleriyle standart ve özel ölçülerde üretilen PVC doğrama, sürme sistem ve cam balkon gruplarımız.

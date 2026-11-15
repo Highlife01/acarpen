@@ -80,11 +80,11 @@ export const Projects = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
           <div className="space-y-4 max-w-2xl">
-            <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200">
+            <span className="inline-block font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200">
               Seçkin Referanslar & Uygulamalar
             </span>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-900 break-words">
-              İmza Attığımız <span className="text-gradient italic">Örnek Projeler</span>
+            <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-[-0.025em] text-slate-900 break-words">
+              İmza Attığımız <span className="text-gradient">Örnek Projeler</span>
             </h2>
           </div>
           <div className="space-y-3 max-w-md">
@@ -113,7 +113,7 @@ export const Projects = () => {
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/75 via-slate-900/20 to-transparent" />
-                  <span className="absolute top-4 left-4 text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-white/95 backdrop-blur-md text-sky-700 border border-slate-200 font-bold shadow-sm">
+                  <span className="absolute top-4 left-4 font-display text-xs uppercase tracking-[0.1em] px-3 py-1 rounded-full bg-white/95 backdrop-blur-md text-sky-700 border border-slate-200 font-bold shadow-sm">
                     {p.category}
                   </span>
                   <span className="absolute top-4 right-4 text-xs font-mono px-2.5 py-1 rounded-full bg-slate-900/85 text-white border border-white/20 font-semibold">

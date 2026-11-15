@@ -140,7 +140,7 @@ export const Navbar = () => {
                       className="flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-sky-700 hover:bg-sky-50 transition-colors"
                     >
                       <span>{item.label}</span>
-                      <span className="shrink-0 text-[10px] px-2 py-0.5 rounded-full bg-sky-100 text-sky-700 border border-sky-200 font-mono">
+                      <span className="shrink-0 font-display text-[10px] font-bold tracking-wide px-2 py-0.5 rounded-full bg-sky-100 text-sky-700 border border-sky-200">
                         {item.badge}
                       </span>
                     </Link>

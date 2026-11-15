@@ -44,11 +44,11 @@ export const QualityProcessFlow = () => {
     <section className="py-24 bg-slate-50 border-b border-slate-200 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200">
+          <span className="inline-block font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200">
             6 Aşamalı Acarpen Üretim & Montaj Süreci
           </span>
-          <h2 className="font-serif text-4xl sm:text-5xl font-bold text-slate-900">
-            Ölçüden Montaja <span className="text-gradient italic">Kusursuz İş Akışı</span>
+          <h2 className="font-display text-4xl sm:text-5xl font-extrabold tracking-[-0.025em] text-slate-900">
+            Ölçüden Montaja <span className="text-gradient">Kusursuz İş Akışı</span>
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-normal">
             Ürettiğimiz her PVC pencere, balkon kapısı, sürme sistem ve cam balkon; TS EN 12608-1 profil ve TSE EN 1279 ısıcam standartlarına uygun olarak 6 aşamalı kalite kontrol sürecinden geçer.
@@ -80,7 +80,7 @@ export const QualityProcessFlow = () => {
                   </p>
                 </div>
 
-                <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] font-mono text-emerald-700 font-bold">
+                <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between font-display text-[10px] tracking-[0.12em] text-emerald-700 font-bold">
                   <span>KALİTE KONTROL</span>
                   <span>%100 ONAY</span>
                 </div>

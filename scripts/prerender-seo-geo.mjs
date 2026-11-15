@@ -764,7 +764,7 @@ function buildSemanticHTML(route) {
       </nav>
     </header>
 
-    <main class="prerender-main" style="max-width:1200px;margin:0 auto;padding:3rem 1.5rem;font-family:system-ui,-apple-system,sans-serif;color:#1e293b;line-height:1.6;">
+    <main class="prerender-main" style="max-width:1200px;margin:0 auto;padding:3rem 1.5rem;font-family:'Inter','Plus Jakarta Sans',system-ui,-apple-system,sans-serif;color:#1e293b;line-height:1.6;">
       ${breadcrumbMarkup}
 
       <header style="margin-bottom:2.5rem;">
@@ -799,7 +799,7 @@ function buildSemanticHTML(route) {
       </section>
     </main>
 
-    <footer class="prerender-footer" style="background:#040f26;color:#94a3b8;padding:3rem 2rem;border-top:1px solid #1e293b;margin-top:4rem;font-family:system-ui,-apple-system,sans-serif;font-size:0.875rem;">
+    <footer class="prerender-footer" style="background:#040f26;color:#94a3b8;padding:3rem 2rem;border-top:1px solid #1e293b;margin-top:4rem;font-family:'Inter','Plus Jakarta Sans',system-ui,-apple-system,sans-serif;font-size:0.875rem;">
       <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem;">
         <div>
           <strong style="color:#ffffff;font-size:1.1rem;display:block;margin-bottom:0.75rem;">ACAR PEN İNŞAAT SANAYİ VE TİCARET LTD. ŞTİ.</strong>

@@ -22,11 +22,11 @@ export default function Hakkimizda() {
       {/* Hero Section */}
       <section className="py-16 border-b border-slate-200 relative overflow-hidden bg-gradient-to-b from-sky-50 via-white to-slate-50">
         <div className="max-w-7xl mx-auto px-6">
-          <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
+          <span className="inline-block font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
             Kurumsal Hikayemiz & Vizyonumuz
           </span>
-          <h1 className="font-serif text-4xl sm:text-6xl font-bold text-slate-900 max-w-4xl leading-tight">
-            Doğrudan Üretim, Hızlı Tedarik ve <span className="text-gradient italic">Üç Lider Marka Güvencesi.</span>
+          <h1 className="font-display text-4xl sm:text-6xl font-extrabold tracking-[-0.025em] text-slate-900 max-w-4xl leading-tight">
+            Doğrudan Üretim, Hızlı Tedarik ve <span className="text-gradient">Üç Lider Marka Güvencesi.</span>
           </h1>
           <p className="mt-4 text-slate-600 max-w-3xl text-base sm:text-lg leading-relaxed font-normal">
             <strong className="text-slate-900 font-bold">Acar Pen İnşaat Sanayi ve Ticaret Limited Şirketi (Acarpen)</strong> olarak, Adana Seyhan Gülbahçesi Mahallesi'ndeki üretim ve showroom merkezimizde; <strong>Fıratpen, Winsa ve Pimapen</strong> PVC Pencere & Kapı Sistemleri, Sürme Sistemler, Düz/L/U Cam Balkon, Panjur ve Sineklik üretimini tek çatı altında sunuyoruz.

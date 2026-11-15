@@ -120,7 +120,7 @@ export const Footer = () => {
 
           {/* Col 2: Product Systems */}
           <div className="lg:col-span-3 space-y-3">
-            <h3 className="text-xs font-mono uppercase tracking-widest text-sky-400 font-bold">
+            <h3 className="font-display text-xs uppercase tracking-[0.14em] text-sky-400 font-bold">
               Ürün Sistemlerimiz
             </h3>
             <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
@@ -164,7 +164,7 @@ export const Footer = () => {
 
           {/* Col 3: Corporate & Knowledge Center */}
           <div className="lg:col-span-2 space-y-3">
-            <h3 className="text-xs font-mono uppercase tracking-widest text-sky-400 font-bold">
+            <h3 className="font-display text-xs uppercase tracking-[0.14em] text-sky-400 font-bold">
               Kurumsal & Bilgi
             </h3>
             <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
@@ -208,7 +208,7 @@ export const Footer = () => {
 
           {/* Col 4: Service Regions (Moved from Navbar & Expanded) */}
           <div className="lg:col-span-2 space-y-3">
-            <h3 className="text-xs font-mono uppercase tracking-widest text-sky-400 font-bold">
+            <h3 className="font-display text-xs uppercase tracking-[0.14em] text-sky-400 font-bold">
               Hizmet Bölgelerimiz
             </h3>
             <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
@@ -251,7 +251,7 @@ export const Footer = () => {
 
           {/* Col 5: Factory & Direct Contact */}
           <div className="lg:col-span-2 space-y-3">
-            <h3 className="text-xs font-mono uppercase tracking-widest text-sky-400 font-bold">
+            <h3 className="font-display text-xs uppercase tracking-[0.14em] text-sky-400 font-bold">
               Fabrika & İletişim
             </h3>
             <ul className="space-y-2.5 text-xs sm:text-sm text-slate-300">

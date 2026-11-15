@@ -71,16 +71,16 @@ export const SeoGeoFaqSection = () => {
           {/* Left Column: GEO Citation Summary & Regional Internal Links */}
           <div className="lg:col-span-5 space-y-6">
             <div>
-              <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
+              <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold bg-sky-100 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
                 <HelpCircle className="h-3.5 w-3.5" />
                 Sıkça Sorulan Sorular & Teknik Rehber
               </span>
               <h2
                 id="faq-heading"
-                className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-slate-900"
+                className="font-display text-3xl sm:text-4xl font-extrabold tracking-[-0.025em] text-slate-900"
               >
                 Fıratpen, Winsa & Pimapen{" "}
-                <span className="text-gradient italic">Bilgi Merkezi</span>
+                <span className="text-gradient">Bilgi Merkezi</span>
               </h2>
             </div>
 

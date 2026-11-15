@@ -216,20 +216,20 @@ export const Hero = () => {
           <div className="lg:col-span-7 space-y-5 min-w-0">
             <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md border border-sky-200 shadow-lg max-w-full">
               <Sparkles className="h-4 w-4 text-sky-600 shrink-0" />
-              <span className="text-[11px] sm:text-xs font-bold tracking-wider uppercase text-slate-900 leading-snug">
+              <span className="font-display text-[11px] sm:text-xs font-bold tracking-[0.08em] uppercase text-slate-900 leading-snug">
                 {t("heroBadge", "Fıratpen, Winsa & Pimapen Yetkili Bayi • Seyhan / Adana")}
               </span>
             </div>
 
-            <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)] break-words">
-              {t("heroTitle1", "DOĞRUDAN ÜRETİM.")}{" "}
-              <span className="text-sky-300 italic font-extrabold">
-                {t("heroTitleHighlight", "ACARPEN")}
+            <h1 className="font-display text-3xl sm:text-5xl lg:text-[3.5rem] font-extrabold leading-[1.08] tracking-[-0.03em] text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)] break-words">
+              {t("heroTitle1", "Fıratpen, Winsa & Pimapen —")}{" "}
+              <span className="bg-gradient-to-r from-sky-200 via-sky-300 to-cyan-200 bg-clip-text text-transparent">
+                {t("heroTitleHighlight", "Acarpen")}
               </span>
               <br />
-              {t("heroTitle2", "FIRATPEN KALİTESİ VE")}{" "}
-              <span className="text-emerald-300 font-extrabold">
-                {t("heroTitleHighlight2", "GÜVENCESİ.")}
+              {t("heroTitle2", "Üretim Gücü ve")}{" "}
+              <span className="text-emerald-300">
+                {t("heroTitleHighlight2", "Güvencesi.")}
               </span>
             </h1>
 
@@ -301,7 +301,7 @@ export const Hero = () => {
                   />
                 ))}
               </div>
-              <span className="text-xs font-mono text-white font-semibold bg-slate-900/75 px-3 py-1 rounded-full border border-white/20">
+              <span className="font-display text-xs text-white font-semibold tracking-wide bg-slate-900/75 px-3 py-1 rounded-full border border-white/20">
                 {heroSlides[currentSlide].badge}
               </span>
             </div>
@@ -315,10 +315,10 @@ export const Hero = () => {
                     <Calculator className="h-5 w-5" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-sky-600 block font-bold">
+                    <span className="font-display text-[10px] uppercase tracking-[0.14em] text-sky-600 block font-bold">
                       Pencere, Kapı & Cam Balkon Yapılandırıcı
                     </span>
-                    <h2 className="font-serif text-lg sm:text-xl font-bold text-slate-900">
+                    <h2 className="font-display text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">
                       Ölçü, Renk & Açılım Seçin
                     </h2>
                   </div>

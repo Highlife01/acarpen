@@ -163,12 +163,12 @@ export default function SiparisTakip() {
 
       <section className="py-14 border-b border-slate-200 bg-gradient-to-b from-sky-50 via-white to-slate-50">
         <div className="max-w-4xl mx-auto px-6 text-center space-y-4">
-          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-100 border border-sky-200 text-xs font-mono uppercase tracking-widest text-sky-800 font-bold">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-100 border border-sky-200 font-display text-xs uppercase tracking-[0.14em] text-sky-800 font-bold">
             <Clock className="h-3.5 w-3.5 text-sky-600" />
             Acarpen Çift Doğrulamalı İmalat İzleme
           </span>
-          <h1 className="font-serif text-3xl sm:text-5xl font-bold text-slate-900">
-            Sipariş & Üretim <span className="text-gradient italic">Takip Portalı</span>
+          <h1 className="font-display text-3xl sm:text-5xl font-extrabold tracking-[-0.025em] text-slate-900">
+            Sipariş & Üretim <span className="text-gradient">Takip Portalı</span>
           </h1>
           <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto font-normal">
             Başvuru sonrası size verilen Sipariş/Teklif Numarası (veya Telefon Numarası) ile{" "}

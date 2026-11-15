@@ -45,11 +45,11 @@ export const WhyAcarpen = () => {
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-14 gap-6">
           <div className="space-y-4 max-w-2xl">
-            <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-50 px-3.5 py-1.5 rounded-full border border-sky-200">
+            <span className="inline-block font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold bg-sky-50 px-3.5 py-1.5 rounded-full border border-sky-200">
               Neden Acarpen?
             </span>
-            <h2 className="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-slate-900">
-              Adana'da <span className="text-gradient italic">Acarpen'i</span> Tercih Etmeniz İçin 6 Güçlü Neden
+            <h2 className="font-display text-4xl sm:text-5xl font-extrabold tracking-[-0.025em] text-slate-900">
+              Adana'da <span className="text-gradient">Acarpen'i</span> Tercih Etmeniz İçin 6 Güçlü Neden
             </h2>
           </div>
           <p className="text-slate-600 max-w-md text-sm sm:text-base leading-relaxed font-normal">

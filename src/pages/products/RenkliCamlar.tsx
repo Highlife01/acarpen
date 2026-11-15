@@ -45,8 +45,8 @@ export default function RenkliCamlar() {
           <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold text-sky-800 bg-sky-50 border border-sky-200 shadow-sm mb-4">
             <Palette className="h-3.5 w-3.5 text-sky-600" /> 19 PVC Profil Deseni + 6 Renkli & Reflekte Isıcam Seçeneği
           </span>
-          <h1 className="font-serif text-4xl sm:text-6xl font-bold text-slate-900 tracking-tight">
-            PVC Pencere <span className="text-gradient italic">Renk Alternatifleri</span> & Renkli Camlar
+          <h1 className="font-display text-4xl sm:text-6xl font-extrabold text-slate-900 tracking-[-0.025em]">
+            PVC Pencere <span className="text-gradient">Renk Alternatifleri</span> & Renkli Camlar
           </h1>
           <p className="text-slate-600 text-sm sm:text-base font-normal leading-relaxed max-w-3xl mt-4">
             Fıratpen PVC doğramalarınızda <strong>Antrasit Gri, Altın Meşe, Vizon, Koyu Meşe, Maun, Kuvars Platin</strong> dahil 19 lamine profil rengini; <strong>Füme, Bronz, Mavi Reflekte, Yeşil Reflekte, Satinato Buzlu ve Solar Low-E Konfor</strong> renkli ısıcamlarla kombine ederek hem ısı/güneş kontrolü hem de kusursuz mimari estetik sağlıyoruz.
@@ -162,11 +162,11 @@ export default function RenkliCamlar() {
         <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-2xl relative overflow-hidden">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
             <div className="max-w-3xl space-y-3">
-              <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-sky-300 font-bold bg-sky-500/15 px-3.5 py-1.5 rounded-full border border-sky-400/30">
+              <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-[0.14em] text-sky-300 font-bold bg-sky-500/15 px-3.5 py-1.5 rounded-full border border-sky-400/30">
                 <Sparkles className="h-3.5 w-3.5" /> PVC Doğrama & Cam Balkon İçin Renkli Cam Çözümleri
               </span>
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white">
-                PVC Pencereler İçin <span className="text-sky-400 italic">Renkli & Reflekte Isıcam</span> Seçenekleri
+              <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+                PVC Pencereler İçin <span className="text-sky-400">Renkli & Reflekte Isıcam</span> Seçenekleri
               </h2>
               <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
                 Adana'nın yoğun güneş ışığı ve sıcak ikliminde PVC pencerelerinizde, sürme kapılarınızda ve cam balkonlarınızda yalnızca profil rengini değil, <strong>4+16+4 mm ısıcam veya 8-10 mm temperli cam rengini</strong> de cephenize ve mahremiyet ihtiyacınıza göre seçebilirsiniz.

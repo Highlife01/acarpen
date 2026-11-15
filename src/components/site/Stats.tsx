@@ -22,7 +22,7 @@ export const Stats = () => {
               }`}
             >
               <div className="flex items-baseline gap-1.5 flex-wrap">
-                <span className="font-serif text-3xl sm:text-5xl font-extrabold text-gradient tracking-tight">
+                <span className="font-display text-3xl sm:text-5xl font-extrabold text-gradient tracking-[-0.03em] tabular-nums">
                   {s.value}
                 </span>
                 <span className="font-mono text-sm sm:text-lg text-sky-600 font-bold">{s.unit}</span>

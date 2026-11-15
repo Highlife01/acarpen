@@ -58,11 +58,11 @@ export default function UretimTeknolojisiPage() {
 
       <section className="py-14 border-b border-slate-200 bg-gradient-to-b from-sky-50 via-white to-slate-50">
         <div className="max-w-7xl mx-auto px-6">
-          <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
+          <span className="inline-block font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold bg-sky-100/80 px-3.5 py-1.5 rounded-full border border-sky-200 mb-3">
             CNC Doğrama Otomasyonu & Kalite Standartlarımız
           </span>
-          <h1 className="font-serif text-4xl sm:text-6xl font-bold text-slate-900 max-w-4xl">
-            Fıratpen Kalitesiyle <span className="text-gradient italic">Modern Üretim</span>
+          <h1 className="font-display text-4xl sm:text-6xl font-extrabold tracking-[-0.025em] text-slate-900 max-w-4xl">
+            Fıratpen Kalitesiyle <span className="text-gradient">Modern Üretim</span>
           </h1>
           <p className="mt-4 text-slate-600 max-w-2xl text-base sm:text-lg font-normal">
             Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana adresindeki üretim merkezimizde yüksek yalıtımlı PVC pencere, kapı, sürme sistem ve cam balkon imalatı gerçekleştiriyoruz.
@@ -74,10 +74,10 @@ export default function UretimTeknolojisiPage() {
 
       <section className="py-20 max-w-7xl mx-auto px-6">
         <div className="max-w-3xl mb-12 space-y-3">
-          <span className="text-xs font-mono uppercase tracking-[0.2em] text-sky-700 font-bold">
+          <span className="font-display text-xs uppercase tracking-[0.14em] text-sky-700 font-bold">
             İmalat Hattımız & Teknik Donanım
           </span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-slate-900">
+          <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
             4 Ana Üretim İstasyonumuz
           </h2>
           <p className="text-slate-600 text-sm sm:text-base font-normal">

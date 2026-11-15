@@ -149,11 +149,11 @@ export function SiteIntro() {
           className="acarpen-intro-logo-in relative z-10 h-auto w-[250px] sm:w-[320px] select-none object-contain"
         />
 
-        <div className="mt-4 flex flex-col items-center gap-2 text-center">
-          <p className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.22em] text-[#05122b]">
+        <div className="mt-4 flex flex-col items-center gap-1.5 text-center">
+          <p className="font-display text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.2em] text-[#05122b]">
             FIRATPEN • WINSA • PİMAPEN
           </p>
-          <p className="text-[11px] font-semibold tracking-wide text-slate-600">
+          <p className="text-xs font-medium tracking-[-0.005em] text-slate-600">
             Yetkili Üretici Bayi &amp; Adana Üretim Merkezi
           </p>
         </div>
@@ -167,7 +167,7 @@ export function SiteIntro() {
           type="button"
           onClick={dismissIntro}
           aria-label="Giriş animasyonunu atla"
-          className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-xs font-bold text-slate-700 transition hover:border-sky-400 hover:bg-sky-50 hover:text-[#05122b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+          className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 font-display text-xs font-semibold tracking-tight text-slate-700 transition hover:border-sky-400 hover:bg-sky-50 hover:text-[#05122b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
         >
           Girişi Atla
           <span aria-hidden="true">→</span>

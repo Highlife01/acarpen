@@ -14,6 +14,12 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["'Inter'", "'Noto Sans Arabic'", "system-ui", "-apple-system", "sans-serif"],
+        display: ["'Plus Jakarta Sans'", "'Noto Sans Arabic'", "system-ui", "sans-serif"],
+        serif: ["'Plus Jakarta Sans'", "'Noto Sans Arabic'", "system-ui", "sans-serif"],
+        mono: ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
