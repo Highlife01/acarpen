@@ -6,614 +6,104 @@ import {
   updateDoc,
   deleteDoc,
   onSnapshot,
+  query,
+  orderBy,
+  limit,
+  type Query,
   type Unsubscribe,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { db, auth, isFirebaseConfigured } from "./firebase";
+import {
+  type UserRole,
+  type RoleDefinition,
+  type StaffUserRecord,
+  type QuoteLineItem,
+  type QuoteRevision,
+  type DeliveryProof,
+  type QuoteItem,
+  type PublicOrderTrackingItem,
+  type CustomerRecord,
+  type OpportunityStage,
+  type OpportunityItem,
+  type ActivityItem,
+  type InventoryItem,
+  type PurchaseOrderItem,
+  type QualityInspectionItem,
+  type AuditEventItem,
+  type ContactMessage,
+  type FactoryPriceItem,
+  type FactoryServiceItem,
+  type CheckInstrumentItem,
+  type CashLedgerItem,
+} from "./erpTypes";
+import {
+  ROLE_DEFINITIONS,
+  INITIAL_PRICES,
+  INITIAL_SERVICES,
+  INITIAL_INVENTORY,
+  INITIAL_CHECKS,
+  INITIAL_CASH_LEDGER,
+  LEGACY_MOCK_IDS,
+  normalizeUserRole,
+} from "./erpSeeds";
+import {
+  getOrderTrackingDocId,
+  getPhoneTrackingDocId,
+  normalizeTrPhone10,
+  toPublicOrderTrackingItem,
+} from "./orderTracking";
 
-// ============================================================================
-// 1. ROLLER VE YETKİ MATRİSİ (RBAC - Bölüm 2 & Bölüm 8 & Kabul Testi #9)
-// ============================================================================
-
-export type UserRole =
-  | "yonetici"
-  | "satis_yoneticisi"
-  | "satis"
-  | "uretim_planlama"
-  | "operator"
-  | "kalite"
-  | "depo_satinalma"
-  | "finans";
-
-export interface RoleDefinition {
-  id: UserRole;
-  label: string;
-  badgeColor: string;
-  description: string;
-  maxDiscountPct: number;
-  allowedModules: string[];
-  permissions: {
-    canEditPrices: boolean;
-    canApproveDiscount: boolean;
-    canAdjustStock: boolean;
-    canReleaseQualityHold: boolean;
-    canCancelOrder: boolean;
-    canManageProduction: boolean;
-    canManageFinance: boolean;
-    canViewCosts: boolean;
-  };
-}
-
-export const ROLE_DEFINITIONS: Record<UserRole, RoleDefinition> = {
-  yonetici: {
-    id: "yonetici",
-    label: "Yönetici (Tam Yetki)",
-    badgeColor: "bg-sky-500/15 text-sky-400 border-sky-500/30",
-    description: "Tüm modüller, kullanıcı/rol, fiyat listesi, stok düzeltme ve onay eşikleri.",
-    maxDiscountPct: 50,
-    allowedModules: [
-      "control_center",
-      "crm",
-      "quotes",
-      "orders",
-      "production",
-      "inventory",
-      "quality",
-      "shipment",
-      "finance",
-      "reports",
-      "governance",
-    ],
-    permissions: {
-      canEditPrices: true,
-      canApproveDiscount: true,
-      canAdjustStock: true,
-      canReleaseQualityHold: true,
-      canCancelOrder: true,
-      canManageProduction: true,
-      canManageFinance: true,
-      canViewCosts: true,
-    },
-  },
-  satis_yoneticisi: {
-    id: "satis_yoneticisi",
-    label: "Satış Yöneticisi",
-    badgeColor: "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
-    description: "CRM, fırsatlar, iskonto onayı, özel fiyat, teklif revizyonu ve satış raporları.",
-    maxDiscountPct: 25,
-    allowedModules: ["control_center", "crm", "quotes", "orders", "shipment", "finance", "reports"],
-    permissions: {
-      canEditPrices: true,
-      canApproveDiscount: true,
-      canAdjustStock: false,
-      canReleaseQualityHold: false,
-      canCancelOrder: true,
-      canManageProduction: false,
-      canManageFinance: false,
-      canViewCosts: true,
-    },
-  },
-  satis: {
-    id: "satis",
-    label: "Satış Temsilcisi",
-    badgeColor: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-    description: "Müşteri, fırsat, teklif ve sipariş takibi; %10 üzeri iskonto onaya düşer, fiyat listesini değiştiremez.",
-    maxDiscountPct: 10,
-    allowedModules: ["control_center", "crm", "quotes", "orders", "shipment"],
-    permissions: {
-      canEditPrices: false,
-      canApproveDiscount: false,
-      canAdjustStock: false,
-      canReleaseQualityHold: false,
-      canCancelOrder: false,
-      canManageProduction: false,
-      canManageFinance: false,
-      canViewCosts: false,
-    },
-  },
-  uretim_planlama: {
-    id: "uretim_planlama",
-    label: "Üretim Planlama",
-    badgeColor: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-    description: "Kapasite, üretim rotası, iş emri, istasyon kuyruğu ve termin planlama.",
-    maxDiscountPct: 0,
-    allowedModules: ["control_center", "orders", "production", "inventory", "quality", "shipment", "reports"],
-    permissions: {
-      canEditPrices: false,
-      canApproveDiscount: false,
-      canAdjustStock: false,
-      canReleaseQualityHold: false,
-      canCancelOrder: false,
-      canManageProduction: true,
-      canManageFinance: false,
-      canViewCosts: true,
-    },
-  },
-  operator: {
-    id: "operator",
-    label: "İstasyon Operatörü",
-    badgeColor: "bg-orange-500/15 text-orange-400 border-orange-500/30",
-    description: "İstasyona atanmış iş emirleri, başlat/durdur/tamamla, duruş ve fire kayıtları.",
-    maxDiscountPct: 0,
-    allowedModules: ["production", "quality"],
-    permissions: {
-      canEditPrices: false,
-      canApproveDiscount: false,
-      canAdjustStock: false,
-      canReleaseQualityHold: false,
-      canCancelOrder: false,
-      canManageProduction: true,
-      canManageFinance: false,
-      canViewCosts: false,
-    },
-  },
-  kalite: {
-    id: "kalite",
-    label: "Kalite Kontrol Uzmanı",
-    badgeColor: "bg-rose-500/15 text-rose-400 border-rose-500/30",
-    description: "Girdi, proses ve final kalite kontrol; karantina blokajı ve serbest bırakma yetkisi.",
-    maxDiscountPct: 0,
-    allowedModules: ["control_center", "production", "quality", "shipment", "reports"],
-    permissions: {
-      canEditPrices: false,
-      canApproveDiscount: false,
-      canAdjustStock: false,
-      canReleaseQualityHold: true,
-      canCancelOrder: false,
-      canManageProduction: false,
-      canManageFinance: false,
-      canViewCosts: false,
-    },
-  },
-  depo_satinalma: {
-    id: "depo_satinalma",
-    label: "Depo & Satın Alma",
-    badgeColor: "bg-purple-500/15 text-purple-400 border-purple-500/30",
-    description: "Mal kabul, plaka/lot stok hareketleri, siparişe rezervasyon, satın alma ve sevkiyat hazırlık.",
-    maxDiscountPct: 0,
-    allowedModules: ["control_center", "inventory", "quality", "shipment"],
-    permissions: {
-      canEditPrices: false,
-      canApproveDiscount: false,
-      canAdjustStock: true,
-      canReleaseQualityHold: false,
-      canCancelOrder: false,
-      canManageProduction: false,
-      canManageFinance: false,
-      canViewCosts: true,
-    },
-  },
-  finans: {
-    id: "finans",
-    label: "Finans & Muhasebe",
-    badgeColor: "bg-teal-500/15 text-teal-400 border-teal-500/30",
-    description: "Cari bakiye, kredi limiti, tahsilat/ödeme, tekil fatura referansı ve günlük mutabakat.",
-    maxDiscountPct: 15,
-    allowedModules: ["control_center", "orders", "finance", "reports"],
-    permissions: {
-      canEditPrices: false,
-      canApproveDiscount: false,
-      canAdjustStock: false,
-      canReleaseQualityHold: false,
-      canCancelOrder: false,
-      canManageProduction: false,
-      canManageFinance: true,
-      canViewCosts: true,
-    },
-  },
+export {
+  ROLE_DEFINITIONS,
+  INITIAL_PRICES,
+  INITIAL_SERVICES,
+  INITIAL_INVENTORY,
+  INITIAL_CHECKS,
+  INITIAL_CASH_LEDGER,
+  normalizeUserRole,
+  toPublicOrderTrackingItem,
 };
 
-// ============================================================================
-// 2. VERİ MODELLERİ (Bölüm 3, 4, 5, 7)
-// ============================================================================
+export type {
+  UserRole,
+  RoleDefinition,
+  StaffUserRecord,
+  QuoteLineItem,
+  QuoteRevision,
+  DeliveryProof,
+  QuoteItem,
+  PublicOrderTrackingItem,
+  CustomerRecord,
+  OpportunityStage,
+  OpportunityItem,
+  ActivityItem,
+  InventoryItem,
+  PurchaseOrderItem,
+  QualityInspectionItem,
+  AuditEventItem,
+  ContactMessage,
+  FactoryPriceItem,
+  FactoryServiceItem,
+  CheckInstrumentItem,
+  CashLedgerItem,
+};
 
-export interface QuoteLineItem {
-  id: string;
-  glassType: string;
-  thickness: string;
-  widthMm: number;
-  heightMm: number;
-  qty: number;
-  m2: number;
-  edgeWork: "Yok" | "Rodaj" | "Bizote" | "Zımpara";
-  holesCount: number;
-  tempered: boolean;
-  laminatedOrIgu: "Tek Cam" | "Isıcam S" | "Isıcam K" | "PVB Lamine";
-  wastePct: number;
-  unitPrice: number;
-  lineTotal: number;
+export interface AdminAuthState {
+  sessionUid: string | null;
+  authResolved: boolean;
+  isAuthorizedStaff: boolean;
+  assignedBackendRole: UserRole | null;
+  canSimulateRoles: boolean;
 }
 
-export interface QuoteRevision {
-  version: number;
-  date: string;
-  updatedBy: string;
-  previousTotal: number;
-  previousArea: number;
-  dimensionsSummary: string;
-  discountRate: number;
-  priceListVersion: string;
-  reason: string;
-}
-
-export interface DeliveryProof {
-  deliveredAt: string;
-  receivedBy: string;
-  signatureRef: string;
-  shippedM2: number;
-  packageCount: number;
-  damageNote?: string;
-  verifiedByQr: boolean;
-}
-
-export interface QuoteItem {
-  id: string;
-  customerName: string;
-  phone: string;
-  email?: string;
-  city: string;
-  siteName?: string; // Şantiye / Proje adı
-  customerType?: "Kurumsal / Müteahhit" | "Bayi / Camcı" | "Mimari Ofis" | "Bireysel";
-  salesRep?: string;
-  leadSource?: string;
-  glassType: string;
-  thickness: string;
-  dimensions: string; // e.g. "120 x 200 cm (8 adet)"
-  totalArea: number; // in m²
-  estimatedPrice: number; // Final / Net Offer Amount in TL
-  discountRate?: number; // % discount applied
-  extraCost?: number; // Freight / Crane / Extra processing cost in TL
-  // Satır bazlı konfigüratör & Sürümleme (Kabul Testi #1 & #2)
-  lines?: QuoteLineItem[];
-  priceListVersion?: string;
-  validUntil?: string;
-  version?: number;
-  revisions?: QuoteRevision[];
-  // Onay ve Sözleşme Kapıları (Kabul Testi #3 & #9)
-  approvalStatus?: "approved" | "pending_approval" | "rejected";
-  approvedBy?: string;
-  technicalApproved?: boolean;
-  paymentTerms?: "Peşin" | "%50 Avans + Teslimde" | "30 Gün Vadeli" | "60 Gün Vadeli";
-  orderSnapshotAt?: string;
-  cancelReason?: string;
-  cancelledBy?: string;
-  // Ödeme & Finans (Kabul Testi #8 & #10)
-  paymentStatus?: "unpaid" | "deposit" | "paid";
-  paidAmount?: number;
-  estimatedCost?: number; // Planlanan maliyet (₺)
-  actualCost?: number; // Gerçekleşen maliyet + fire maliyeti (₺)
-  invoiceNo?: string; // Tekil fatura referansı (FTR-2026-...)
-  waybillNo?: string; // İrsaliye No (IRS-2026-...)
-  syncId?: string; // Tekil işlem / idempotency kimliği
-  dueDate?: string; // Vade tarihi
-  // Üretim Planlama, Rota, Operatör & Fire (Kabul Testi #4 & #6)
-  routeSteps?: number[]; // örn. [1, 2, 3, 4, 5, 6]
-  productionStage?: 1 | 2 | 3 | 4 | 5 | 6;
-  stationStatus?: "waiting" | "running" | "paused" | "completed" | "quality_hold";
-  assignedOperator?: string;
-  machineName?: string;
-  downtimeMinutes?: number;
-  downtimeReason?: string;
-  scrapM2?: number; // Fire / kırık miktarı (m²)
-  scrapReason?: string;
-  scrapStation?: string;
-  reservedLotNo?: string;
-  // Kalite Kontrol & Blokaj (Kabul Testi #5)
-  qualityHold?: boolean;
-  qualityHoldReason?: string;
-  qualityDisposition?: "Bekliyor" | "Yeniden İşleme" | "Şartlı Kabul" | "Hurda" | "Müşteri Onayı" | "Serbest";
-  qualityInspector?: string;
-  qualityCheckedAt?: string;
-  // Sevkiyat & Teslim Kanıtı / POD (Kabul Testi #7)
-  estimatedDeliveryDate?: string;
-  vehiclePlate?: string;
-  driverName?: string;
-  rackNo?: string; // Taşıma sehpası no (SHP-...)
-  packageCount?: number;
-  craneRequired?: boolean;
-  deliveryAddress?: string;
-  deliveryProof?: DeliveryProof;
-  notes?: string;
-  date: string;
-  createdAt?: number;
-  status: "new" | "in_review" | "quoted" | "approved" | "completed" | "cancelled";
-  urgency?: "high" | "normal" | "low";
-}
-
-export interface CustomerRecord {
-  id: string;
-  companyName: string;
-  contactPerson: string;
-  phone: string;
-  email?: string;
-  taxOffice?: string;
-  taxNumber?: string;
-  city: string;
-  siteName?: string;
-  address?: string;
-  customerType: "Kurumsal / Müteahhit" | "Bayi / Camcı" | "Mimari Ofis" | "Bireysel";
-  salesRep: string;
-  paymentTerms: "Peşin" | "%50 Avans + Teslimde" | "30 Gün Vadeli" | "60 Gün Vadeli";
-  creditLimit: number;
-  kvkkConsent: boolean;
-  notes?: string;
-  createdAt: number;
-}
-
-export type OpportunityStage =
-  | "new_lead"
-  | "measurement"
-  | "technical_review"
-  | "quote_prepared"
-  | "quote_sent"
-  | "negotiation"
-  | "won"
-  | "lost";
-
-export interface OpportunityItem {
-  id: string;
-  customerName: string;
-  phone: string;
-  email?: string;
-  city: string;
-  siteName: string;
-  source:
-    | "Web Formu"
-    | "Telefon"
-    | "WhatsApp"
-    | "E-Posta"
-    | "Bayi Yönlendirmesi"
-    | "Fuar"
-    | "Mevcut Müşteri Tavsiyesi";
-  stage: OpportunityStage;
-  productGroup: string;
-  estimatedAreaM2: number;
-  estimatedAmount: number;
-  targetDecisionDate: string;
-  competitor?: string;
-  nextAction: string;
-  assignedRep: string;
-  lossReason?:
-    | "Fiyat"
-    | "Termin"
-    | "Teknik Uyumsuzluk"
-    | "Proje İptali"
-    | "Rakip"
-    | "Ulaşılamama"
-    | "Diğer";
-  convertedQuoteId?: string;
-  createdAt: number;
-  date: string;
-}
-
-export interface ActivityItem {
-  id: string;
-  type: "Telefon Görüşmesi" | "Toplantı" | "Saha Keşfi" | "E-Posta" | "WhatsApp Notu" | "Takip Görevi";
-  customerName: string;
-  relatedId?: string; // Quote ID or Opportunity ID
-  summary: string;
-  dueDate: string;
-  assignedTo: string;
-  completed: boolean;
-  createdAt: number;
-}
-
-export interface InventoryItem {
-  id: string;
-  code: string;
-  name: string;
-  category: "Hammadde (Plaka Cam)" | "Yarı Mamul" | "Mamul" | "Sarf Malzeme" | "Ambalaj / Sehpa";
-  thickness: string;
-  dimensions: string; // e.g. "6500 mm Fıratpen Boy Profil"
-  supplier: string;
-  warehouseLocation: string; // e.g. "Depo-A / Raf-04"
-  lotNo: string;
-  unit: "m²" | "Adet" | "Kg" | "Metre";
-  availableQty: number;
-  reservedQty: number;
-  quarantineQty: number;
-  damagedQty: number;
-  minStockLevel: number;
-  unitCost: number;
-  updatedAt?: string;
-}
-
-export interface PurchaseOrderItem {
-  id: string;
-  materialName: string;
-  category: string;
-  supplier: string;
-  qty: number;
-  unit: string;
-  unitPrice: number;
-  totalAmount: number;
-  expectedDate: string;
-  status: "Talep Açıldı" | "Onaylandı" | "Sipariş Verildi" | "Mal Kabul Yapıldı" | "Kalite Red";
-  lotNo?: string;
-  invoiceMatched?: boolean;
-  supplierRating?: number; // 1-100
-  requestedBy: string;
-  createdAt: number;
-  date: string;
-}
-
-export interface QualityInspectionItem {
-  id: string;
-  orderId: string;
-  customerName: string;
-  inspectionType: "Girdi Kalite (Mal Kabul)" | "Proses Kontrol (İstasyon)" | "Final Kalite (Sevk Öncesi)";
-  stationName: string;
-  dimensionToleranceOk: boolean;
-  opticalSurfaceOk: boolean;
-  temperStressOk: boolean;
-  sealantArgonOk: boolean;
-  result: "Kabul" | "Karantina (Blokaj)" | "Şartlı Kabul" | "Hurda / Yeniden İşleme";
-  disposition?: "Bekliyor" | "Yeniden İşleme" | "Şartlı Kabul" | "Hurda" | "Müşteri Onayı" | "Serbest";
-  defectReason?: string;
-  inspector: string;
-  date: string;
-  createdAt: number;
-}
-
-export interface AuditEventItem {
-  id: string;
-  actionType:
-    | "PRICE_CHANGE"
-    | "QUOTE_REVISION"
-    | "DISCOUNT_APPROVAL"
-    | "STOCK_ADJUSTMENT"
-    | "QUALITY_HOLD"
-    | "QUALITY_RELEASE"
-    | "ORDER_CANCEL"
-    | "INVOICE_CREATE"
-    | "INVOICE_ISSUE"
-    | "RBAC_DENIED"
-    | "DATA_EXPORT";
-  actorEmail: string;
-  actorRole: UserRole;
-  targetId: string;
-  summary: string;
-  timestamp: string;
-  createdAt: number;
-}
-
-export interface ContactMessage {
-  id: string;
-  name: string;
-  phone: string;
-  email?: string;
-  subject: string;
-  message: string;
-  date: string;
-  createdAt?: number;
-  isRead: boolean;
-  replied?: boolean;
-}
-
-export interface FactoryPriceItem {
-  id: string;
-  name: string;
-  m2Price: number;
-  thickness: string;
-  category?: string;
-  stock?: string;
-  version?: string;
-}
-
-export interface FactoryServiceItem {
-  id: string;
-  ad: string;
-  fiyat: number;
-  birim?: string;
-  aktif?: boolean;
-}
-
-export const INITIAL_PRICES: FactoryPriceItem[] = [
-  { id: "isicam-s", name: "Fıratpen Selenit 75 PVC Pencere (4+16+4 Isıcam)", m2Price: 1450, thickness: "4+16+4 mm", category: "Çift Cam", stock: "Mevcut", version: "2026-Liste-v1" },
-  { id: "isicam-k", name: "Fıratpen Redonit 85 PVC Pencere (Renkli/Konfor Isıcam)", m2Price: 1680, thickness: "6+16+6 mm", category: "Güneş Kontrol", stock: "Mevcut", version: "2026-Liste-v1" },
-  { id: "winsa-dorado76", name: "Winsa Dorado 76 PVC Pencere (4+16+4 Isıcam)", m2Price: 1520, thickness: "4+16+4 mm", category: "Winsa PVC", stock: "Mevcut", version: "2026-Liste-v1" },
-  { id: "pimapen-nirvana80", name: "Pimapen Nirvana 80 PVC Pencere (4+16+4 Isıcam)", m2Price: 1590, thickness: "4+16+4 mm", category: "Pimapen PVC", stock: "Mevcut", version: "2026-Liste-v1" },
-  { id: "balkon-8mm", name: "8mm Rodajlı Katlanır Balkon Camı", m2Price: 1250, thickness: "8 mm Temperli", category: "Balkon Camı", stock: "Mevcut", version: "2026-Liste-v1" },
-  { id: "balkon-10mm", name: "10mm Sürgülü / Giyotin Balkon Camı", m2Price: 1550, thickness: "10 mm Temperli", category: "Giyotin Cam", stock: "Mevcut", version: "2026-Liste-v1" },
-  { id: "jaluzili", name: "Jaluzili Isıcam (Mıknatıslı/Motorlu)", m2Price: 2850, thickness: "6+22+6 mm", category: "Jaluzili", stock: "Sipariş Üzeri", version: "2026-Liste-v1" },
-  { id: "temperli-6mm", name: "6mm Düz / Bombeli Temperli Cam", m2Price: 980, thickness: "6 mm Temperli", category: "Emniyet Camı", stock: "Mevcut", version: "2026-Liste-v1" },
-  { id: "lamine-8mm", name: "4+4 mm Akustik Lamine Emniyet Camı", m2Price: 1850, thickness: "8.76 mm PVB", category: "Akustik Lamine", stock: "Mevcut", version: "2026-Liste-v1" },
-  { id: "dis-cephe", name: "Strüktürel Silikonlu Dış Cephe Camı", m2Price: 2150, thickness: "6+16+6 mm Temperli", category: "Dış Cephe", stock: "Mevcut", version: "2026-Liste-v1" },
-];
-
-export const INITIAL_SERVICES: FactoryServiceItem[] = [
-  { id: "srv-rodaj", ad: "Rodaj (Balıksırtı / Düz)", fiyat: 150, birim: "İşlem" },
-  { id: "srv-delik", ad: "Delik Açma (adet)", fiyat: 50, birim: "Adet" },
-  { id: "srv-zimpara", ad: "Zımpara / Pah Kırma", fiyat: 80, birim: "İşlem" },
-  { id: "srv-cnc", ad: "CNC Özel Kesim", fiyat: 200, birim: "İşlem" },
-  { id: "srv-temper", ad: "Çift Açılım İspanyolet & EPDM Donanım", fiyat: 300, birim: "İşlem" },
-  { id: "srv-montaj", ad: "Şantiye Montaj Hizmeti", fiyat: 500, birim: "Sefer" },
-  { id: "srv-nakliye", ad: "Vinçli Araç Nakliye", fiyat: 250, birim: "Sefer" },
-  { id: "srv-iscilik", ad: "Özel İşçilik & Silikonlama", fiyat: 400, birim: "İşlem" },
-  { id: "srv-kat", ad: "Kat Çıkma / Vinç İndirme Ücreti", fiyat: 150, birim: "Kat" },
-];
-
-export const INITIAL_INVENTORY: InventoryItem[] = [];
-
-// --- 9.2 Çek / Senet Portföyü (Alınan Çekler & Kesilen Çekler) ---
-export interface CheckInstrumentItem {
-  id: string;
-  direction: "received" | "issued"; // received = Müşteriden Alınan Çek, issued = Tedarikçiye Kesilen Çek
-  serialNo: string;
-  counterparty: string; // Keşideci Müşteri veya Alacaklı Tedarikçi
-  bankName: string;
-  amount: number;
-  issueDate: string;
-  dueDate: string; // YYYY-MM-DD
-  relatedOrderId?: string;
-  endorsedTo?: string; // Ciro edildiyse hangi firmaya verildiği
-  status:
-    | "Portföyde (Kasada)"
-    | "Bankada Tahsilde"
-    | "Ciro Edildi (Tedarikçiye)"
-    | "Tahsil Edildi"
-    | "Karşılıksız / Protestolu"
-    | "Tedavülde (Ödeme Bekliyor)"
-    | "Ödendi (Bankadan Çıktı)"
-    | "İade / İptal";
-  notes?: string;
-  createdAt: number;
-}
-
-// --- 9.3 Kasa & Banka Hareketleri Defteri ---
-export interface CashLedgerItem {
-  id: string;
-  type: "in" | "out"; // in = Giriş (Tahsilat), out = Çıkış (Ödeme / Gider)
-  accountName:
-    | "Merkez Nakit Kasa"
-    | "Şantiye Nakit Kasa"
-    | "İş Bankası Ticari Hesap"
-    | "Garanti BBVA POS / Ticari"
-    | "Ziraat Bankası Kurumsal";
-  category:
-    | "Müşteri Sipariş Tahsilatı"
-    | "Alınan Çek Tahsilatı"
-    | "Kesilen Çek Ödemesi"
-    | "Fıratpen Profil / Hammadde Ödemesi"
-    | "Nakliye / Yakıt / Vinç Gideri"
-    | "Personel / İşçilik Ödemesi"
-    | "Fabrika Genel Gider / Enerji"
-    | "Diğer İşlem";
-  counterparty: string;
-  amount: number;
-  referenceNo?: string;
-  description: string;
-  date: string;
-  createdAt: number;
-}
-
-export const INITIAL_CHECKS: CheckInstrumentItem[] = [];
-
-export const INITIAL_CASH_LEDGER: CashLedgerItem[] = [];
-
-const LEGACY_MOCK_IDS = new Set([
-  "CEK-AL-202601",
-  "CEK-AL-202602",
-  "CEK-VER-202601",
-  "KASA-2026-101",
-  "KASA-2026-102",
-  "KASA-2026-103",
-  "stk-float-4mm",
-  "stk-lowe-6mm",
-  "stk-temp-8mm",
-  "stk-lam-44",
-  "stk-sarf-tiokol",
-  "stk-sehpa-metal",
-  "TKF-2026-8941",
-  "TKF-2026-8940",
-  "TKF-2026-8938",
-  "TKF-2026-8935",
-  "MSG-101",
-  "MSG-102",
-]);
+const TRANSACTIONAL_QUERY_LIMIT = 250;
+const CATALOG_QUERY_LIMIT = 500;
+const STAFF_QUERY_LIMIT = 100;
 
 const COLLECTIONS = {
   QUOTES: "acarpen_quotes",
+  ORDER_TRACKING: "acarpen_order_tracking",
   MESSAGES: "acarpen_messages",
   PRICES: "acarpen_prices",
   SERVICES: "acarpen_services",
@@ -626,13 +116,21 @@ const COLLECTIONS = {
   AUDIT_LOGS: "acarpen_audit_logs",
   CHECKS: "acarpen_checks",
   CASH_LEDGER: "acarpen_cash_ledger",
+  USERS: "users",
 };
 
-function stripUndefined<T extends object>(obj: T): Record<string, unknown> {
-  const clean: Record<string, unknown> = {};
+function boundedQuery(colName: string, maxDocs: number, orderByCreated = true): Query {
+  const colRef = collection(db, colName);
+  return orderByCreated
+    ? query(colRef, orderBy("createdAt", "desc"), limit(maxDocs))
+    : query(colRef, limit(maxDocs));
+}
+
+function stripUndefined<T extends object>(obj: T): Record<string, Partial<unknown> | undefined> {
+  const clean: Record<string, Partial<unknown> | undefined> = {};
   for (const [key, value] of Object.entries(obj)) {
     if (value !== undefined) {
-      clean[key] = value;
+      clean[key] = value as Partial<unknown>;
     }
   }
   return clean;
@@ -679,8 +177,12 @@ class ActiveDataStore {
   private auditLogs: AuditEventItem[] = [];
   private checks: CheckInstrumentItem[] = [...INITIAL_CHECKS];
   private cashLedger: CashLedgerItem[] = [...INITIAL_CASH_LEDGER];
+  private staffUsers: StaffUserRecord[] = [];
 
   private sessionUid: string | null = null;
+  private authResolved = false;
+  private isAuthorizedStaff = false;
+  private assignedBackendRole: UserRole | null = null;
   private activeRole: UserRole = "yonetici";
 
   private pricesSeeded = false;
@@ -702,6 +204,8 @@ class ActiveDataStore {
   private cashLedgerListeners: Set<(items: CashLedgerItem[]) => void> = new Set();
   private sessionListeners: Set<(uid: string | null) => void> = new Set();
   private roleListeners: Set<(role: UserRole) => void> = new Set();
+  private authStateListeners: Set<(state: AdminAuthState) => void> = new Set();
+  private staffUsersListeners: Set<(items: StaffUserRecord[]) => void> = new Set();
 
   constructor() {
     this.cleanupLegacyFakeCache();
@@ -784,16 +288,89 @@ class ActiveDataStore {
 
     try {
       onAuthStateChanged(auth, (user) => {
-        this.sessionUid = user ? user.uid : null;
-        this.notifySession();
-        if (user) {
-          this.attachRealtimeListeners();
-        } else {
+        if (!user) {
+          this.sessionUid = null;
+          this.assignedBackendRole = null;
+          this.isAuthorizedStaff = false;
+          this.authResolved = true;
+          this.staffUsers = [];
+          this.activeRole = "yonetici";
           this.detachRealtimeListeners();
+          this.notifySession();
+          this.notifyAuthState();
+          this.notifyRole();
+          this.notifyStaffUsers();
+          return;
         }
+
+        this.sessionUid = user.uid;
+        this.authResolved = false;
+        this.notifySession();
+        this.notifyAuthState();
+
+        void this.resolveBackendUserRole(user.uid, user.email || "");
       });
     } catch {
-      // Fallback to in-memory state
+      this.authResolved = true;
+      this.notifyAuthState();
+    }
+  }
+
+  private async resolveBackendUserRole(uid: string, email: string): Promise<void> {
+    try {
+      const currentUser = auth.currentUser;
+      const isPrimaryAdmin = email.trim().toLowerCase() === "admin@acarpen.com.tr";
+
+      const [tokenResult, userSnap] = await Promise.all([
+        currentUser ? currentUser.getIdTokenResult().catch(() => null) : Promise.resolve(null),
+        getDoc(doc(db, COLLECTIONS.USERS, uid)).catch(() => null),
+      ]);
+
+      if (auth.currentUser && auth.currentUser.uid !== uid) return;
+
+      const claimRole = normalizeUserRole(tokenResult?.claims?.role);
+      const userData = userSnap && userSnap.exists() ? userSnap.data() : null;
+      const docActive = userData ? userData.active !== false : false;
+      const docRole = userData ? normalizeUserRole(userData.role) : null;
+
+      let resolvedRole: UserRole | null = null;
+      let authorized = false;
+
+      if (isPrimaryAdmin) {
+        resolvedRole = claimRole || "yonetici";
+        authorized = true;
+      } else if (userData && userData.active === false) {
+        resolvedRole = null;
+        authorized = false;
+      } else if (claimRole) {
+        resolvedRole = claimRole;
+        authorized = true;
+      } else if (docActive && docRole) {
+        resolvedRole = docRole;
+        authorized = true;
+      }
+
+      this.assignedBackendRole = resolvedRole;
+      this.isAuthorizedStaff = authorized;
+      this.authResolved = true;
+      if (resolvedRole) {
+        this.activeRole = resolvedRole;
+      }
+
+      this.notifyAuthState();
+      this.notifyRole();
+
+      if (authorized) {
+        this.detachRealtimeListeners();
+        this.attachRealtimeListeners();
+      } else {
+        this.detachRealtimeListeners();
+      }
+    } catch {
+      this.assignedBackendRole = null;
+      this.isAuthorizedStaff = false;
+      this.authResolved = true;
+      this.notifyAuthState();
     }
   }
 
@@ -810,303 +387,414 @@ class ActiveDataStore {
   }
 
   private attachRealtimeListeners(): void {
-    if (this.realtimeUnsubscribers.length > 0 || !isFirebaseConfigured) return;
+    if (this.realtimeUnsubscribers.length > 0 || !isFirebaseConfigured || !this.isAuthorizedStaff) {
+      return;
+    }
 
     try {
-      // 1. Quotes & Orders
-      this.realtimeUnsubscribers.push(onSnapshot(
-        collection(db, COLLECTIONS.QUOTES),
-        (snapshot) => {
-          const remoteMap = new Map<string, QuoteItem>();
-          snapshot.forEach((docSnap) => {
-            const docId = docSnap.id;
-            if (LEGACY_MOCK_IDS.has(docId)) {
-              deleteDoc(doc(db, COLLECTIONS.QUOTES, docId)).catch(() => {});
-              return;
-            }
-            const data = docSnap.data() as QuoteItem;
-            remoteMap.set(data.id || docId, { ...data, id: data.id || docId });
-          });
-          this.quotes.forEach((localItem) => {
-            if (!remoteMap.has(localItem.id)) {
-              remoteMap.set(localItem.id, localItem);
-            }
-          });
-          const merged = Array.from(remoteMap.values());
-          merged.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-          this.quotes = merged;
-          this.notifyQuotes();
-        },
-        () => {}
-      ));
+      // 1. Quotes & Orders (bounded newest 250)
+      this.realtimeUnsubscribers.push(
+        onSnapshot(
+          boundedQuery(COLLECTIONS.QUOTES, TRANSACTIONAL_QUERY_LIMIT),
+          (snapshot) => {
+            const remoteMap = new Map<string, QuoteItem>();
+            snapshot.forEach((docSnap) => {
+              const docId = docSnap.id;
+              if (LEGACY_MOCK_IDS.has(docId)) {
+                deleteDoc(doc(db, COLLECTIONS.QUOTES, docId)).catch(() => {});
+                return;
+              }
+              const data = docSnap.data() as QuoteItem;
+              remoteMap.set(data.id || docId, { ...data, id: data.id || docId });
+            });
+            this.quotes.forEach((localItem) => {
+              if (!remoteMap.has(localItem.id)) {
+                remoteMap.set(localItem.id, localItem);
+              }
+            });
+            const merged = Array.from(remoteMap.values());
+            merged.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            this.quotes = merged;
+            this.notifyQuotes();
+          },
+          () => {}
+        )
+      );
 
-      // 2. Contact Messages
-      this.realtimeUnsubscribers.push(onSnapshot(
-        collection(db, COLLECTIONS.MESSAGES),
-        (snapshot) => {
-          const remoteMap = new Map<string, ContactMessage>();
-          snapshot.forEach((docSnap) => {
-            const docId = docSnap.id;
-            if (LEGACY_MOCK_IDS.has(docId)) {
-              deleteDoc(doc(db, COLLECTIONS.MESSAGES, docId)).catch(() => {});
-              return;
-            }
-            const data = docSnap.data() as ContactMessage;
-            remoteMap.set(data.id || docId, { ...data, id: data.id || docId });
-          });
-          this.messages.forEach((localItem) => {
-            if (!remoteMap.has(localItem.id)) {
-              remoteMap.set(localItem.id, localItem);
-            }
-          });
-          const merged = Array.from(remoteMap.values());
-          merged.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-          this.messages = merged;
-          this.notifyMessages();
-        },
-        () => {}
-      ));
+      // 2. Contact Messages (bounded newest 250)
+      this.realtimeUnsubscribers.push(
+        onSnapshot(
+          boundedQuery(COLLECTIONS.MESSAGES, TRANSACTIONAL_QUERY_LIMIT),
+          (snapshot) => {
+            const remoteMap = new Map<string, ContactMessage>();
+            snapshot.forEach((docSnap) => {
+              const docId = docSnap.id;
+              if (LEGACY_MOCK_IDS.has(docId)) {
+                deleteDoc(doc(db, COLLECTIONS.MESSAGES, docId)).catch(() => {});
+                return;
+              }
+              const data = docSnap.data() as ContactMessage;
+              remoteMap.set(data.id || docId, { ...data, id: data.id || docId });
+            });
+            this.messages.forEach((localItem) => {
+              if (!remoteMap.has(localItem.id)) {
+                remoteMap.set(localItem.id, localItem);
+              }
+            });
+            const merged = Array.from(remoteMap.values());
+            merged.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            this.messages = merged;
+            this.notifyMessages();
+          },
+          () => {}
+        )
+      );
 
       // 3. Factory Unit Prices
-      this.realtimeUnsubscribers.push(onSnapshot(
-        collection(db, COLLECTIONS.PRICES),
-        (snapshot) => {
-          if (snapshot.empty) {
-            if (!this.pricesSeeded) {
-              this.pricesSeeded = true;
-              INITIAL_PRICES.forEach((item) => {
-                setDoc(doc(db, COLLECTIONS.PRICES, item.id), stripUndefined(item)).catch(() => {});
-              });
+      this.realtimeUnsubscribers.push(
+        onSnapshot(
+          boundedQuery(COLLECTIONS.PRICES, CATALOG_QUERY_LIMIT, false),
+          (snapshot) => {
+            if (snapshot.empty) {
+              if (!this.pricesSeeded && this.canEditPrices()) {
+                this.pricesSeeded = true;
+                INITIAL_PRICES.forEach((item) => {
+                  setDoc(doc(db, COLLECTIONS.PRICES, item.id), stripUndefined(item)).catch(() => {});
+                });
+              }
+              return;
             }
-            return;
-          }
-          const items: FactoryPriceItem[] = [];
-          snapshot.forEach((docSnap) => {
-            const data = docSnap.data() as FactoryPriceItem;
-            items.push({
-              category: "Özel Cam",
-              stock: "Mevcut",
-              version: "2026-Liste-v1",
-              ...data,
-              id: data.id || docSnap.id,
+            const items: FactoryPriceItem[] = [];
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data() as FactoryPriceItem;
+              items.push({
+                category: "Özel Cam",
+                stock: "Mevcut",
+                version: "2026-Liste-v1",
+                ...data,
+                id: data.id || docSnap.id,
+              });
             });
-          });
-          const orderMap = new Map(INITIAL_PRICES.map((p, idx) => [p.id, idx]));
-          items.sort((a, b) => {
-            const idxA = orderMap.has(a.id) ? orderMap.get(a.id)! : 999;
-            const idxB = orderMap.has(b.id) ? orderMap.get(b.id)! : 999;
-            return idxA - idxB;
-          });
-          this.prices = items;
-          this.notifyPrices();
-        },
-        () => {}
-      ));
+            const orderMap = new Map(INITIAL_PRICES.map((p, idx) => [p.id, idx]));
+            items.sort((a, b) => {
+              const idxA = orderMap.has(a.id) ? orderMap.get(a.id)! : 999;
+              const idxB = orderMap.has(b.id) ? orderMap.get(b.id)! : 999;
+              return idxA - idxB;
+            });
+            this.prices = items;
+            this.notifyPrices();
+          },
+          () => {}
+        )
+      );
 
       // 4. Extra Services
-      this.realtimeUnsubscribers.push(onSnapshot(
-        collection(db, COLLECTIONS.SERVICES),
-        (snapshot) => {
-          if (snapshot.empty) {
-            if (!this.servicesSeeded) {
-              this.servicesSeeded = true;
-              INITIAL_SERVICES.forEach((item) => {
-                setDoc(doc(db, COLLECTIONS.SERVICES, item.id), stripUndefined(item)).catch(() => {});
-              });
+      this.realtimeUnsubscribers.push(
+        onSnapshot(
+          boundedQuery(COLLECTIONS.SERVICES, CATALOG_QUERY_LIMIT, false),
+          (snapshot) => {
+            if (snapshot.empty) {
+              if (!this.servicesSeeded && this.canEditPrices()) {
+                this.servicesSeeded = true;
+                INITIAL_SERVICES.forEach((item) => {
+                  setDoc(doc(db, COLLECTIONS.SERVICES, item.id), stripUndefined(item)).catch(() => {});
+                });
+              }
+              return;
             }
-            return;
-          }
-          const items: FactoryServiceItem[] = [];
-          snapshot.forEach((docSnap) => {
-            const data = docSnap.data() as FactoryServiceItem;
-            items.push({
-              birim: "İşlem",
-              ...data,
-              id: data.id || docSnap.id,
+            const items: FactoryServiceItem[] = [];
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data() as FactoryServiceItem;
+              items.push({
+                birim: "İşlem",
+                ...data,
+                id: data.id || docSnap.id,
+              });
             });
-          });
-          const orderMap = new Map(INITIAL_SERVICES.map((s, idx) => [s.id, idx]));
-          items.sort((a, b) => {
-            const idxA = orderMap.has(a.id) ? orderMap.get(a.id)! : 999;
-            const idxB = orderMap.has(b.id) ? orderMap.get(b.id)! : 999;
-            return idxA - idxB;
-          });
-          this.services = items;
-          this.notifyServices();
-        },
-        () => {}
-      ));
+            const orderMap = new Map(INITIAL_SERVICES.map((s, idx) => [s.id, idx]));
+            items.sort((a, b) => {
+              const idxA = orderMap.has(a.id) ? orderMap.get(a.id)! : 999;
+              const idxB = orderMap.has(b.id) ? orderMap.get(b.id)! : 999;
+              return idxA - idxB;
+            });
+            this.services = items;
+            this.notifyServices();
+          },
+          () => {}
+        )
+      );
 
       // 5. Customers (CRM 360)
-      this.realtimeUnsubscribers.push(onSnapshot(
-        collection(db, COLLECTIONS.CUSTOMERS),
-        (snapshot) => {
-          const items: CustomerRecord[] = [];
-          snapshot.forEach((docSnap) => {
-            const data = docSnap.data() as CustomerRecord;
-            items.push({ ...data, id: data.id || docSnap.id });
-          });
-          items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-          this.customers = items;
-          this.notifyCustomers();
-        },
-        () => {}
-      ));
+      this.realtimeUnsubscribers.push(
+        onSnapshot(
+          boundedQuery(COLLECTIONS.CUSTOMERS, TRANSACTIONAL_QUERY_LIMIT),
+          (snapshot) => {
+            const items: CustomerRecord[] = [];
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data() as CustomerRecord;
+              items.push({ ...data, id: data.id || docSnap.id });
+            });
+            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            this.customers = items;
+            this.notifyCustomers();
+          },
+          () => {}
+        )
+      );
 
       // 6. Opportunities (Sales Funnel)
-      this.realtimeUnsubscribers.push(onSnapshot(
-        collection(db, COLLECTIONS.OPPORTUNITIES),
-        (snapshot) => {
-          const items: OpportunityItem[] = [];
-          snapshot.forEach((docSnap) => {
-            const data = docSnap.data() as OpportunityItem;
-            items.push({ ...data, id: data.id || docSnap.id });
-          });
-          items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-          this.opportunities = items;
-          this.notifyOpportunities();
-        },
-        () => {}
-      ));
+      this.realtimeUnsubscribers.push(
+        onSnapshot(
+          boundedQuery(COLLECTIONS.OPPORTUNITIES, TRANSACTIONAL_QUERY_LIMIT),
+          (snapshot) => {
+            const items: OpportunityItem[] = [];
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data() as OpportunityItem;
+              items.push({ ...data, id: data.id || docSnap.id });
+            });
+            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            this.opportunities = items;
+            this.notifyOpportunities();
+          },
+          () => {}
+        )
+      );
 
-      // 7. Activities (CRM Tasks & Follow-ups)
-      this.realtimeUnsubscribers.push(onSnapshot(
-        collection(db, COLLECTIONS.ACTIVITIES),
-        (snapshot) => {
-          const items: ActivityItem[] = [];
-          snapshot.forEach((docSnap) => {
-            const data = docSnap.data() as ActivityItem;
-            items.push({ ...data, id: data.id || docSnap.id });
-          });
-          items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-          this.activities = items;
-          this.notifyActivities();
-        },
-        () => {}
-      ));
+      // 7. Activities
+      this.realtimeUnsubscribers.push(
+        onSnapshot(
+          boundedQuery(COLLECTIONS.ACTIVITIES, TRANSACTIONAL_QUERY_LIMIT),
+          (snapshot) => {
+            const items: ActivityItem[] = [];
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data() as ActivityItem;
+              items.push({ ...data, id: data.id || docSnap.id });
+            });
+            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            this.activities = items;
+            this.notifyActivities();
+          },
+          () => {}
+        )
+      );
 
-      // 8. Inventory (Raw Plates, Lots, Consumables, Racks)
-      this.realtimeUnsubscribers.push(onSnapshot(
-        collection(db, COLLECTIONS.INVENTORY),
-        (snapshot) => {
-          const items: InventoryItem[] = [];
-          snapshot.forEach((docSnap) => {
-            const docId = docSnap.id;
-            if (LEGACY_MOCK_IDS.has(docId)) {
-              deleteDoc(doc(db, COLLECTIONS.INVENTORY, docId)).catch(() => {});
-              return;
-            }
-            const data = docSnap.data() as InventoryItem;
-            items.push({ ...data, id: data.id || docId });
-          });
-          this.inventory = items;
-          this.notifyInventory();
-        },
-        () => {}
-      ));
+      // 8. Inventory
+      this.realtimeUnsubscribers.push(
+        onSnapshot(
+          boundedQuery(COLLECTIONS.INVENTORY, CATALOG_QUERY_LIMIT, false),
+          (snapshot) => {
+            const items: InventoryItem[] = [];
+            snapshot.forEach((docSnap) => {
+              const docId = docSnap.id;
+              if (LEGACY_MOCK_IDS.has(docId)) {
+                deleteDoc(doc(db, COLLECTIONS.INVENTORY, docId)).catch(() => {});
+                return;
+              }
+              const data = docSnap.data() as InventoryItem;
+              items.push({ ...data, id: data.id || docId });
+            });
+            this.inventory = items;
+            this.notifyInventory();
+          },
+          () => {}
+        )
+      );
 
-      // 9. Purchases (MRP & Supplier Orders)
-      this.realtimeUnsubscribers.push(onSnapshot(
-        collection(db, COLLECTIONS.PURCHASES),
-        (snapshot) => {
-          const items: PurchaseOrderItem[] = [];
-          snapshot.forEach((docSnap) => {
-            const data = docSnap.data() as PurchaseOrderItem;
-            items.push({ ...data, id: data.id || docSnap.id });
-          });
-          items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-          this.purchases = items;
-          this.notifyPurchases();
-        },
-        () => {}
-      ));
+      // 9. Purchases
+      this.realtimeUnsubscribers.push(
+        onSnapshot(
+          boundedQuery(COLLECTIONS.PURCHASES, TRANSACTIONAL_QUERY_LIMIT),
+          (snapshot) => {
+            const items: PurchaseOrderItem[] = [];
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data() as PurchaseOrderItem;
+              items.push({ ...data, id: data.id || docSnap.id });
+            });
+            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            this.purchases = items;
+            this.notifyPurchases();
+          },
+          () => {}
+        )
+      );
 
       // 10. Quality Inspections
-      this.realtimeUnsubscribers.push(onSnapshot(
-        collection(db, COLLECTIONS.QUALITY),
-        (snapshot) => {
-          const items: QualityInspectionItem[] = [];
-          snapshot.forEach((docSnap) => {
-            const data = docSnap.data() as QualityInspectionItem;
-            items.push({ ...data, id: data.id || docSnap.id });
-          });
-          items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-          this.qualityInspections = items;
-          this.notifyQuality();
-        },
-        () => {}
-      ));
+      this.realtimeUnsubscribers.push(
+        onSnapshot(
+          boundedQuery(COLLECTIONS.QUALITY, TRANSACTIONAL_QUERY_LIMIT),
+          (snapshot) => {
+            const items: QualityInspectionItem[] = [];
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data() as QualityInspectionItem;
+              items.push({ ...data, id: data.id || docSnap.id });
+            });
+            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            this.qualityInspections = items;
+            this.notifyQuality();
+          },
+          () => {}
+        )
+      );
 
-      // 11. Immutable Audit Logs
-      this.realtimeUnsubscribers.push(onSnapshot(
-        collection(db, COLLECTIONS.AUDIT_LOGS),
-        (snapshot) => {
-          const items: AuditEventItem[] = [];
-          snapshot.forEach((docSnap) => {
-            const data = docSnap.data() as AuditEventItem;
-            items.push({ ...data, id: data.id || docSnap.id });
-          });
-          items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-          this.auditLogs = items;
-          this.notifyAuditLogs();
-        },
-        () => {}
-      ));
+      // 11. Audit Logs
+      this.realtimeUnsubscribers.push(
+        onSnapshot(
+          boundedQuery(COLLECTIONS.AUDIT_LOGS, TRANSACTIONAL_QUERY_LIMIT),
+          (snapshot) => {
+            const items: AuditEventItem[] = [];
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data() as AuditEventItem;
+              items.push({ ...data, id: data.id || docSnap.id });
+            });
+            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            this.auditLogs = items;
+            this.notifyAuditLogs();
+          },
+          () => {}
+        )
+      );
 
-      // 12. Checks Portfolio (Alınan Çekler & Kesilen Çekler)
-      this.realtimeUnsubscribers.push(onSnapshot(
-        collection(db, COLLECTIONS.CHECKS),
-        (snapshot) => {
-          const items: CheckInstrumentItem[] = [];
-          snapshot.forEach((docSnap) => {
-            const docId = docSnap.id;
-            if (LEGACY_MOCK_IDS.has(docId)) {
-              deleteDoc(doc(db, COLLECTIONS.CHECKS, docId)).catch(() => {});
-              return;
-            }
-            const data = docSnap.data() as CheckInstrumentItem;
-            items.push({ ...data, id: data.id || docId });
-          });
-          items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-          this.checks = items;
-          this.notifyChecks();
-        },
-        () => {}
-      ));
+      // 12. Checks Portfolio
+      this.realtimeUnsubscribers.push(
+        onSnapshot(
+          boundedQuery(COLLECTIONS.CHECKS, TRANSACTIONAL_QUERY_LIMIT),
+          (snapshot) => {
+            const items: CheckInstrumentItem[] = [];
+            snapshot.forEach((docSnap) => {
+              const docId = docSnap.id;
+              if (LEGACY_MOCK_IDS.has(docId)) {
+                deleteDoc(doc(db, COLLECTIONS.CHECKS, docId)).catch(() => {});
+                return;
+              }
+              const data = docSnap.data() as CheckInstrumentItem;
+              items.push({ ...data, id: data.id || docId });
+            });
+            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            this.checks = items;
+            this.notifyChecks();
+          },
+          () => {}
+        )
+      );
 
-      // 13. Cash & Bank Ledger (Kasa & Banka Hareketleri)
-      this.realtimeUnsubscribers.push(onSnapshot(
-        collection(db, COLLECTIONS.CASH_LEDGER),
-        (snapshot) => {
-          const items: CashLedgerItem[] = [];
-          snapshot.forEach((docSnap) => {
-            const docId = docSnap.id;
-            if (LEGACY_MOCK_IDS.has(docId)) {
-              deleteDoc(doc(db, COLLECTIONS.CASH_LEDGER, docId)).catch(() => {});
-              return;
-            }
-            const data = docSnap.data() as CashLedgerItem;
-            items.push({ ...data, id: data.id || docId });
-          });
-          items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-          this.cashLedger = items;
-          this.notifyCashLedger();
-        },
-        () => {}
-      ));
+      // 13. Cash & Bank Ledger
+      this.realtimeUnsubscribers.push(
+        onSnapshot(
+          boundedQuery(COLLECTIONS.CASH_LEDGER, TRANSACTIONAL_QUERY_LIMIT),
+          (snapshot) => {
+            const items: CashLedgerItem[] = [];
+            snapshot.forEach((docSnap) => {
+              const docId = docSnap.id;
+              if (LEGACY_MOCK_IDS.has(docId)) {
+                deleteDoc(doc(db, COLLECTIONS.CASH_LEDGER, docId)).catch(() => {});
+                return;
+              }
+              const data = docSnap.data() as CashLedgerItem;
+              items.push({ ...data, id: data.id || docId });
+            });
+            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            this.cashLedger = items;
+            this.notifyCashLedger();
+          },
+          () => {}
+        )
+      );
+
+      // 14. Staff Users (Only readable/writable by yonetici)
+      if (this.assignedBackendRole === "yonetici") {
+        this.realtimeUnsubscribers.push(
+          onSnapshot(
+            boundedQuery(COLLECTIONS.USERS, STAFF_QUERY_LIMIT, false),
+            (snapshot) => {
+              const list: StaffUserRecord[] = [];
+              snapshot.forEach((docSnap) => {
+                const raw = docSnap.data() as Partial<StaffUserRecord>;
+                const role = normalizeUserRole(raw.role) || "satis";
+                list.push({
+                  uid: raw.uid || docSnap.id,
+                  email: raw.email || "",
+                  displayName: raw.displayName || raw.email || docSnap.id,
+                  role,
+                  active: raw.active !== false,
+                  updatedAt: typeof raw.updatedAt === "number" ? raw.updatedAt : Date.now(),
+                });
+              });
+              list.sort((a, b) => b.updatedAt - a.updatedAt);
+              this.staffUsers = list;
+              this.notifyStaffUsers();
+            },
+            () => {}
+          )
+        );
+      }
     } catch {
-      // Fallback to in-memory state
+      // Fallback cleanly to local state
     }
   }
 
-  // --- Session & Active Role Management ---
+  private canEditPrices(): boolean {
+    return ROLE_DEFINITIONS[this.activeRole].permissions.canEditPrices;
+  }
+
+  /** Sync sanitized order projection to public tracking collection without leaking PII/financials. */
+  private syncPublicOrderTracking(quote: QuoteItem, allowOverwrite: boolean): void {
+    if (!isFirebaseConfigured) return;
+
+    const trackingItem = toPublicOrderTrackingItem(quote);
+    const orderDocId = getOrderTrackingDocId(quote.id);
+    if (orderDocId) {
+      const orderRef = doc(db, COLLECTIONS.ORDER_TRACKING, orderDocId);
+      const cleanPayload = stripUndefined(trackingItem);
+      if (allowOverwrite) {
+        setDoc(orderRef, cleanPayload, { merge: true }).catch(() => {});
+      } else {
+        setDoc(orderRef, cleanPayload).catch(() => {});
+      }
+    }
+
+    const phoneDocId = getPhoneTrackingDocId(quote.phone);
+    if (phoneDocId) {
+      const phoneRef = doc(db, COLLECTIONS.ORDER_TRACKING, phoneDocId);
+      void (async () => {
+        try {
+          const snap = await getDoc(phoneRef);
+          if (!snap.exists()) {
+            await setDoc(phoneRef, {
+              kind: "phone",
+              latestOrderId: trackingItem.orderId,
+              entries: {
+                [trackingItem.orderId]: stripUndefined(trackingItem),
+              },
+              updatedAt: trackingItem.updatedAt,
+            });
+          } else {
+            await updateDoc(phoneRef, {
+              latestOrderId: trackingItem.orderId,
+              [`entries.${trackingItem.orderId}`]: stripUndefined(trackingItem),
+              updatedAt: trackingItem.updatedAt,
+            });
+          }
+        } catch {
+          // Ignore sync failure if offline or rule prevents unauthorized public overwrite
+        }
+      })();
+    }
+  }
+
+  // --- Session, Auth & Active Role Management ---
   public getSession(): string | null {
     return this.sessionUid;
   }
 
   public setSession(uid: string | null): void {
     this.sessionUid = uid;
+    if (!uid) {
+      this.assignedBackendRole = null;
+      this.isAuthorizedStaff = false;
+      this.authResolved = true;
+    }
     this.notifySession();
+    this.notifyAuthState();
   }
 
   public subscribeSession(callback: (uid: string | null) => void): () => void {
@@ -1120,12 +808,53 @@ class ActiveDataStore {
     this.sessionListeners.forEach((cb) => cb(current));
   }
 
+  public getAuthState(): AdminAuthState {
+    return {
+      sessionUid: this.sessionUid,
+      authResolved: this.authResolved,
+      isAuthorizedStaff: this.isAuthorizedStaff,
+      assignedBackendRole: this.assignedBackendRole,
+      canSimulateRoles:
+        this.sessionUid === null || this.assignedBackendRole === "yonetici",
+    };
+  }
+
+  public subscribeAuthState(callback: (state: AdminAuthState) => void): () => void {
+    this.authStateListeners.add(callback);
+    callback(this.getAuthState());
+    return () => this.authStateListeners.delete(callback);
+  }
+
+  private notifyAuthState(): void {
+    const current = this.getAuthState();
+    this.authStateListeners.forEach((cb) => cb(current));
+  }
+
   public getRole(): UserRole {
     return this.activeRole;
   }
 
-  public setRole(role: UserRole): void {
+  public setRole(role: UserRole): { ok: boolean; error?: string } {
+    if (this.sessionUid !== null && this.assignedBackendRole !== "yonetici") {
+      this.logAuditEvent(
+        "RBAC_DENIED",
+        "ROLE_SWITCH",
+        `${ROLE_DEFINITIONS[this.activeRole].label} hesabından istemci rolü "${ROLE_DEFINITIONS[role].label}" olarak değiştirilmeye çalışıldı ve engellendi.`
+      );
+      return {
+        ok: false,
+        error:
+          "YETKİ ENGELİ: Rol simülasyonu yalnızca backend'de Yönetici (yonetici) yetkisine sahip hesaplarla kullanılabilir.",
+      };
+    }
+
     this.activeRole = role;
+    const current = this.activeRole;
+    this.roleListeners.forEach((cb) => cb(current));
+    return { ok: true };
+  }
+
+  private notifyRole(): void {
     const current = this.activeRole;
     this.roleListeners.forEach((cb) => cb(current));
   }
@@ -1134,6 +863,68 @@ class ActiveDataStore {
     this.roleListeners.add(callback);
     callback(this.activeRole);
     return () => this.roleListeners.delete(callback);
+  }
+
+  // --- Staff User Role Administration (`users/{uid}`) ---
+  public getStaffUsers(): StaffUserRecord[] {
+    return [...this.staffUsers];
+  }
+
+  public saveStaffUser(record: Omit<StaffUserRecord, "updatedAt">): { ok: boolean; error?: string } {
+    if (this.assignedBackendRole !== "yonetici" && this.sessionUid !== null) {
+      return { ok: false, error: "Personel yetkilerini yalnızca Yönetici düzenleyebilir." };
+    }
+    const cleanUid = record.uid.trim();
+    if (!cleanUid) {
+      return { ok: false, error: "Firebase Auth UID boş olamaz." };
+    }
+    const normalized: StaffUserRecord = {
+      uid: cleanUid,
+      email: record.email.trim(),
+      displayName: record.displayName.trim() || record.email.trim(),
+      role: record.role,
+      active: record.active,
+      updatedAt: Date.now(),
+    };
+    this.staffUsers = [normalized, ...this.staffUsers.filter((u) => u.uid !== cleanUid)];
+    this.notifyStaffUsers();
+
+    if (isFirebaseConfigured) {
+      setDoc(doc(db, COLLECTIONS.USERS, cleanUid), stripUndefined(normalized), { merge: true }).catch(
+        () => {}
+      );
+    }
+    this.logAuditEvent(
+      "STAFF_ROLE_CHANGE",
+      cleanUid,
+      `${normalized.email || cleanUid} rolü "${ROLE_DEFINITIONS[normalized.role].label}" (${
+        normalized.active ? "Aktif" : "Pasif"
+      }) olarak güncellendi.`
+    );
+    return { ok: true };
+  }
+
+  public deleteStaffUser(uid: string): { ok: boolean; error?: string } {
+    if (this.assignedBackendRole !== "yonetici" && this.sessionUid !== null) {
+      return { ok: false, error: "Personel kaydını yalnızca Yönetici silebilir." };
+    }
+    this.staffUsers = this.staffUsers.filter((u) => u.uid !== uid);
+    this.notifyStaffUsers();
+    if (isFirebaseConfigured) {
+      deleteDoc(doc(db, COLLECTIONS.USERS, uid)).catch(() => {});
+    }
+    return { ok: true };
+  }
+
+  public subscribeStaffUsers(callback: (items: StaffUserRecord[]) => void): () => void {
+    this.staffUsersListeners.add(callback);
+    callback(this.getStaffUsers());
+    return () => this.staffUsersListeners.delete(callback);
+  }
+
+  private notifyStaffUsers(): void {
+    const current = this.getStaffUsers();
+    this.staffUsersListeners.forEach((cb) => cb(current));
   }
 
   // --- Audit Log Recording ---
@@ -1161,7 +952,7 @@ class ActiveDataStore {
     this.auditLogs = [entry, ...this.auditLogs];
     this.notifyAuditLogs();
 
-    if (isFirebaseConfigured) {
+    if (isFirebaseConfigured && this.sessionUid) {
       setDoc(doc(db, COLLECTIONS.AUDIT_LOGS, entry.id), stripUndefined(entry)).catch(() => {});
     }
     return entry;
@@ -1189,6 +980,7 @@ class ActiveDataStore {
       quote.id || `TKF-${new Date().getFullYear()}-${now.toString().slice(-6)}`;
     const estimatedCost =
       quote.estimatedCost ?? Math.round((quote.estimatedPrice || 0) * 0.68);
+    const isStaffWrite = Boolean(this.sessionUid && this.isAuthorizedStaff);
     const newQuote: QuoteItem = {
       paymentStatus: "unpaid",
       paidAmount: 0,
@@ -1215,6 +1007,7 @@ class ActiveDataStore {
 
     if (isFirebaseConfigured) {
       setDoc(doc(db, COLLECTIONS.QUOTES, newQuote.id), stripUndefined(newQuote)).catch(() => {});
+      this.syncPublicOrderTracking(newQuote, isStaffWrite);
     }
     return newQuote;
   }
@@ -1223,8 +1016,7 @@ class ActiveDataStore {
     const existing = this.quotes.find((q) => q.id === id);
     if (!existing) return { ok: false, error: "Sipariş bulunamadı." };
 
-    // KABUL TESTİ #5: Kalite blokajı olan ürün sevkiyata veya tamamlandıya ayrılamaz!
-    if (existing.qualityHold && (status === "completed")) {
+    if (existing.qualityHold && status === "completed") {
       this.logAuditEvent(
         "RBAC_DENIED",
         id,
@@ -1240,11 +1032,8 @@ class ActiveDataStore {
     const orderSnapshotAt =
       status === "approved" && !existing.orderSnapshotAt ? formatTrNow() : existing.orderSnapshotAt;
 
-    this.quotes = this.quotes.map((q) =>
-      q.id === id
-        ? { ...q, status, productionStage: nextStage, orderSnapshotAt }
-        : q
-    );
+    const updated: QuoteItem = { ...existing, status, productionStage: nextStage, orderSnapshotAt };
+    this.quotes = this.quotes.map((q) => (q.id === id ? updated : q));
     this.notifyQuotes();
 
     if (isFirebaseConfigured) {
@@ -1256,6 +1045,7 @@ class ActiveDataStore {
           orderSnapshotAt,
         })
       ).catch(() => {});
+      this.syncPublicOrderTracking(updated, true);
     }
     return { ok: true };
   }
@@ -1268,7 +1058,6 @@ class ActiveDataStore {
     const existing = this.quotes.find((q) => q.id === id);
     if (!existing) return { ok: false, error: "Kayıt bulunamadı." };
 
-    // KABUL TESTİ #5: Kalite blokajı varken istasyon 5 (Sevkiyat) veya 6 (Teslimat) seçilemez!
     const targetStage = fields.productionStage ?? existing.productionStage;
     const isStillHeld = fields.qualityHold !== undefined ? fields.qualityHold : existing.qualityHold;
     if (isStillHeld && targetStage && targetStage >= 5 && fields.qualityHold !== false) {
@@ -1283,7 +1072,6 @@ class ActiveDataStore {
       };
     }
 
-    // KABUL TESTİ #2: Teklif tutarı, alanı veya ölçüleri değiştiyse eski sürümü revisions[] dizisinde koru
     let updatedRevisions = existing.revisions ? [...existing.revisions] : [];
     let nextVersion = existing.version || 1;
 
@@ -1335,6 +1123,7 @@ class ActiveDataStore {
           revisions: updatedRevisions,
         })
       ).catch(() => {});
+      this.syncPublicOrderTracking(merged, true);
     }
     return { ok: true };
   }
@@ -1357,6 +1146,10 @@ class ActiveDataStore {
 
     if (isFirebaseConfigured) {
       deleteDoc(doc(db, COLLECTIONS.QUOTES, id)).catch(() => {});
+      const orderDocId = getOrderTrackingDocId(id);
+      if (orderDocId) {
+        deleteDoc(doc(db, COLLECTIONS.ORDER_TRACKING, orderDocId)).catch(() => {});
+      }
     }
   }
 
@@ -1454,7 +1247,7 @@ class ActiveDataStore {
     this.opportunityListeners.forEach((cb) => cb(current));
   }
 
-  // --- Activities (CRM Follow-up Tasks) Operations ---
+  // --- Activities Operations ---
   public getActivities(): ActivityItem[] {
     return [...this.activities];
   }
@@ -1606,7 +1399,7 @@ class ActiveDataStore {
     this.purchaseListeners.forEach((cb) => cb(current));
   }
 
-  // --- Quality Control Operations (Kabul Testi #5) ---
+  // --- Quality Control Operations ---
   public getQualityInspections(): QualityInspectionItem[] {
     return [...this.qualityInspections];
   }
@@ -1628,7 +1421,6 @@ class ActiveDataStore {
       setDoc(doc(db, COLLECTIONS.QUALITY, created.id), stripUndefined(created)).catch(() => {});
     }
 
-    // Sipariş üzerinde kalite blokajı oluştur veya kaldır
     if (q.orderId) {
       const shouldHold = q.result === "Karantina (Blokaj)" || q.result === "Hurda / Yeniden İşleme";
       this.updateQuote(q.orderId, {
@@ -1745,13 +1537,13 @@ class ActiveDataStore {
     this.messageListeners.forEach((cb) => cb(current));
   }
 
-  // --- Prices Operations (Kabul Testi #9 Yetki Korumalı) ---
+  // --- Prices Operations (RBAC Protected) ---
   public getPrices(): FactoryPriceItem[] {
     return [...this.prices];
   }
 
   public updatePrice(id: string, newPrice: number): { ok: boolean; error?: string } {
-    if (!ROLE_DEFINITIONS[this.activeRole].permissions.canEditPrices) {
+    if (!this.canEditPrices()) {
       this.logAuditEvent(
         "RBAC_DENIED",
         id,
@@ -1782,7 +1574,7 @@ class ActiveDataStore {
   }
 
   public updatePriceItem(id: string, fields: Partial<FactoryPriceItem>): { ok: boolean; error?: string } {
-    if (!ROLE_DEFINITIONS[this.activeRole].permissions.canEditPrices) {
+    if (!this.canEditPrices()) {
       this.logAuditEvent("RBAC_DENIED", id, "Yetkisiz fiyat kartı güncelleme denemesi engellendi.");
       return {
         ok: false,
@@ -1803,7 +1595,7 @@ class ActiveDataStore {
   }
 
   public applyBulkPricePercentage(percentChange: number): { ok: boolean; error?: string } {
-    if (!ROLE_DEFINITIONS[this.activeRole].permissions.canEditPrices) {
+    if (!this.canEditPrices()) {
       this.logAuditEvent("RBAC_DENIED", "ALL_PRICES", "Yetkisiz toplu fiyat güncelleme denemesi engellendi.");
       return {
         ok: false,
@@ -1832,7 +1624,7 @@ class ActiveDataStore {
   }
 
   public addPriceItem(item: Omit<FactoryPriceItem, "id"> & { id?: string }): FactoryPriceItem | null {
-    if (!ROLE_DEFINITIONS[this.activeRole].permissions.canEditPrices) {
+    if (!this.canEditPrices()) {
       this.logAuditEvent("RBAC_DENIED", "NEW_PRICE", "Yetkisiz yeni fiyat kalemi ekleme denemesi engellendi.");
       return null;
     }
@@ -1863,7 +1655,7 @@ class ActiveDataStore {
   }
 
   public deletePriceItem(id: string): void {
-    if (!ROLE_DEFINITIONS[this.activeRole].permissions.canEditPrices) return;
+    if (!this.canEditPrices()) return;
     this.prices = this.prices.filter((p) => p.id !== id);
     this.notifyPrices();
 
@@ -1889,7 +1681,7 @@ class ActiveDataStore {
   }
 
   public updateService(id: string, fields: Partial<FactoryServiceItem>): void {
-    if (!ROLE_DEFINITIONS[this.activeRole].permissions.canEditPrices) return;
+    if (!this.canEditPrices()) return;
     this.services = this.services.map((s) => (s.id === id ? { ...s, ...fields } : s));
     this.notifyServices();
 
@@ -1902,7 +1694,7 @@ class ActiveDataStore {
   }
 
   public addService(item: Omit<FactoryServiceItem, "id"> & { id?: string }): FactoryServiceItem | null {
-    if (!ROLE_DEFINITIONS[this.activeRole].permissions.canEditPrices) return null;
+    if (!this.canEditPrices()) return null;
     const slugId =
       item.id ||
       "srv-" +
@@ -1927,7 +1719,7 @@ class ActiveDataStore {
   }
 
   public deleteService(id: string): void {
-    if (!ROLE_DEFINITIONS[this.activeRole].permissions.canEditPrices) return;
+    if (!this.canEditPrices()) return;
     this.services = this.services.filter((s) => s.id !== id);
     this.notifyServices();
 
@@ -1947,7 +1739,7 @@ class ActiveDataStore {
     this.serviceListeners.forEach((cb) => cb(current));
   }
 
-  // --- Checks Portfolio Operations (Alınan Çekler & Kesilen Çekler) ---
+  // --- Checks Portfolio Operations ---
   public getChecks(): CheckInstrumentItem[] {
     return [...this.checks];
   }
@@ -2007,7 +1799,7 @@ class ActiveDataStore {
     this.checkListeners.forEach((cb) => cb(current));
   }
 
-  // --- Cash & Bank Ledger Operations (Kasa & Banka Hareketleri) ---
+  // --- Cash & Bank Ledger Operations ---
   public getCashLedger(): CashLedgerItem[] {
     return [...this.cashLedger];
   }
@@ -2066,7 +1858,6 @@ class ActiveDataStore {
     const invIds = this.inventory.map((i) => i.id);
     const purIds = this.purchases.map((p) => p.id);
     const qualIds = this.qualityInspections.map((q) => q.id);
-    const audIds = this.auditLogs.map((a) => a.id);
     const chkIds = this.checks.map((c) => c.id);
     const cashIds = this.cashLedger.map((c) => c.id);
 
@@ -2078,7 +1869,6 @@ class ActiveDataStore {
     this.inventory = [];
     this.purchases = [];
     this.qualityInspections = [];
-    this.auditLogs = [];
     this.checks = [];
     this.cashLedger = [];
 
@@ -2090,13 +1880,18 @@ class ActiveDataStore {
     this.notifyInventory();
     this.notifyPurchases();
     this.notifyQuality();
-    this.notifyAuditLogs();
     this.notifyChecks();
     this.notifyCashLedger();
     this.cleanupLegacyFakeCache();
 
     if (isFirebaseConfigured) {
-      quoteIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.QUOTES, id)).catch(() => {}));
+      quoteIds.forEach((id) => {
+        deleteDoc(doc(db, COLLECTIONS.QUOTES, id)).catch(() => {});
+        const orderDocId = getOrderTrackingDocId(id);
+        if (orderDocId) {
+          deleteDoc(doc(db, COLLECTIONS.ORDER_TRACKING, orderDocId)).catch(() => {});
+        }
+      });
       msgIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.MESSAGES, id)).catch(() => {}));
       custIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.CUSTOMERS, id)).catch(() => {}));
       oppIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.OPPORTUNITIES, id)).catch(() => {}));
@@ -2104,7 +1899,6 @@ class ActiveDataStore {
       invIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.INVENTORY, id)).catch(() => {}));
       purIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.PURCHASES, id)).catch(() => {}));
       qualIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.QUALITY, id)).catch(() => {}));
-      audIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.AUDIT_LOGS, id)).catch(() => {}));
       chkIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.CHECKS, id)).catch(() => {}));
       cashIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.CASH_LEDGER, id)).catch(() => {}));
       LEGACY_MOCK_IDS.forEach((id) => {
@@ -2118,11 +1912,9 @@ class ActiveDataStore {
   }
 }
 
-// Global active store instance
 export const liveStore = new ActiveDataStore();
 export const purgeAllAdminTransactionalData = () => liveStore.purgeAllTransactionalData();
 
-// Export standard functional API for direct use
 export const getAdminChecks = () => liveStore.getChecks();
 export const addAdminCheck = (
   item: Omit<CheckInstrumentItem, "id" | "createdAt" | "issueDate"> & { issueDate?: string }
@@ -2139,35 +1931,48 @@ export const addAdminCashLedgerEntry = (item: Omit<CashLedgerItem, "id" | "creat
 export const deleteAdminCashLedgerEntry = (id: string) => liveStore.deleteCashLedgerEntry(id);
 export const subscribeAdminCashLedger = (cb: (items: CashLedgerItem[]) => void) =>
   liveStore.subscribeCashLedger(cb);
+
 export const getAdminQuotes = () => liveStore.getQuotes();
-export const addAdminQuote = (q: Omit<QuoteItem, "id" | "date"> & { id?: string }) => liveStore.addQuote(q);
-export const updateQuoteStatus = (id: string, status: QuoteItem["status"]) => liveStore.updateQuoteStatus(id, status);
+export const addAdminQuote = (q: Omit<QuoteItem, "id" | "date"> & { id?: string }) =>
+  liveStore.addQuote(q);
+export const updateQuoteStatus = (id: string, status: QuoteItem["status"]) =>
+  liveStore.updateQuoteStatus(id, status);
 export const updateAdminQuote = (id: string, fields: Partial<QuoteItem>, reason?: string) =>
   liveStore.updateQuote(id, fields, reason);
 export const cancelAdminQuoteWithReason = (id: string, reason: string) =>
   liveStore.cancelQuoteWithReason(id, reason);
 export const deleteAdminQuote = (id: string) => liveStore.deleteQuote(id);
-export const subscribeAdminQuotes = (cb: (quotes: QuoteItem[]) => void) => liveStore.subscribeQuotes(cb);
+export const subscribeAdminQuotes = (cb: (quotes: QuoteItem[]) => void) =>
+  liveStore.subscribeQuotes(cb);
 
 export const getAdminMessages = () => liveStore.getMessages();
-export const addAdminMessage = (m: Omit<ContactMessage, "id" | "date" | "isRead">) => liveStore.addMessage(m);
+export const addAdminMessage = (m: Omit<ContactMessage, "id" | "date" | "isRead">) =>
+  liveStore.addMessage(m);
 export const markMessageAsRead = (id: string) => liveStore.markMessageAsRead(id);
 export const deleteAdminMessage = (id: string) => liveStore.deleteMessage(id);
-export const subscribeAdminMessages = (cb: (messages: ContactMessage[]) => void) => liveStore.subscribeMessages(cb);
+export const subscribeAdminMessages = (cb: (messages: ContactMessage[]) => void) =>
+  liveStore.subscribeMessages(cb);
 
 export const getAdminPrices = () => liveStore.getPrices();
 export const updateAdminPrice = (id: string, price: number) => liveStore.updatePrice(id, price);
-export const updateAdminPriceItem = (id: string, fields: Partial<FactoryPriceItem>) => liveStore.updatePriceItem(id, fields);
-export const applyBulkAdminPricePercentage = (percent: number) => liveStore.applyBulkPricePercentage(percent);
-export const addAdminPrice = (item: Omit<FactoryPriceItem, "id"> & { id?: string }) => liveStore.addPriceItem(item);
+export const updateAdminPriceItem = (id: string, fields: Partial<FactoryPriceItem>) =>
+  liveStore.updatePriceItem(id, fields);
+export const applyBulkAdminPricePercentage = (percent: number) =>
+  liveStore.applyBulkPricePercentage(percent);
+export const addAdminPrice = (item: Omit<FactoryPriceItem, "id"> & { id?: string }) =>
+  liveStore.addPriceItem(item);
 export const deleteAdminPrice = (id: string) => liveStore.deletePriceItem(id);
-export const subscribeAdminPrices = (cb: (prices: FactoryPriceItem[]) => void) => liveStore.subscribePrices(cb);
+export const subscribeAdminPrices = (cb: (prices: FactoryPriceItem[]) => void) =>
+  liveStore.subscribePrices(cb);
 
 export const getAdminServices = () => liveStore.getServices();
-export const updateAdminService = (id: string, fields: Partial<FactoryServiceItem>) => liveStore.updateService(id, fields);
-export const addAdminService = (item: Omit<FactoryServiceItem, "id"> & { id?: string }) => liveStore.addService(item);
+export const updateAdminService = (id: string, fields: Partial<FactoryServiceItem>) =>
+  liveStore.updateService(id, fields);
+export const addAdminService = (item: Omit<FactoryServiceItem, "id"> & { id?: string }) =>
+  liveStore.addService(item);
 export const deleteAdminService = (id: string) => liveStore.deleteService(id);
-export const subscribeAdminServices = (cb: (services: FactoryServiceItem[]) => void) => liveStore.subscribeServices(cb);
+export const subscribeAdminServices = (cb: (services: FactoryServiceItem[]) => void) =>
+  liveStore.subscribeServices(cb);
 
 export const getAdminCustomers = () => liveStore.getCustomers();
 export const saveAdminCustomer = (c: Omit<CustomerRecord, "id" | "createdAt"> & { id?: string }) =>
@@ -2185,7 +1990,8 @@ export const subscribeAdminOpportunities = (cb: (items: OpportunityItem[]) => vo
   liveStore.subscribeOpportunities(cb);
 
 export const getAdminActivities = () => liveStore.getActivities();
-export const addAdminActivity = (a: Omit<ActivityItem, "id" | "createdAt">) => liveStore.addActivity(a);
+export const addAdminActivity = (a: Omit<ActivityItem, "id" | "createdAt">) =>
+  liveStore.addActivity(a);
 export const toggleAdminActivity = (id: string) => liveStore.toggleActivityCompleted(id);
 export const subscribeAdminActivities = (cb: (items: ActivityItem[]) => void) =>
   liveStore.subscribeActivities(cb);
@@ -2233,27 +2039,78 @@ export const getLiveSession = () => liveStore.getSession();
 export const setLiveSession = (uid: string | null) => liveStore.setSession(uid);
 export const subscribeLiveSession = (cb: (uid: string | null) => void) => liveStore.subscribeSession(cb);
 
-export async function fetchPublicQuoteById(id: string): Promise<QuoteItem | null> {
-  const cleanId = id.trim();
-  if (!cleanId) return null;
-  const localMatch = liveStore
-    .getQuotes()
-    .find((q) => q.id.toLowerCase() === cleanId.toLowerCase());
-  if (localMatch) return localMatch;
-  if (!isFirebaseConfigured) return null;
+export const getAdminAuthState = () => liveStore.getAuthState();
+export const subscribeAdminAuthState = (cb: (state: AdminAuthState) => void) =>
+  liveStore.subscribeAuthState(cb);
 
-  const candidates =
-    cleanId === cleanId.toUpperCase() ? [cleanId] : [cleanId, cleanId.toUpperCase()];
-  for (const docId of candidates) {
-    try {
-      const snap = await getDoc(doc(db, COLLECTIONS.QUOTES, docId));
-      if (snap.exists()) {
-        const data = snap.data() as QuoteItem;
-        return { ...data, id: data.id || snap.id };
+export const getStaffUsers = () => liveStore.getStaffUsers();
+export const saveStaffUser = (record: Omit<StaffUserRecord, "updatedAt">) =>
+  liveStore.saveStaffUser(record);
+export const deleteStaffUser = (uid: string) => liveStore.deleteStaffUser(uid);
+export const subscribeStaffUsers = (cb: (items: StaffUserRecord[]) => void) =>
+  liveStore.subscribeStaffUsers(cb);
+
+/**
+ * Resolve sanitized public order tracking status from Firestore (`acarpen_order_tracking`)
+ * by order ID (`ORDER_<ID>`) or canonical hashed phone (`PHONE_<SHA256>`), with safe local fallback.
+ */
+export async function fetchPublicOrderTracking(
+  queryStr: string
+): Promise<PublicOrderTrackingItem[]> {
+  const clean = (queryStr || "").trim();
+  if (!clean) return [];
+
+  const canonicalPhone10 = normalizeTrPhone10(clean);
+  const orderDocId = getOrderTrackingDocId(clean);
+  const phoneDocId = canonicalPhone10 ? getPhoneTrackingDocId(canonicalPhone10) : null;
+
+  if (isFirebaseConfigured) {
+    if (orderDocId) {
+      try {
+        const orderSnap = await getDoc(doc(db, COLLECTIONS.ORDER_TRACKING, orderDocId));
+        if (orderSnap.exists()) {
+          const item = orderSnap.data() as PublicOrderTrackingItem;
+          return [{ ...item, orderId: item.orderId || clean.toUpperCase() }];
+        }
+      } catch {
+        // Ignore network/permission errors and try phone hash / local fallback
       }
-    } catch {
-      // Ignore permission or network failure on single-doc lookup
+    }
+
+    if (phoneDocId) {
+      try {
+        const phoneSnap = await getDoc(doc(db, COLLECTIONS.ORDER_TRACKING, phoneDocId));
+        if (phoneSnap.exists()) {
+          const data = phoneSnap.data() as {
+            entries?: Record<string, PublicOrderTrackingItem>;
+          };
+          const entriesMap = data.entries || {};
+          const items = Object.values(entriesMap);
+          items.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+          if (items.length > 0) return items;
+        }
+      } catch {
+        // Ignore network/permission errors
+      }
     }
   }
-  return null;
+
+  // Fallback for current-session locally created orders or offline dev tests
+  const lower = clean.toLowerCase();
+  const localMatches = liveStore
+    .getQuotes()
+    .filter((q) => {
+      if (q.id.toLowerCase() === lower) return true;
+      if (canonicalPhone10 && normalizeTrPhone10(q.phone) === canonicalPhone10) return true;
+      return false;
+    })
+    .map(toPublicOrderTrackingItem);
+
+  return localMatches;
+}
+
+/** @deprecated Prefer fetchPublicOrderTracking returning non-PII projections array. */
+export async function fetchPublicQuoteById(id: string): Promise<PublicOrderTrackingItem | null> {
+  const results = await fetchPublicOrderTracking(id);
+  return results[0] || null;
 }

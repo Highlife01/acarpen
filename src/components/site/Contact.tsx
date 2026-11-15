@@ -3,6 +3,12 @@ import { Phone, Mail, MapPin, Clock, Send, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { addAdminQuote, addAdminMessage } from "@/lib/adminStorage";
+import {
+  checkSubmissionCooldown,
+  isHoneypotTripped,
+  markFormSubmitted,
+  validatePublicLeadInput,
+} from "@/lib/formGuard";
 
 export const Contact = () => {
   const [name, setName] = useState("");
@@ -10,12 +16,29 @@ export const Contact = () => {
   const [email, setEmail] = useState("");
   const [glassType, setGlassType] = useState("70'lik / 75'lik Fıratpen PVC Pencere (4+16+4 Isıcam)");
   const [details, setDetails] = useState("");
+  const [websiteTrap, setWebsiteTrap] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !phone.trim()) {
-      toast.error("Lütfen adınızı ve telefon numaranızı giriniz.");
+    if (isHoneypotTripped(websiteTrap)) {
+      return;
+    }
+
+    const validation = validatePublicLeadInput({
+      name,
+      phone,
+      email,
+      details,
+    });
+    if (!validation.ok) {
+      toast.error(validation.error || "Lütfen form alanlarını kontrol ediniz.");
+      return;
+    }
+
+    const cooldown = checkSubmissionCooldown("contact_lead_form");
+    if (!cooldown.allowed) {
+      toast.error(`Spam koruması: Lütfen ${cooldown.waitSeconds} saniye bekleyip tekrar deneyin.`);
       return;
     }
 
@@ -40,6 +63,7 @@ export const Contact = () => {
       subject: `Teklif Talebi: ${glassType}`,
       message: details.trim() || "İletişim formu üzerinden keşif/fiyat talebi gönderildi.",
     });
+    markFormSubmitted("contact_lead_form");
 
     setTimeout(() => {
       setLoading(false);
@@ -138,6 +162,17 @@ export const Contact = () => {
             onSubmit={handleSubmit}
             className="lg:col-span-3 bg-white rounded-3xl p-8 sm:p-10 space-y-6 border border-slate-200 shadow-xl"
           >
+            <div className="sr-only" aria-hidden="true">
+              <label htmlFor="contact-website-trap">Web Sitesi</label>
+              <input
+                id="contact-website-trap"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={websiteTrap}
+                onChange={(e) => setWebsiteTrap(e.target.value)}
+              />
+            </div>
             <div className="border-b border-slate-100 pb-4">
               <h3 className="font-serif text-2xl font-bold text-slate-900">Hızlı Fiyat & Keşif Talep Formu</h3>
               <p className="text-xs text-slate-500 mt-1 font-normal">

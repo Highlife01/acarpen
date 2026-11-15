@@ -6,6 +6,12 @@ import { SEO } from "@/components/SEO";
 import { Calculator, Plus, Trash2, CheckCircle2, Send, ShieldCheck, Printer, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { addAdminQuote } from "@/lib/adminStorage";
+import {
+  checkSubmissionCooldown,
+  isHoneypotTripped,
+  markFormSubmitted,
+  validatePublicLeadInput,
+} from "@/lib/formGuard";
 import { PVC_COLOR_ALTERNATIVES } from "@/data/pvcColorAlternatives";
 import { trackEvent } from "@/lib/analytics";
 
@@ -69,6 +75,7 @@ export default function Hesaplama() {
   const [customerName, setCustomerName] = useState("");
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("Adana - Seyhan");
+  const [websiteTrap, setWebsiteTrap] = useState("");
 
   const addRow = () => {
     setRows((prev) => [
@@ -112,8 +119,22 @@ export default function Hesaplama() {
 
   const handleRequestOfficialQuote = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customerName.trim() || !phone.trim()) {
-      toast.error("Lütfen adınızı ve telefon numaranızı giriniz.");
+    if (isHoneypotTripped(websiteTrap)) {
+      return;
+    }
+
+    const validation = validatePublicLeadInput({
+      name: customerName,
+      phone,
+    });
+    if (!validation.ok) {
+      toast.error(validation.error || "Lütfen adınızı ve geçerli telefon numaranızı giriniz.");
+      return;
+    }
+
+    const cooldown = checkSubmissionCooldown("hesaplama_quote_form");
+    if (!cooldown.allowed) {
+      toast.error(`Spam koruması: Lütfen ${cooldown.waitSeconds} saniye bekleyip tekrar deneyin.`);
       return;
     }
 
@@ -132,6 +153,7 @@ export default function Hesaplama() {
       estimatedPrice: 0,
       status: "new",
     });
+    markFormSubmitted("hesaplama_quote_form");
 
     trackEvent("quote_calculated", {
       quote_id: created.id,
@@ -528,6 +550,17 @@ export default function Hesaplama() {
               </Button>
 
               <form onSubmit={handleRequestOfficialQuote} className="space-y-3.5 pt-2 border-t border-slate-200">
+                <div className="sr-only" aria-hidden="true">
+                  <label htmlFor="calc-website-trap">Web Sitesi</label>
+                  <input
+                    id="calc-website-trap"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={websiteTrap}
+                    onChange={(e) => setWebsiteTrap(e.target.value)}
+                  />
+                </div>
                 <div className="text-xs font-bold uppercase tracking-wider text-slate-800">
                   Fiyat Teklifi İçin Bilgileriniz
                 </div>

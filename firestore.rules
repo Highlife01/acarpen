@@ -7,26 +7,75 @@ service cloud.firestore {
     function signedIn() {
       return request.auth != null;
     }
-    function me() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+
+    function userDocPath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
     }
+
+    function me() {
+      return get(userDocPath()).data;
+    }
+
     function isPrimaryAdmin() {
       return signedIn() && request.auth.token.email == 'admin@acarpen.com.tr';
     }
+
     function isStaff() {
       return signedIn()
-        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && exists(userDocPath())
         && me().active == true;
     }
+
     function hasRole(roles) {
-      return isPrimaryAdmin() || (isStaff() && me().role in roles);
+      return isPrimaryAdmin()
+        || (signedIn() && ('role' in request.auth.token) && (request.auth.token.role in roles))
+        || (isStaff() && (me().role in roles));
     }
+
     function isAdminOrStaff() {
-      return isPrimaryAdmin() || isStaff();
+      return isPrimaryAdmin()
+        || (signedIn() && ('role' in request.auth.token) && request.auth.token.role in [
+          'yonetici', 'satis_yoneticisi', 'satis', 'uretim_planlama',
+          'operator', 'kalite', 'depo_satinalma', 'finans',
+          'superadmin', 'manager', 'sales', 'editor'
+        ])
+        || isStaff();
     }
-    function canManage() { return hasRole(['superadmin', 'manager']); }
-    function canSell() { return hasRole(['superadmin', 'manager', 'sales']); }
-    function canEdit() { return hasRole(['superadmin', 'manager', 'editor']); }
+
+    // Rol matrisi — adminStorage ROLE_DEFINITIONS + eski alias'lar
+    function isYonetici() {
+      return hasRole(['yonetici', 'superadmin', 'manager']);
+    }
+    function canManage() {
+      return isYonetici();
+    }
+    function canSell() {
+      return hasRole(['yonetici', 'superadmin', 'manager', 'satis_yoneticisi', 'satis', 'sales', 'editor']);
+    }
+    function canEdit() {
+      return hasRole(['yonetici', 'superadmin', 'manager', 'satis_yoneticisi', 'editor']);
+    }
+    function canEditPrices() {
+      return hasRole(['yonetici', 'superadmin', 'manager', 'satis_yoneticisi']);
+    }
+    function canManageProduction() {
+      return hasRole(['yonetici', 'superadmin', 'manager', 'uretim_planlama', 'operator']);
+    }
+    function canInspectQuality() {
+      return hasRole(['yonetici', 'superadmin', 'manager', 'uretim_planlama', 'operator', 'kalite', 'depo_satinalma']);
+    }
+    function canManageQualityHold() {
+      return hasRole(['yonetici', 'superadmin', 'manager', 'kalite']);
+    }
+    function canManageInventory() {
+      return hasRole(['yonetici', 'superadmin', 'manager', 'depo_satinalma']);
+    }
+    function canManageFinance() {
+      return hasRole(['yonetici', 'superadmin', 'manager', 'finans', 'satis_yoneticisi']);
+    }
+    function canManageChecksAndCash() {
+      return hasRole(['yonetici', 'superadmin', 'manager', 'finans']);
+    }
 
     function optString(d, key, max) {
       return !(key in d) || (d[key] is string && d[key].size() <= max);
@@ -67,21 +116,132 @@ service cloud.firestore {
 
     function validPublicQuote() {
       let d = request.resource.data;
-      return d.keys().hasAll(['id', 'customerName', 'phone', 'status'])
-        && d.id is string && d.id.size() >= 5 && d.id.size() <= 64
-        && d.customerName is string && d.customerName.size() >= 1 && d.customerName.size() <= 120
-        && d.phone is string && d.phone.size() >= 7 && d.phone.size() <= 32
-        && d.status == 'new';
+      return d.keys().hasOnly([
+          'id', 'customerName', 'phone', 'email', 'city', 'siteName', 'leadSource',
+          'glassType', 'thickness', 'dimensions', 'totalArea', 'estimatedPrice',
+          'estimatedCost', 'actualCost', 'discountRate', 'extraCost', 'paymentStatus',
+          'paidAmount', 'version', 'priceListVersion', 'approvalStatus', 'routeSteps',
+          'productionStage', 'stationStatus', 'status', 'notes', 'urgency',
+          'createdAt', 'date'
+        ])
+        && d.keys().hasAll([
+          'id', 'customerName', 'phone', 'city', 'glassType', 'thickness',
+          'dimensions', 'totalArea', 'estimatedPrice', 'status', 'createdAt', 'date'
+        ])
+        && d.id is string && d.id.matches('^TKF-[0-9]{4}-[0-9]{4,12}$')
+        && d.customerName is string && d.customerName.size() >= 2 && d.customerName.size() <= 100
+        && d.phone is string && d.phone.size() >= 10 && d.phone.size() <= 24
+        && d.city is string && d.city.size() >= 1 && d.city.size() <= 80
+        && d.glassType is string && d.glassType.size() <= 160
+        && d.thickness is string && d.thickness.size() <= 120
+        && d.dimensions is string && d.dimensions.size() <= 500
+        && d.totalArea is number && d.totalArea >= 0 && d.totalArea <= 50000
+        && d.estimatedPrice == 0
+        && (!('estimatedCost' in d) || d.estimatedCost == 0)
+        && (!('actualCost' in d) || d.actualCost == 0)
+        && (!('paidAmount' in d) || d.paidAmount == 0)
+        && (!('discountRate' in d) || d.discountRate == 0)
+        && (!('extraCost' in d) || d.extraCost == 0)
+        && (!('paymentStatus' in d) || d.paymentStatus == 'unpaid')
+        && (!('productionStage' in d) || d.productionStage == 1)
+        && (!('stationStatus' in d) || d.stationStatus == 'waiting')
+        && (!('version' in d) || d.version == 1)
+        && d.status == 'new'
+        && d.date is string && d.date.size() <= 40
+        && d.createdAt is int && d.createdAt > 1700000000000
+        && optString(d, 'email', 120)
+        && optString(d, 'siteName', 120)
+        && optString(d, 'leadSource', 60)
+        && optString(d, 'priceListVersion', 40)
+        && optString(d, 'notes', 2000);
     }
 
     function validPublicMessage() {
       let d = request.resource.data;
-      return d.keys().hasAll(['id', 'name', 'phone', 'subject', 'message'])
-        && d.id is string && d.id.size() >= 5 && d.id.size() <= 64
-        && d.name is string && d.name.size() >= 1 && d.name.size() <= 120
-        && d.phone is string && d.phone.size() >= 7 && d.phone.size() <= 32
-        && d.subject is string && d.subject.size() <= 200
-        && d.message is string && d.message.size() <= 3000;
+      return d.keys().hasOnly([
+          'id', 'name', 'phone', 'email', 'subject', 'message', 'date', 'createdAt', 'isRead'
+        ])
+        && d.keys().hasAll([
+          'id', 'name', 'phone', 'subject', 'message', 'date', 'createdAt', 'isRead'
+        ])
+        && d.id is string && d.id.matches('^MSG-[0-9]{4,16}$')
+        && d.name is string && d.name.size() >= 2 && d.name.size() <= 100
+        && d.phone is string && d.phone.size() >= 10 && d.phone.size() <= 24
+        && optString(d, 'email', 120)
+        && d.subject is string && d.subject.size() >= 1 && d.subject.size() <= 200
+        && d.message is string && d.message.size() >= 1 && d.message.size() <= 2500
+        && d.date is string && d.date.size() <= 40
+        && d.createdAt is int && d.createdAt > 1700000000000
+        && d.isRead == false;
+    }
+
+    function validTrackingProjection(d) {
+      return d is map
+        && d.keys().hasOnly([
+          'orderId', 'maskedCustomer', 'city', 'glassType', 'thickness', 'dimensions',
+          'totalArea', 'status', 'productionStage', 'stationStatus', 'estimatedDeliveryDate',
+          'date', 'updatedAt'
+        ])
+        && d.keys().hasAll([
+          'orderId', 'maskedCustomer', 'city', 'glassType', 'thickness', 'dimensions',
+          'totalArea', 'status', 'productionStage', 'date', 'updatedAt'
+        ])
+        && d.orderId is string && d.orderId.matches('^TKF-[0-9]{4}-[0-9]{4,12}$')
+        && d.maskedCustomer is string && d.maskedCustomer.size() >= 2 && d.maskedCustomer.size() <= 80
+        && d.city is string && d.city.size() >= 1 && d.city.size() <= 60
+        && d.glassType is string && d.glassType.size() <= 120
+        && d.thickness is string && d.thickness.size() <= 100
+        && d.dimensions is string && d.dimensions.size() <= 200
+        && d.totalArea is number && d.totalArea >= 0 && d.totalArea <= 50000
+        && d.status == 'new'
+        && d.productionStage == 1
+        && optString(d, 'stationStatus', 30)
+        && optString(d, 'estimatedDeliveryDate', 40)
+        && d.date is string && d.date.size() <= 40
+        && d.updatedAt is int && d.updatedAt > 1700000000000;
+    }
+
+    function validPublicTrackingOrder(id) {
+      let d = request.resource.data;
+      return id.matches('^ORDER_TKF-[0-9]{4}-[0-9]{4,12}$')
+        && validTrackingProjection(d)
+        && id == 'ORDER_' + d.orderId;
+    }
+
+    function validPublicTrackingPhoneCreate(id) {
+      let d = request.resource.data;
+      return id.matches('^PHONE_[a-f0-9]{64}$')
+        && d.keys().hasOnly(['kind', 'latestOrderId', 'entries', 'updatedAt'])
+        && d.keys().hasAll(['kind', 'latestOrderId', 'entries', 'updatedAt'])
+        && d.kind == 'phone'
+        && d.latestOrderId is string && d.latestOrderId.matches('^TKF-[0-9]{4}-[0-9]{4,12}$')
+        && d.entries is map
+        && d.entries.size() == 1
+        && d.latestOrderId in d.entries
+        && validTrackingProjection(d.entries[d.latestOrderId])
+        && d.entries[d.latestOrderId].orderId == d.latestOrderId
+        && d.updatedAt is int && d.updatedAt > 1700000000000;
+    }
+
+    function validPublicTrackingPhoneAppend(id) {
+      let d = request.resource.data;
+      let existing = resource.data;
+      let topDiff = d.diff(existing);
+      let entryDiff = d.entries.diff(existing.entries);
+      return id.matches('^PHONE_[a-f0-9]{64}$')
+        && d.keys().hasOnly(['kind', 'latestOrderId', 'entries', 'updatedAt'])
+        && topDiff.affectedKeys().hasOnly(['latestOrderId', 'entries', 'updatedAt'])
+        && d.kind == 'phone'
+        && d.latestOrderId is string && d.latestOrderId.matches('^TKF-[0-9]{4}-[0-9]{4,12}$')
+        && d.entries is map
+        && d.entries.size() <= 20
+        && entryDiff.removedKeys().size() == 0
+        && entryDiff.changedKeys().size() == 0
+        && entryDiff.addedKeys().hasOnly([d.latestOrderId])
+        && entryDiff.addedKeys().size() == 1
+        && validTrackingProjection(d.entries[d.latestOrderId])
+        && d.entries[d.latestOrderId].orderId == d.latestOrderId
+        && d.updatedAt is int && d.updatedAt > 1700000000000;
     }
 
     // Yayınlanan içerik herkese açık; taslaklar yalnızca içerik yetkililerine.
@@ -122,48 +282,87 @@ service cloud.firestore {
       allow delete: if canManage();
     }
 
-    // Acarpen ERP Canlı Koleksiyonları (adminStorage.ts COLLECTIONS ile birebir uyumlu)
+    // Acarpen ERP Canlı Koleksiyonları — backend rol matrisi ile korumalı
     match /acarpen_quotes/{id} {
-      allow get: if true;
-      allow list, update, delete: if isAdminOrStaff();
-      allow create: if isAdminOrStaff() || validPublicQuote();
+      allow get, list: if isAdminOrStaff();
+      allow create: if canSell() || validPublicQuote();
+      allow update: if (canSell() || canManageProduction() || canManageQualityHold() || canManageFinance())
+        && (
+          request.resource.data.get('qualityHold', false) == resource.data.get('qualityHold', false)
+          || canManageQualityHold()
+          || isYonetici()
+        );
+      allow delete: if isYonetici();
     }
+
+    // PII ve finansal bilgi içermeyen halka açık sipariş/telefon hash takip projeksiyonu
+    match /acarpen_order_tracking/{id} {
+      allow get: if id.matches('^(ORDER_|PHONE_)[A-Za-z0-9_-]{4,80}$');
+      allow list: if false;
+      allow create: if isAdminOrStaff()
+        || validPublicTrackingOrder(id)
+        || validPublicTrackingPhoneCreate(id);
+      allow update: if isAdminOrStaff()
+        || validPublicTrackingPhoneAppend(id);
+      allow delete: if isYonetici();
+    }
+
     match /acarpen_messages/{id} {
-      allow read, update, delete: if isAdminOrStaff();
-      allow create: if isAdminOrStaff() || validPublicMessage();
+      allow read, update: if canSell();
+      allow create: if canSell() || validPublicMessage();
+      allow delete: if isYonetici();
     }
+
     match /acarpen_prices/{id} {
-      allow read, write: if isAdminOrStaff();
+      allow read: if isAdminOrStaff();
+      allow write: if canEditPrices();
     }
     match /acarpen_services/{id} {
-      allow read, write: if isAdminOrStaff();
+      allow read: if isAdminOrStaff();
+      allow write: if canEditPrices();
     }
     match /acarpen_customers/{id} {
-      allow read, write: if isAdminOrStaff();
+      allow read: if canSell() || canManageFinance();
+      allow create, update: if canSell();
+      allow delete: if isYonetici();
     }
     match /acarpen_opportunities/{id} {
-      allow read, write: if isAdminOrStaff();
+      allow read: if canSell();
+      allow create, update: if canSell();
+      allow delete: if isYonetici();
     }
     match /acarpen_activities/{id} {
-      allow read, write: if isAdminOrStaff();
+      allow read, create, update: if canSell();
+      allow delete: if isYonetici();
     }
     match /acarpen_inventory/{id} {
-      allow read, write: if isAdminOrStaff();
+      allow read: if isAdminOrStaff();
+      allow create, update: if canManageInventory();
+      allow delete: if isYonetici();
     }
     match /acarpen_purchases/{id} {
-      allow read, write: if isAdminOrStaff();
+      allow read: if isAdminOrStaff();
+      allow create, update: if canManageInventory();
+      allow delete: if isYonetici();
     }
     match /acarpen_quality/{id} {
-      allow read, write: if isAdminOrStaff();
+      allow read: if isAdminOrStaff();
+      allow create, update: if canInspectQuality();
+      allow delete: if isYonetici();
     }
     match /acarpen_checks/{id} {
-      allow read, write: if isAdminOrStaff();
+      allow read: if canManageFinance();
+      allow create, update: if canManageChecksAndCash();
+      allow delete: if isYonetici();
     }
     match /acarpen_cash_ledger/{id} {
-      allow read, write: if isAdminOrStaff();
+      allow read: if canManageFinance();
+      allow create, update: if canManageChecksAndCash();
+      allow delete: if isYonetici();
     }
     match /acarpen_audit_logs/{id} {
-      allow read, create: if isAdminOrStaff();
+      allow read: if isYonetici() || hasRole(['finans', 'kalite']);
+      allow create: if isAdminOrStaff();
       allow update, delete: if false;
     }
 
@@ -175,8 +374,8 @@ service cloud.firestore {
     }
 
     match /users/{uid} {
-      allow read: if signedIn() && (request.auth.uid == uid || isAdminOrStaff());
-      allow write: if hasRole(['superadmin']);
+      allow read: if signedIn() && (request.auth.uid == uid || isYonetici());
+      allow write: if isYonetici();
     }
 
     match /auditLogs/{id} {

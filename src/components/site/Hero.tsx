@@ -3,6 +3,12 @@ import { ArrowRight, ShieldCheck, Sparkles, Award, Calculator, CheckCircle2, Mes
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { addAdminQuote } from "@/lib/adminStorage";
+import {
+  checkSubmissionCooldown,
+  isHoneypotTripped,
+  markFormSubmitted,
+  validatePublicLeadInput,
+} from "@/lib/formGuard";
 import { useLanguage } from "@/context/LanguageContext";
 import { PVC_COLOR_ALTERNATIVES } from "@/data/pvcColorAlternatives";
 import { toast } from "sonner";
@@ -71,6 +77,7 @@ export const Hero = () => {
   const [accessory, setAccessory] = useState("Çift Açılım");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [websiteTrap, setWebsiteTrap] = useState("");
   const [showOrderInput, setShowOrderInput] = useState(false);
 
   useEffect(() => {
@@ -95,8 +102,23 @@ export const Hero = () => {
 
   const handleQuickOrder = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customerName.trim() || !customerPhone.trim()) {
-      toast.error("Lütfen adınızı ve telefon numaranızı giriniz.");
+    if (isHoneypotTripped(websiteTrap)) {
+      setShowOrderInput(false);
+      return;
+    }
+
+    const validation = validatePublicLeadInput({
+      name: customerName,
+      phone: customerPhone,
+    });
+    if (!validation.ok) {
+      toast.error(validation.error || "Lütfen adınızı ve geçerli telefon numaranızı giriniz.");
+      return;
+    }
+
+    const cooldown = checkSubmissionCooldown("hero_quick_quote");
+    if (!cooldown.allowed) {
+      toast.error(`Spam koruması: Lütfen ${cooldown.waitSeconds} saniye bekleyip tekrar deneyin.`);
       return;
     }
 
@@ -111,6 +133,7 @@ export const Hero = () => {
       estimatedPrice: 0,
       status: "new",
     });
+    markFormSubmitted("hero_quick_quote");
 
     toast.success(`Talebiniz (#${created.id}) Acarpen sistemine kaydedildi!`);
 
@@ -284,6 +307,17 @@ export const Hero = () => {
               </div>
 
               <form onSubmit={handleQuickOrder} className="space-y-3">
+                <div className="sr-only" aria-hidden="true">
+                  <label htmlFor="hero-company-website">Web Sitesi</label>
+                  <input
+                    id="hero-company-website"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={websiteTrap}
+                    onChange={(e) => setWebsiteTrap(e.target.value)}
+                  />
+                </div>
                 <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1.5">
                     1. Profil Markası Seçin
