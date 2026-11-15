@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "./context/LanguageContext";
 import { CookieConsent } from "@/components/site/CookieConsent";
+import { SiteIntro } from "@/components/site/SiteIntro";
 import { trackPageView } from "@/lib/analytics";
 import Index from "./pages/Index.tsx";
 
@@ -47,7 +48,12 @@ const RouteTracker = () => {
     return null;
   }
 
-  return <CookieConsent />;
+  return (
+    <>
+      <SiteIntro />
+      <CookieConsent />
+    </>
+  );
 };
 
 const App = () => (

@@ -1,4 +1,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import { SiteIntro } from "@/components/site/SiteIntro";
 import {
   getCookieConsent,
   setCookieConsent,
@@ -194,5 +198,59 @@ describe("4. International SEO & GEO (AI Search Engines)", () => {
     expect(indexHtml).toContain('href="/favicon.ico"');
     expect(indexHtml).toContain('href="/apple-touch-icon.png"');
     expect(indexHtml).toContain('href="/site.webmanifest"');
+  });
+});
+
+describe("5. Branded Architectural Site Entry Intro & Asset Optimization", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+  });
+
+  it("stages an optimized uploaded ACARPEN intro logo under 120 KB and wires SiteIntro into App.tsx", () => {
+    const logoAssetPath = path.resolve(__dirname, "../assets/acarpen-intro-logo.png");
+    expect(fs.existsSync(logoAssetPath)).toBe(true);
+    expect(fs.statSync(logoAssetPath).size).toBeLessThan(120 * 1024);
+
+    const appContent = fs.readFileSync(path.resolve(__dirname, "../App.tsx"), "utf-8");
+    expect(appContent).toContain("SiteIntro");
+  });
+
+  it("renders SiteIntro once per session on public routes, supports instant skip, and skips /admin", () => {
+    const { unmount } = render(
+      React.createElement(
+        MemoryRouter,
+        { initialEntries: ["/"] },
+        React.createElement(SiteIntro)
+      )
+    );
+
+    expect(screen.getByTestId("acarpen-site-intro")).toBeInTheDocument();
+    expect(screen.getByAltText("ACARPEN PVC Pencere Kapı Cam Balkon Logosu")).toBeInTheDocument();
+    expect(sessionStorage.getItem("acarpen_intro_seen")).toBe("1");
+
+    const skipButton = screen.getByRole("button", { name: "Giriş animasyonunu atla" });
+    fireEvent.click(skipButton);
+    unmount();
+
+    // Subsequent visit in same session must not replay automatically
+    render(
+      React.createElement(
+        MemoryRouter,
+        { initialEntries: ["/"] },
+        React.createElement(SiteIntro)
+      )
+    );
+    expect(screen.queryByTestId("acarpen-site-intro")).toBeNull();
+
+    // Admin routes must never mount SiteIntro even in a fresh session
+    sessionStorage.clear();
+    render(
+      React.createElement(
+        MemoryRouter,
+        { initialEntries: ["/admin"] },
+        React.createElement(SiteIntro)
+      )
+    );
+    expect(screen.queryByTestId("acarpen-site-intro")).toBeNull();
   });
 });

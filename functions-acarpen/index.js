@@ -76,20 +76,25 @@ functions.cloudEvent("acarpenSyncStaffClaims", async (cloudEvent) => {
 
   const snap = await db.collection("users").doc(uid).get();
   const data = snap.exists ? snap.data() : null;
+  const tenantValid = !data?.tenantId || data.tenantId === "acarpen";
   const targetRole =
-    data && data.active !== false ? normalizeRole(data.role) : null;
+    data && data.active === true && tenantValid ? normalizeRole(data.role) : null;
 
   const existingClaims = { ...(userRecord.customClaims || {}) };
   const currentAcarpenRole = existingClaims.acarpenRole ?? null;
+  const currentAcarpenTenant = existingClaims.acarpenTenant ?? null;
+  const targetTenant = targetRole ? "acarpen" : null;
 
-  if (currentAcarpenRole === targetRole) {
+  if (currentAcarpenRole === targetRole && currentAcarpenTenant === targetTenant) {
     return;
   }
 
   if (targetRole) {
     existingClaims.acarpenRole = targetRole;
+    existingClaims.acarpenTenant = "acarpen";
   } else {
     delete existingClaims.acarpenRole;
+    delete existingClaims.acarpenTenant;
   }
 
   await auth.setCustomUserClaims(uid, existingClaims);
@@ -375,6 +380,7 @@ functions.http("acarpenSubmitPublicLead", async (req, res) => {
 
     const quoteDoc = {
       id: orderId,
+      tenantId: "acarpen",
       trackingPin,
       customerName,
       phone,
@@ -408,6 +414,7 @@ functions.http("acarpenSubmitPublicLead", async (req, res) => {
 
     const productionDoc = {
       id: orderId,
+      tenantId: "acarpen",
       trackingPin,
       glassType,
       thickness,
@@ -457,6 +464,7 @@ functions.http("acarpenSubmitPublicLead", async (req, res) => {
     if (kind === "contact") {
       batch.set(db.collection("acarpen_messages").doc(messageId), {
         id: messageId,
+        tenantId: "acarpen",
         name: customerName,
         phone,
         email: email || "-",

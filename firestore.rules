@@ -1,9 +1,9 @@
 rules_version = '2';
-
-// Acar Pen — "acarpen" adlı Firestore veritabanına dağıtılır (firebase.json).
 service cloud.firestore {
   match /databases/{database}/documents {
-
+    // =========================================================================
+    // ACARPEN MULTI-TENANT & ROLE ISOLATION SECURITY RULES
+    // =========================================================================
     function signedIn() {
       return request.auth != null && request.auth.token.email_verified == true;
     }
@@ -16,226 +16,287 @@ service cloud.firestore {
       return get(userDocPath()).data;
     }
 
+    function isSameTenant(data) {
+      return !('tenantId' in data) || data.tenantId == 'acarpen';
+    }
+
+    function incomingTenantValid() {
+      return !('tenantId' in request.resource.data) || request.resource.data.tenantId == 'acarpen';
+    }
+
     function isStaff() {
       return signedIn()
         && exists(userDocPath())
-        && me().active == true;
+        && me().active == true
+        && isSameTenant(me());
     }
 
+    // Enforce real-time role strictly from active Firestore users/{uid};
+    // stale JWT custom claims must never bypass revocation or role downgrade.
     function hasRole(roles) {
-      return isStaff() && (
-        (me().role in roles)
-        || (('acarpenRole' in request.auth.token) && (request.auth.token.acarpenRole in roles))
-      );
+      return isStaff() && (me().role in roles);
     }
 
-    function isAdminOrStaff() {
-      return isStaff() && (
-        me().role in [
-          'yonetici', 'satis_yoneticisi', 'satis', 'uretim_planlama',
-          'operator', 'kalite', 'depo_satinalma', 'finans',
-          'superadmin', 'super_admin', 'manager', 'sales', 'editor'
-        ]
-        || (('acarpenRole' in request.auth.token) && (request.auth.token.acarpenRole in [
-          'yonetici', 'satis_yoneticisi', 'satis', 'uretim_planlama',
-          'operator', 'kalite', 'depo_satinalma', 'finans'
-        ]))
-      );
-    }
-
-    // Rol matrisi — adminStorage ROLE_DEFINITIONS + eski alias'lar
     function isYonetici() {
       return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager']);
     }
-    function canManage() {
-      return isYonetici();
+
+    function isAdminOrStaff() {
+      return hasRole([
+        'yonetici',
+        'satis_yoneticisi',
+        'satis',
+        'uretim_planlama',
+        'operator',
+        'kalite',
+        'depo_satinalma',
+        'finans',
+        'superadmin',
+        'super_admin',
+        'manager',
+        'sales',
+        'editor'
+      ]);
     }
+
     function canSell() {
-      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'satis_yoneticisi', 'satis', 'sales', 'editor']);
+      return hasRole(['yonetici', 'satis_yoneticisi', 'satis', 'sales', 'editor', 'superadmin', 'super_admin', 'manager']);
     }
-    function canEdit() {
-      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'satis_yoneticisi', 'editor']);
-    }
+
     function canEditPrices() {
-      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'satis_yoneticisi']);
+      return hasRole(['yonetici', 'satis_yoneticisi', 'superadmin', 'super_admin', 'manager']);
     }
+
+    function canAdjustStock() {
+      return hasRole(['yonetici', 'depo_satinalma', 'uretim_planlama', 'superadmin', 'super_admin', 'manager']);
+    }
+
+    function canManageQuality() {
+      return hasRole(['yonetici', 'kalite', 'uretim_planlama', 'superadmin', 'super_admin', 'manager']);
+    }
+
+    function canReleaseQualityHold() {
+      return hasRole(['yonetici', 'kalite', 'superadmin', 'super_admin', 'manager']);
+    }
+
     function canManageProduction() {
-      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'uretim_planlama', 'operator']);
+      return hasRole(['yonetici', 'uretim_planlama', 'operator', 'kalite', 'superadmin', 'super_admin', 'manager']);
     }
-    function canInspectQuality() {
-      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'uretim_planlama', 'operator', 'kalite', 'depo_satinalma']);
+
+    function canManagePurchases() {
+      return hasRole(['yonetici', 'depo_satinalma', 'uretim_planlama', 'satis_yoneticisi', 'finans', 'superadmin', 'super_admin', 'manager']);
     }
-    function canManageQualityHold() {
-      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'kalite']);
-    }
-    function canManageInventory() {
-      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'depo_satinalma']);
-    }
+
     function canManageFinance() {
-      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'finans', 'satis_yoneticisi']);
-    }
-    function canManageChecksAndCash() {
-      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'finans']);
+      return hasRole(['yonetici', 'finans', 'satis_yoneticisi', 'superadmin', 'super_admin', 'manager']);
     }
 
-    // Anonim istemci doğrudan teklif, mesaj veya takip yazamaz; tüm halka açık formlar
-    // hız sınırlamalı acarpenSubmitPublicLead Cloud Function (Admin SDK) üzerinden işlenir.
-    // Yayınlanan içerik herkese açık; taslaklar yalnızca içerik yetkililerine.
-    match /services/{id} {
-      allow read: if resource.data.status == 'published' || canEdit();
-      allow write: if canEdit();
-    }
-    match /projects/{id} {
-      allow read: if resource.data.status == 'published' || canEdit();
-      allow write: if canEdit();
-    }
-    match /blogPosts/{id} {
-      allow read: if resource.data.status == 'published' || canEdit();
-      allow write: if canEdit();
-    }
-    match /faq/{id} {
-      allow read: if resource.data.status == 'published' || canEdit();
-      allow write: if canEdit();
-    }
-    match /siteSettings/{id} {
-      allow read: if true;
-      allow write: if canManage();
+    function isAssignedOrOwnerless(data) {
+      return hasRole(['yonetici', 'satis_yoneticisi', 'finans', 'superadmin', 'super_admin', 'manager', 'editor'])
+        || !('assignedToUid' in data)
+        || data.assignedToUid == ''
+        || data.assignedToUid == request.auth.uid
+        || data.get('createdByUid', '') == request.auth.uid;
     }
 
-    // CRM: yalnızca yetkili satış/yönetim personeli okuyup yazabilir.
-    match /leads/{id} {
-      allow read, create, update: if canSell();
-      allow delete: if canManage();
-    }
-    match /leadNotes/{id} {
-      allow read: if canSell();
-      allow create: if canSell() && request.resource.data.authorId == request.auth.uid;
-      allow delete: if canManage();
-    }
-    match /quotes/{id} {
-      allow read, create, update: if canSell();
-      allow delete: if canManage();
+    function validDiscountState(data) {
+      return data.get('discountRate', 0) <= 10
+        || data.get('approvalStatus', 'approved') == 'pending_approval'
+        || canEditPrices()
+        || isYonetici();
     }
 
-    // Acarpen ERP Canlı Koleksiyonları — PII/finans ve atölye verileri rol bazlı ayrıştırılmıştır
+    function validQuoteReleaseTransition() {
+      return (resource.data.get('qualityHold', false) == false
+        || (request.resource.data.get('status', '') != 'completed'
+            && request.resource.data.get('productionStage', 1) < 5)
+        || (request.resource.data.get('qualityHold', true) == false && canReleaseQualityHold()));
+    }
+
+    function validProductionReleaseTransition() {
+      return (resource.data.get('qualityHold', false) == false
+        || (request.resource.data.get('status', '') != 'completed'
+            && request.resource.data.get('productionStage', 1) < 5)
+        || (request.resource.data.get('qualityHold', true) == false && canReleaseQualityHold()));
+    }
+
+    // -------------------------------------------------------------------------
+    // 1. Staff Role & Tenant Directory (Manageable strictly by active yonetici)
+    // -------------------------------------------------------------------------
+    match /users/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid && isSameTenant(resource.data);
+      allow list: if isYonetici();
+      allow write: if isYonetici() && incomingTenantValid();
+    }
+
+    // -------------------------------------------------------------------------
+    // 2. Sensitive Quotes, Financials & PII (Sales + Finance; Sales Reps scoped)
+    // -------------------------------------------------------------------------
     match /acarpen_quotes/{id} {
-      allow get, list: if canSell() || canManageFinance();
-      allow create: if canSell();
-      allow update: if canSell() || canManageFinance();
-      allow delete: if isYonetici();
-    }
-
-    // Müşteri PII ve maliyet/fiyat alanları içermeyen atölye üretim ve sevkiyat projeksiyonu
-    match /acarpen_production_orders/{id} {
-      allow get, list: if isAdminOrStaff();
+      allow list: if canSell() || canManageFinance();
+      allow get: if (canSell() || canManageFinance())
+        && isSameTenant(resource.data)
+        && isAssignedOrOwnerless(resource.data);
       allow create: if canSell()
-        && !request.resource.data.keys().hasAny([
-          'phone', 'email', 'customerName', 'city', 'deliveryAddress',
-          'estimatedPrice', 'estimatedCost', 'actualCost', 'discountRate',
-          'paidAmount', 'invoiceNo', 'waybillNo'
-        ]);
-      allow update: if (canSell() || canManageProduction() || canManageQualityHold() || hasRole(['depo_satinalma']))
-        && (
-          request.resource.data.get('qualityHold', false) == resource.data.get('qualityHold', false)
-          || canManageQualityHold()
-          || isYonetici()
-        )
-        && !request.resource.data.keys().hasAny([
-          'phone', 'email', 'customerName', 'city', 'deliveryAddress',
-          'estimatedPrice', 'estimatedCost', 'actualCost', 'discountRate',
-          'paidAmount', 'invoiceNo', 'waybillNo'
-        ]);
+        && incomingTenantValid()
+        && validDiscountState(request.resource.data);
+      allow update: if (canSell() || canManageFinance())
+        && isSameTenant(resource.data)
+        && incomingTenantValid()
+        && isAssignedOrOwnerless(resource.data)
+        && validDiscountState(request.resource.data)
+        && validQuoteReleaseTransition();
       allow delete: if isYonetici();
     }
 
-    // İki faktörlü (Sipariş/Telefon + 6 haneli PIN) SHA-256 anahtarlı takip projeksiyonu
+    // -------------------------------------------------------------------------
+    // 3. Sanitized Production Orders (Workshop Roles - Zero Customer PII/Pricing)
+    // -------------------------------------------------------------------------
+    match /acarpen_production_orders/{id} {
+      allow list: if isAdminOrStaff();
+      allow get: if isAdminOrStaff() && isSameTenant(resource.data);
+      allow create, update: if (canSell() || canManageProduction())
+        && incomingTenantValid()
+        && !('estimatedPrice' in request.resource.data)
+        && !('customerName' in request.resource.data)
+        && !('phone' in request.resource.data)
+        && !('email' in request.resource.data)
+        && !('paidAmount' in request.resource.data)
+        && (!exists(/databases/$(database)/documents/acarpen_production_orders/$(id))
+            || validProductionReleaseTransition());
+      allow delete: if isYonetici();
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. Two-Factor Hash-Keyed Order Tracking Projections (Public GET Only)
+    // -------------------------------------------------------------------------
     match /acarpen_order_tracking/{id} {
       allow get: if id.matches('^(ORDER|PHONE)_[a-f0-9]{64}$');
       allow list: if false;
-      allow create, update: if canSell() || canManageProduction() || canManageQualityHold();
+      allow create, update: if isAdminOrStaff() && id.matches('^(ORDER|PHONE)_[a-f0-9]{64}$');
       allow delete: if isYonetici();
     }
 
+    // -------------------------------------------------------------------------
+    // 5. Public Rate-Limit Buckets (Cloud Functions Admin SDK Only)
+    // -------------------------------------------------------------------------
     match /acarpen_rate_limits/{id} {
       allow read, write: if false;
     }
 
+    // -------------------------------------------------------------------------
+    // 6. CRM Messages, Customers, Opportunities & Activities
+    // -------------------------------------------------------------------------
     match /acarpen_messages/{id} {
-      allow read, create, update: if canSell();
+      allow list: if canSell();
+      allow get: if canSell()
+        && isSameTenant(resource.data)
+        && isAssignedOrOwnerless(resource.data);
+      allow create, update: if canSell()
+        && incomingTenantValid()
+        && (!exists(/databases/$(database)/documents/acarpen_messages/$(id))
+            || isAssignedOrOwnerless(resource.data));
       allow delete: if isYonetici();
     }
 
-    match /acarpen_prices/{id} {
-      allow read: if isAdminOrStaff();
-      allow write: if canEditPrices();
-    }
-    match /acarpen_services/{id} {
-      allow read: if isAdminOrStaff();
-      allow write: if canEditPrices();
-    }
     match /acarpen_customers/{id} {
-      allow read: if canSell() || canManageFinance();
-      allow create, update: if canSell();
+      allow list: if canSell() || canManageFinance();
+      allow get: if (canSell() || canManageFinance())
+        && isSameTenant(resource.data)
+        && isAssignedOrOwnerless(resource.data);
+      allow create: if (canSell() || canManageFinance()) && incomingTenantValid();
+      allow update: if (canSell() || canManageFinance())
+        && isSameTenant(resource.data)
+        && incomingTenantValid()
+        && isAssignedOrOwnerless(resource.data);
       allow delete: if isYonetici();
     }
+
     match /acarpen_opportunities/{id} {
-      allow read, create, update: if canSell();
+      allow list: if canSell();
+      allow get: if canSell()
+        && isSameTenant(resource.data)
+        && isAssignedOrOwnerless(resource.data);
+      allow create: if canSell() && incomingTenantValid();
+      allow update: if canSell()
+        && isSameTenant(resource.data)
+        && incomingTenantValid()
+        && isAssignedOrOwnerless(resource.data);
       allow delete: if isYonetici();
     }
+
     match /acarpen_activities/{id} {
-      allow read, create, update: if canSell();
+      allow list: if canSell();
+      allow get: if canSell()
+        && isSameTenant(resource.data)
+        && isAssignedOrOwnerless(resource.data);
+      allow create: if canSell() && incomingTenantValid();
+      allow update: if canSell()
+        && isSameTenant(resource.data)
+        && incomingTenantValid()
+        && isAssignedOrOwnerless(resource.data);
       allow delete: if isYonetici();
     }
+
+    // -------------------------------------------------------------------------
+    // 7. Prices, Services, Inventory, Purchasing, Quality, Finance & Audit
+    // -------------------------------------------------------------------------
+    match /acarpen_prices/{id} {
+      allow list: if isAdminOrStaff();
+      allow get: if isAdminOrStaff() && isSameTenant(resource.data);
+      allow write: if canEditPrices() && incomingTenantValid();
+    }
+
+    match /acarpen_services/{id} {
+      allow list: if isAdminOrStaff();
+      allow get: if isAdminOrStaff() && isSameTenant(resource.data);
+      allow write: if canEditPrices() && incomingTenantValid();
+    }
+
     match /acarpen_inventory/{id} {
-      allow read: if isAdminOrStaff();
-      allow create, update: if canManageInventory();
-      allow delete: if isYonetici();
+      allow list: if isAdminOrStaff();
+      allow get: if isAdminOrStaff() && isSameTenant(resource.data);
+      allow write: if canAdjustStock() && incomingTenantValid();
     }
+
     match /acarpen_purchases/{id} {
-      allow read: if canSell() || canManageInventory() || hasRole(['uretim_planlama', 'finans']);
-      allow create, update: if canManageInventory();
-      allow delete: if isYonetici();
+      allow list: if canManagePurchases();
+      allow get: if canManagePurchases() && isSameTenant(resource.data);
+      allow write: if canManagePurchases() && incomingTenantValid();
     }
+
     match /acarpen_quality/{id} {
-      allow read: if isAdminOrStaff();
-      allow create, update: if canInspectQuality();
+      allow list: if isAdminOrStaff();
+      allow get: if isAdminOrStaff() && isSameTenant(resource.data);
+      allow create, update: if canManageQuality() && incomingTenantValid();
       allow delete: if isYonetici();
     }
+
     match /acarpen_checks/{id} {
-      allow read: if canManageFinance();
-      allow create, update: if canManageChecksAndCash();
-      allow delete: if isYonetici();
+      allow list: if canManageFinance();
+      allow get: if canManageFinance() && isSameTenant(resource.data);
+      allow write: if canManageFinance() && incomingTenantValid();
     }
+
     match /acarpen_cash_ledger/{id} {
-      allow read: if canManageFinance();
-      allow create, update: if canManageChecksAndCash();
-      allow delete: if isYonetici();
+      allow list: if canManageFinance();
+      allow get: if canManageFinance() && isSameTenant(resource.data);
+      allow write: if canManageFinance() && incomingTenantValid();
     }
+
     match /acarpen_audit_logs/{id} {
-      allow read: if isYonetici() || hasRole(['finans', 'kalite']);
-      allow create: if isAdminOrStaff();
+      allow list: if hasRole(['yonetici', 'finans', 'kalite', 'superadmin', 'super_admin', 'manager']);
+      allow get: if hasRole(['yonetici', 'finans', 'kalite', 'superadmin', 'super_admin', 'manager'])
+        && isSameTenant(resource.data);
+      allow create: if isAdminOrStaff()
+        && incomingTenantValid()
+        && request.resource.data.get('actorUid', request.auth.uid) == request.auth.uid;
       allow update, delete: if false;
     }
 
-    match /media/{id} {
-      allow read, write: if canEdit();
-    }
-    match /contentVersions/{id} {
-      allow read, create: if canEdit();
-    }
-
-    match /users/{uid} {
-      allow read: if signedIn() && (request.auth.uid == uid || isYonetici());
-      allow write: if isYonetici();
-    }
-
-    match /auditLogs/{id} {
-      allow read: if canManage();
-      allow create: if isStaff()
-        && request.resource.data.actorId == request.auth.uid
-        && request.resource.data.timestamp == request.time;
-    }
-
+    // -------------------------------------------------------------------------
+    // Default-deny every other collection path
+    // -------------------------------------------------------------------------
     match /{document=**} {
       allow read, write: if false;
     }

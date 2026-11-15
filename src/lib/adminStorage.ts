@@ -145,9 +145,24 @@ export interface PublicLeadSubmissionResult {
 const DEFAULT_PUBLIC_LEAD_ENDPOINT =
   "https://europe-west1-advera-c8dd0.cloudfunctions.net/acarpenSubmitPublicLead";
 
+const TENANT_ID = "acarpen";
 const TRANSACTIONAL_QUERY_LIMIT = 250;
 const CATALOG_QUERY_LIMIT = 500;
 const STAFF_QUERY_LIMIT = 100;
+
+const UNSCOPED_LEGACY_KEYS = [
+  "acarpen_quotes_v2",
+  "acarpen_messages_v2",
+  "acarpen_visitor_telemetry_v1",
+  "acarpen_react",
+  "acarpen_live_v3_quotes",
+  "acarpen_live_v3_messages",
+  "acarpen_live_v3_checks",
+  "acarpen_live_v3_cash_ledger",
+  "acarpen_live_v3_customers",
+  "acarpen_live_v3_opportunities",
+  "acarpen_live_v3_activities",
+] as const;
 
 const COLLECTIONS = {
   QUOTES: "acarpen_quotes",
@@ -267,25 +282,95 @@ class ActiveDataStore {
 
   constructor() {
     this.cleanupLegacyFakeCache();
-    this.loadLiveLocalPersistence();
-    this.initCrossTabStorageListener();
+    if (!isFirebaseConfigured) {
+      this.loadLiveLocalPersistence();
+      this.initCrossTabStorageListener();
+    } else {
+      this.wipeOperationalLocalStorage();
+    }
     this.initRealtimeFirebaseSync();
   }
 
-  private saveLocalKey(key: string, data: unknown): void {
+  private getScopedLocalKey(suffix: string): string {
+    return `acarpen_iso_${this.sessionUid || "offline"}_${suffix}`;
+  }
+
+  private wipeOperationalLocalStorage(): void {
+    try {
+      if (typeof window === "undefined" || !window.localStorage) return;
+      for (const legacyKey of UNSCOPED_LEGACY_KEYS) {
+        localStorage.removeItem(legacyKey);
+      }
+      if (isFirebaseConfigured) {
+        const toRemove: string[] = [];
+        for (let i = 0; i < localStorage.length; i += 1) {
+          const k = localStorage.key(i);
+          if (k && (k.startsWith("acarpen_live_v3_") || k.startsWith("acarpen_iso_"))) {
+            toRemove.push(k);
+          }
+        }
+        toRemove.forEach((k) => localStorage.removeItem(k));
+      }
+    } catch {
+      // Ignore storage access errors
+    }
+  }
+
+  private resetAllOperationalMemory(notifyListeners = true): void {
+    this.quotes = [];
+    this.productionOrders = [];
+    this.messages = [];
+    this.customers = [];
+    this.opportunities = [];
+    this.activities = [];
+    this.inventory = [...INITIAL_INVENTORY];
+    this.purchases = [];
+    this.qualityInspections = [];
+    this.auditLogs = [];
+    this.checks = [...INITIAL_CHECKS];
+    this.cashLedger = [...INITIAL_CASH_LEDGER];
+    this.staffUsers = [];
+    this.prices = [...INITIAL_PRICES];
+    this.services = [...INITIAL_SERVICES];
+    this.pricesSeeded = false;
+    this.servicesSeeded = false;
+    this.wipeOperationalLocalStorage();
+
+    if (notifyListeners) {
+      this.notifyQuotes(false);
+      this.notifyMessages(false);
+      this.notifyCustomers(false);
+      this.notifyOpportunities(false);
+      this.notifyActivities(false);
+      this.notifyInventory();
+      this.notifyPurchases();
+      this.notifyQuality();
+      this.notifyAuditLogs();
+      this.notifyChecks(false);
+      this.notifyCashLedger(false);
+      this.notifyPrices();
+      this.notifyServices();
+      this.notifyStaffUsers();
+    }
+  }
+
+  private saveLocalKey(suffix: string, data: unknown): void {
+    // Never persist ERP PII/financial state in browser localStorage when Firebase Auth/Firestore is active
+    if (isFirebaseConfigured) return;
     try {
       if (typeof window !== "undefined" && window.localStorage) {
-        localStorage.setItem(key, JSON.stringify(data));
+        localStorage.setItem(this.getScopedLocalKey(suffix), JSON.stringify(data));
       }
     } catch {
       // Ignore storage quota errors
     }
   }
 
-  private loadLocalKey<T extends { id: string }>(key: string): T[] {
+  private loadLocalKey<T extends { id: string }>(suffix: string): T[] {
+    if (isFirebaseConfigured) return [];
     try {
       if (typeof window !== "undefined" && window.localStorage) {
-        const raw = localStorage.getItem(key);
+        const raw = localStorage.getItem(this.getScopedLocalKey(suffix));
         if (!raw) return [];
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
@@ -299,46 +384,37 @@ class ActiveDataStore {
   }
 
   private loadLiveLocalPersistence(): void {
-    this.quotes = this.loadLocalKey<QuoteItem>("acarpen_live_v3_quotes");
-    this.messages = this.loadLocalKey<ContactMessage>("acarpen_live_v3_messages");
-    this.checks = this.loadLocalKey<CheckInstrumentItem>("acarpen_live_v3_checks");
-    this.cashLedger = this.loadLocalKey<CashLedgerItem>("acarpen_live_v3_cash_ledger");
-    this.customers = this.loadLocalKey<CustomerRecord>("acarpen_live_v3_customers");
-    this.opportunities = this.loadLocalKey<OpportunityItem>("acarpen_live_v3_opportunities");
-    this.activities = this.loadLocalKey<ActivityItem>("acarpen_live_v3_activities");
+    this.quotes = this.loadLocalKey<QuoteItem>("quotes");
+    this.messages = this.loadLocalKey<ContactMessage>("messages");
+    this.checks = this.loadLocalKey<CheckInstrumentItem>("checks");
+    this.cashLedger = this.loadLocalKey<CashLedgerItem>("cash_ledger");
+    this.customers = this.loadLocalKey<CustomerRecord>("customers");
+    this.opportunities = this.loadLocalKey<OpportunityItem>("opportunities");
+    this.activities = this.loadLocalKey<ActivityItem>("activities");
   }
 
   private initCrossTabStorageListener(): void {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || isFirebaseConfigured) return;
     window.addEventListener("storage", (e) => {
-      if (e.key === "acarpen_live_v3_messages") {
-        this.messages = this.loadLocalKey<ContactMessage>("acarpen_live_v3_messages");
+      if (!e.key) return;
+      if (e.key === this.getScopedLocalKey("messages")) {
+        this.messages = this.loadLocalKey<ContactMessage>("messages");
         this.messageListeners.forEach((cb) => cb(this.getMessages()));
-      } else if (e.key === "acarpen_live_v3_quotes") {
-        this.quotes = this.loadLocalKey<QuoteItem>("acarpen_live_v3_quotes");
+      } else if (e.key === this.getScopedLocalKey("quotes")) {
+        this.quotes = this.loadLocalKey<QuoteItem>("quotes");
         this.quoteListeners.forEach((cb) => cb(this.getQuotes()));
-      } else if (e.key === "acarpen_live_v3_checks") {
-        this.checks = this.loadLocalKey<CheckInstrumentItem>("acarpen_live_v3_checks");
+      } else if (e.key === this.getScopedLocalKey("checks")) {
+        this.checks = this.loadLocalKey<CheckInstrumentItem>("checks");
         this.checkListeners.forEach((cb) => cb(this.getChecks()));
-      } else if (e.key === "acarpen_live_v3_cash_ledger") {
-        this.cashLedger = this.loadLocalKey<CashLedgerItem>("acarpen_live_v3_cash_ledger");
+      } else if (e.key === this.getScopedLocalKey("cash_ledger")) {
+        this.cashLedger = this.loadLocalKey<CashLedgerItem>("cash_ledger");
         this.cashLedgerListeners.forEach((cb) => cb(this.getCashLedger()));
       }
     });
   }
 
   private cleanupLegacyFakeCache(): void {
-    try {
-      if (typeof window !== "undefined" && window.localStorage) {
-        localStorage.removeItem("acarpen_quotes_v2");
-        localStorage.removeItem("acarpen_messages_v2");
-        localStorage.removeItem("acarpen_visitor_telemetry_v1");
-        localStorage.removeItem("acarpen_visitor_telemetry_v2");
-        localStorage.removeItem("acarpen_react");
-      }
-    } catch {
-      // Ignore storage access errors
-    }
+    this.wipeOperationalLocalStorage();
   }
 
   private initRealtimeFirebaseSync(): void {
@@ -351,19 +427,31 @@ class ActiveDataStore {
           this.assignedBackendRole = null;
           this.isAuthorizedStaff = false;
           this.authResolved = true;
-          this.staffUsers = [];
-          this.productionOrders = [];
           this.activeRole = "yonetici";
           this.detachRealtimeListeners();
+          this.resetAllOperationalMemory(true);
           this.notifySession();
           this.notifyAuthState();
           this.notifyRole();
-          this.notifyStaffUsers();
           return;
         }
 
+        const isAccountSwitch = this.sessionUid !== null && this.sessionUid !== user.uid;
         this.sessionUid = user.uid;
+        this.assignedBackendRole = null;
+        this.isAuthorizedStaff = false;
         this.authResolved = false;
+        this.detachRealtimeListeners();
+        if (
+          isAccountSwitch ||
+          this.quotes.length > 0 ||
+          this.customers.length > 0 ||
+          this.checks.length > 0 ||
+          this.cashLedger.length > 0 ||
+          this.messages.length > 0
+        ) {
+          this.resetAllOperationalMemory(true);
+        }
         this.notifySession();
         this.notifyAuthState();
 
@@ -458,6 +546,37 @@ class ActiveDataStore {
 
   private canRoleFinance(role: UserRole | null): boolean {
     return role === "yonetici" || role === "finans" || role === "satis_yoneticisi";
+  }
+
+  private canRolePurchases(role: UserRole | null): boolean {
+    return (
+      this.canRoleSell(role) ||
+      this.canRoleFinance(role) ||
+      role === "uretim_planlama" ||
+      role === "depo_satinalma"
+    );
+  }
+
+  private canRoleAudit(role: UserRole | null): boolean {
+    return role === "yonetici" || role === "finans" || role === "kalite";
+  }
+
+  private isStaffSessionLockedOut(): boolean {
+    return this.sessionUid !== null && !this.isAuthorizedStaff;
+  }
+
+  private isVisibleToCurrentSalesRep(item: {
+    assignedToUid?: string;
+    createdByUid?: string;
+  }): boolean {
+    if (this.sessionUid === null || this.assignedBackendRole !== "satis") {
+      return true;
+    }
+    return (
+      !item.assignedToUid ||
+      item.assignedToUid === this.sessionUid ||
+      item.createdByUid === this.sessionUid
+    );
   }
 
   private productionOrderToSafeQuote(po: ProductionOrderItem): QuoteItem {
@@ -556,27 +675,24 @@ class ActiveDataStore {
       const currentUser = auth.currentUser;
       const isEmailVerified = Boolean(currentUser?.emailVerified);
 
-      const [tokenResult, userSnap] = await Promise.all([
-        currentUser ? currentUser.getIdTokenResult().catch(() => null) : Promise.resolve(null),
-        getDoc(doc(db, COLLECTIONS.USERS, uid)).catch((err) => {
-          this.recordSyncError("Personel yetki belgesi okuma", err);
-          return null;
-        }),
-      ]);
+      const userSnap = await getDoc(doc(db, COLLECTIONS.USERS, uid)).catch((err) => {
+        this.recordSyncError("Personel yetki belgesi okuma", err);
+        return null;
+      });
 
       if (auth.currentUser && auth.currentUser.uid !== uid) return;
 
-      // Require verified email + active acarpen users/{uid} document (ignores sibling-project generic claims)
-      const claimRole = normalizeUserRole(tokenResult?.claims?.acarpenRole);
+      // Authoritative real-time tenant, active flag, verified email, and role check from Firestore
       const userData = userSnap && userSnap.exists() ? userSnap.data() : null;
       const docActive = userData ? userData.active === true : false;
       const docRole = userData ? normalizeUserRole(userData.role) : null;
+      const docTenantOk = !userData?.tenantId || userData.tenantId === TENANT_ID;
 
       let resolvedRole: UserRole | null = null;
       let authorized = false;
 
-      if (isEmailVerified && docActive && (docRole || claimRole)) {
-        resolvedRole = docRole || claimRole;
+      if (isEmailVerified && docActive && docTenantOk && docRole) {
+        resolvedRole = docRole;
         authorized = true;
       }
 
@@ -587,30 +703,61 @@ class ActiveDataStore {
         this.activeRole = resolvedRole;
       }
 
-      if (!authorized || !this.canRoleReadQuotes(resolvedRole)) {
-        // Never retain cached PII/financial state across unauthorized or shopfloor sessions
+      if (!authorized) {
+        this.detachRealtimeListeners();
+        this.resetAllOperationalMemory(true);
+        this.notifyAuthState();
+        this.notifyRole();
+        return;
+      }
+
+      // Enforce per-role memory slices so privileged data never survives a role downgrade
+      if (!this.canRoleReadQuotes(resolvedRole)) {
         this.quotes = [];
+        this.notifyQuotes(false);
+      }
+      if (!this.canRoleSell(resolvedRole)) {
         this.messages = [];
-        this.customers = [];
         this.opportunities = [];
         this.activities = [];
+        this.notifyMessages(false);
+        this.notifyOpportunities(false);
+        this.notifyActivities(false);
+      }
+      if (!(this.canRoleSell(resolvedRole) || this.canRoleFinance(resolvedRole))) {
+        this.customers = [];
+        this.notifyCustomers(false);
+      }
+      if (!this.canRoleFinance(resolvedRole)) {
         this.checks = [];
         this.cashLedger = [];
+        this.notifyChecks(false);
+        this.notifyCashLedger(false);
+      }
+      if (!this.canRolePurchases(resolvedRole)) {
+        this.purchases = [];
+        this.notifyPurchases();
+      }
+      if (!this.canRoleAudit(resolvedRole)) {
+        this.auditLogs = [];
+        this.notifyAuditLogs();
+      }
+      if (resolvedRole !== "yonetici") {
+        this.staffUsers = [];
+        this.notifyStaffUsers();
       }
 
       this.notifyAuthState();
       this.notifyRole();
 
-      if (authorized) {
-        this.detachRealtimeListeners();
-        this.attachRealtimeListeners();
-      } else {
-        this.detachRealtimeListeners();
-      }
+      this.detachRealtimeListeners();
+      this.attachRealtimeListeners();
     } catch (err) {
       this.assignedBackendRole = null;
       this.isAuthorizedStaff = false;
       this.authResolved = true;
+      this.detachRealtimeListeners();
+      this.resetAllOperationalMemory(true);
       this.recordSyncError("Yetki doğrulama", err);
       this.notifyAuthState();
     }
@@ -1081,14 +1228,25 @@ class ActiveDataStore {
   }
 
   public setSession(uid: string | null): void {
+    const prevUid = this.sessionUid;
     this.sessionUid = uid;
     if (!uid) {
       this.assignedBackendRole = null;
       this.isAuthorizedStaff = false;
       this.authResolved = true;
+      this.activeRole = "yonetici";
+      this.detachRealtimeListeners();
+      this.resetAllOperationalMemory(true);
+    } else if (prevUid !== uid) {
+      this.assignedBackendRole = null;
+      this.isAuthorizedStaff = false;
+      this.authResolved = false;
+      this.detachRealtimeListeners();
+      this.resetAllOperationalMemory(true);
     }
     this.notifySession();
     this.notifyAuthState();
+    this.notifyRole();
   }
 
   public subscribeSession(callback: (uid: string | null) => void): () => void {
@@ -1161,6 +1319,8 @@ class ActiveDataStore {
 
   // --- Staff User Role Administration (`users/{uid}`) ---
   public getStaffUsers(): StaffUserRecord[] {
+    if (this.isStaffSessionLockedOut()) return [];
+    if (this.sessionUid !== null && this.assignedBackendRole !== "yonetici") return [];
     return [...this.staffUsers];
   }
 
@@ -1178,12 +1338,13 @@ class ActiveDataStore {
       displayName: record.displayName.trim() || record.email.trim(),
       role: record.role,
       active: record.active,
+      tenantId: TENANT_ID,
       updatedAt: Date.now(),
     };
     this.staffUsers = [normalized, ...this.staffUsers.filter((u) => u.uid !== cleanUid)];
     this.notifyStaffUsers();
 
-    if (isFirebaseConfigured) {
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
       this.persistWrite(
         `Personel yetkisi (${normalized.email || cleanUid})`,
         setDoc(doc(db, COLLECTIONS.USERS, cleanUid), stripUndefined(normalized), { merge: true })
@@ -1205,7 +1366,7 @@ class ActiveDataStore {
     }
     this.staffUsers = this.staffUsers.filter((u) => u.uid !== uid);
     this.notifyStaffUsers();
-    if (isFirebaseConfigured) {
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
       this.persistWrite(
         `Personel kaydı silme (${uid})`,
         deleteDoc(doc(db, COLLECTIONS.USERS, uid))
@@ -1227,6 +1388,8 @@ class ActiveDataStore {
 
   // --- Audit Log Recording ---
   public getAuditLogs(): AuditEventItem[] {
+    if (this.isStaffSessionLockedOut()) return [];
+    if (this.sessionUid !== null && !this.canRoleAudit(this.assignedBackendRole)) return [];
     return [...this.auditLogs];
   }
 
@@ -1239,9 +1402,11 @@ class ActiveDataStore {
     const now = Date.now();
     const entry: AuditEventItem = {
       id: `AUD-${now}-${Math.floor(Math.random() * 900 + 100)}`,
-      actionType,
+      actorUid: this.sessionUid || undefined,
       actorEmail: actorEmail || auth.currentUser?.email || "yetkili@acarpen.com.tr",
       actorRole: this.activeRole,
+      tenantId: TENANT_ID,
+      actionType,
       targetId,
       summary,
       timestamp: formatTrNow(),
@@ -1272,6 +1437,15 @@ class ActiveDataStore {
 
   // --- Quotes & Orders Operations ---
   public getQuotes(): QuoteItem[] {
+    if (this.isStaffSessionLockedOut()) return [];
+    if (this.sessionUid !== null && this.isAuthorizedStaff) {
+      if (!this.canRoleReadQuotes(this.assignedBackendRole)) {
+        return [...this.quotes];
+      }
+      if (this.assignedBackendRole === "satis") {
+        return this.quotes.filter((q) => this.isVisibleToCurrentSalesRep(q));
+      }
+    }
     return [...this.quotes];
   }
 
@@ -1298,6 +1472,11 @@ class ActiveDataStore {
       stationStatus: "waiting",
       estimatedCost,
       actualCost: estimatedCost,
+      tenantId: TENANT_ID,
+      createdByUid: quote.createdByUid ?? (this.sessionUid || undefined),
+      assignedToUid:
+        quote.assignedToUid ??
+        (this.assignedBackendRole === "satis" && this.sessionUid ? this.sessionUid : undefined),
       ...quote,
       trackingPin,
       id: generatedId,
@@ -1509,14 +1688,28 @@ class ActiveDataStore {
 
   private notifyQuotes(persistLocal = true): void {
     const current = this.getQuotes();
-    if (persistLocal && (!this.sessionUid || this.canRoleReadQuotes(this.assignedBackendRole))) {
-      this.saveLocalKey("acarpen_live_v3_quotes", current);
+    if (
+      persistLocal &&
+      !isFirebaseConfigured &&
+      (!this.sessionUid || this.canRoleReadQuotes(this.assignedBackendRole))
+    ) {
+      this.saveLocalKey("quotes", current);
     }
     this.quoteListeners.forEach((cb) => cb(current));
   }
 
   // --- Customers (CRM 360) Operations ---
   public getCustomers(): CustomerRecord[] {
+    if (this.isStaffSessionLockedOut()) return [];
+    if (
+      this.sessionUid !== null &&
+      !(this.canRoleSell(this.assignedBackendRole) || this.canRoleFinance(this.assignedBackendRole))
+    ) {
+      return [];
+    }
+    if (this.sessionUid !== null && this.assignedBackendRole === "satis") {
+      return this.customers.filter((c) => this.isVisibleToCurrentSalesRep(c));
+    }
     return [...this.customers];
   }
 
@@ -1526,6 +1719,11 @@ class ActiveDataStore {
     const now = Date.now();
     const id = record.id || `MUS-${now.toString().slice(-6)}`;
     const fullRecord: CustomerRecord = {
+      tenantId: TENANT_ID,
+      createdByUid: record.createdByUid ?? (this.sessionUid || undefined),
+      assignedToUid:
+        record.assignedToUid ??
+        (this.assignedBackendRole === "satis" && this.sessionUid ? this.sessionUid : undefined),
       ...record,
       id,
       createdAt: now,
@@ -1548,14 +1746,21 @@ class ActiveDataStore {
     return () => this.customerListeners.delete(callback);
   }
 
-  private notifyCustomers(): void {
+  private notifyCustomers(persistLocal = true): void {
     const current = this.getCustomers();
-    this.saveLocalKey("acarpen_live_v3_customers", current);
+    if (persistLocal) {
+      this.saveLocalKey("customers", current);
+    }
     this.customerListeners.forEach((cb) => cb(current));
   }
 
   // --- Opportunities (CRM Funnel) Operations ---
   public getOpportunities(): OpportunityItem[] {
+    if (this.isStaffSessionLockedOut()) return [];
+    if (this.sessionUid !== null && !this.canRoleSell(this.assignedBackendRole)) return [];
+    if (this.sessionUid !== null && this.assignedBackendRole === "satis") {
+      return this.opportunities.filter((o) => this.isVisibleToCurrentSalesRep(o));
+    }
     return [...this.opportunities];
   }
 
@@ -1565,6 +1770,11 @@ class ActiveDataStore {
     const now = Date.now();
     const id = item.id || `FRS-${now.toString().slice(-6)}`;
     const created: OpportunityItem = {
+      tenantId: TENANT_ID,
+      createdByUid: item.createdByUid ?? (this.sessionUid || undefined),
+      assignedToUid:
+        item.assignedToUid ??
+        (this.assignedBackendRole === "satis" && this.sessionUid ? this.sessionUid : undefined),
       ...item,
       id,
       createdAt: now,
@@ -1600,20 +1810,32 @@ class ActiveDataStore {
     return () => this.opportunityListeners.delete(callback);
   }
 
-  private notifyOpportunities(): void {
+  private notifyOpportunities(persistLocal = true): void {
     const current = this.getOpportunities();
-    this.saveLocalKey("acarpen_live_v3_opportunities", current);
+    if (persistLocal) {
+      this.saveLocalKey("opportunities", current);
+    }
     this.opportunityListeners.forEach((cb) => cb(current));
   }
 
   // --- Activities Operations ---
   public getActivities(): ActivityItem[] {
+    if (this.isStaffSessionLockedOut()) return [];
+    if (this.sessionUid !== null && !this.canRoleSell(this.assignedBackendRole)) return [];
+    if (this.sessionUid !== null && this.assignedBackendRole === "satis") {
+      return this.activities.filter((a) => this.isVisibleToCurrentSalesRep(a));
+    }
     return [...this.activities];
   }
 
   public addActivity(item: Omit<ActivityItem, "id" | "createdAt">): ActivityItem {
     const now = Date.now();
     const created: ActivityItem = {
+      tenantId: TENANT_ID,
+      createdByUid: item.createdByUid ?? (this.sessionUid || undefined),
+      assignedToUid:
+        item.assignedToUid ??
+        (this.assignedBackendRole === "satis" && this.sessionUid ? this.sessionUid : undefined),
       ...item,
       id: `AKT-${now.toString().slice(-6)}`,
       createdAt: now,
@@ -1653,14 +1875,17 @@ class ActiveDataStore {
     return () => this.activityListeners.delete(callback);
   }
 
-  private notifyActivities(): void {
+  private notifyActivities(persistLocal = true): void {
     const current = this.getActivities();
-    this.saveLocalKey("acarpen_live_v3_activities", current);
+    if (persistLocal) {
+      this.saveLocalKey("activities", current);
+    }
     this.activityListeners.forEach((cb) => cb(current));
   }
 
   // --- Inventory & Stock Operations ---
   public getInventory(): InventoryItem[] {
+    if (this.isStaffSessionLockedOut()) return [];
     return [...this.inventory];
   }
 
@@ -1726,6 +1951,8 @@ class ActiveDataStore {
 
   // --- Purchase Orders Operations ---
   public getPurchases(): PurchaseOrderItem[] {
+    if (this.isStaffSessionLockedOut()) return [];
+    if (this.sessionUid !== null && !this.canRolePurchases(this.assignedBackendRole)) return [];
     return [...this.purchases];
   }
 
@@ -1734,6 +1961,8 @@ class ActiveDataStore {
   ): PurchaseOrderItem {
     const now = Date.now();
     const created: PurchaseOrderItem = {
+      tenantId: TENANT_ID,
+      createdByUid: po.createdByUid ?? (this.sessionUid || undefined),
       ...po,
       id: `SAT-${now.toString().slice(-6)}`,
       createdAt: now,
@@ -1776,6 +2005,7 @@ class ActiveDataStore {
 
   // --- Quality Control Operations ---
   public getQualityInspections(): QualityInspectionItem[] {
+    if (this.isStaffSessionLockedOut()) return [];
     return [...this.qualityInspections];
   }
 
@@ -1864,12 +2094,18 @@ class ActiveDataStore {
 
   // --- Messages Operations ---
   public getMessages(): ContactMessage[] {
+    if (this.isStaffSessionLockedOut()) return [];
+    if (this.sessionUid !== null && !this.canRoleSell(this.assignedBackendRole)) return [];
+    if (this.sessionUid !== null && this.assignedBackendRole === "satis") {
+      return this.messages.filter((m) => !m.assignedToUid || m.assignedToUid === this.sessionUid);
+    }
     return [...this.messages];
   }
 
   public addMessage(msg: Omit<ContactMessage, "id" | "date" | "isRead">): ContactMessage {
     const now = Date.now();
     const newMsg: ContactMessage = {
+      tenantId: TENANT_ID,
       ...msg,
       id: `MSG-${now.toString().slice(-6)}`,
       createdAt: now,
@@ -1918,9 +2154,11 @@ class ActiveDataStore {
     return () => this.messageListeners.delete(callback);
   }
 
-  private notifyMessages(): void {
+  private notifyMessages(persistLocal = true): void {
     const current = this.getMessages();
-    this.saveLocalKey("acarpen_live_v3_messages", current);
+    if (persistLocal) {
+      this.saveLocalKey("messages", current);
+    }
     this.messageListeners.forEach((cb) => cb(current));
   }
 
@@ -2152,6 +2390,8 @@ class ActiveDataStore {
 
   // --- Checks Portfolio Operations ---
   public getChecks(): CheckInstrumentItem[] {
+    if (this.isStaffSessionLockedOut()) return [];
+    if (this.sessionUid !== null && !this.canRoleFinance(this.assignedBackendRole)) return [];
     return [...this.checks];
   }
 
@@ -2172,7 +2412,7 @@ class ActiveDataStore {
     if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
       this.persistWrite(
         `Çek kaydı (${created.id})`,
-        setDoc(doc(db, COLLECTIONS.CHECKS, created.id), stripUndefined(created))
+        setDoc(doc(db, COLLECTIONS.CHECKS, created.id), stripUndefined({ ...created, tenantId: TENANT_ID }))
       );
     }
     this.logAuditEvent(
@@ -2213,14 +2453,18 @@ class ActiveDataStore {
     return () => this.checkListeners.delete(callback);
   }
 
-  private notifyChecks(): void {
+  private notifyChecks(persistLocal = true): void {
     const current = this.getChecks();
-    this.saveLocalKey("acarpen_live_v3_checks", current);
+    if (persistLocal) {
+      this.saveLocalKey("checks", current);
+    }
     this.checkListeners.forEach((cb) => cb(current));
   }
 
   // --- Cash & Bank Ledger Operations ---
   public getCashLedger(): CashLedgerItem[] {
+    if (this.isStaffSessionLockedOut()) return [];
+    if (this.sessionUid !== null && !this.canRoleFinance(this.assignedBackendRole)) return [];
     return [...this.cashLedger];
   }
 
@@ -2240,7 +2484,7 @@ class ActiveDataStore {
     if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
       this.persistWrite(
         `Kasa hareketi (${created.id})`,
-        setDoc(doc(db, COLLECTIONS.CASH_LEDGER, created.id), stripUndefined(created))
+        setDoc(doc(db, COLLECTIONS.CASH_LEDGER, created.id), stripUndefined({ ...created, tenantId: TENANT_ID }))
       );
     }
     this.logAuditEvent(
@@ -2269,9 +2513,11 @@ class ActiveDataStore {
     return () => this.cashLedgerListeners.delete(callback);
   }
 
-  private notifyCashLedger(): void {
+  private notifyCashLedger(persistLocal = true): void {
     const current = this.getCashLedger();
-    this.saveLocalKey("acarpen_live_v3_cash_ledger", current);
+    if (persistLocal) {
+      this.saveLocalKey("cash_ledger", current);
+    }
     this.cashLedgerListeners.forEach((cb) => cb(current));
   }
 

@@ -21,6 +21,9 @@ import {
   validatePublicLeadInput,
 } from "../lib/formGuard";
 import {
+  addAdminCashLedgerEntry,
+  addAdminCheck,
+  addAdminMessage,
   addAdminQuality,
   addAdminQuote,
   clearAdminSyncError,
@@ -28,7 +31,14 @@ import {
   fetchPublicOrderTracking,
   fetchPublicOrderTrackingWithStatus,
   getAdminAuditLogs,
+  getAdminAuthState,
+  getAdminCashLedger,
+  getAdminChecks,
+  getAdminCustomers,
+  getAdminMessages,
+  getAdminQuotes,
   releaseAdminQualityHold,
+  saveAdminCustomer,
   setActiveUserRole,
   setLiveSession,
   updateAdminInventory,
@@ -344,20 +354,103 @@ describe("ERP RBAC, Quality Hold Gate & Order Lookup Integration", () => {
     expect(byPhone).toHaveLength(1);
     expect(byPhone[0].orderId).toBe("TKF-2026-882244");
   });
+
+  it("enforces strict session/user/localStorage data isolation across logout and account switch", () => {
+    setActiveUserRole("yonetici");
+    const quote = addAdminQuote({
+      id: "TKF-2026-ISO111",
+      customerName: "İzolasyon Müşteri A.Ş.",
+      phone: "05336253611",
+      city: "Adana",
+      glassType: "Fıratpen Selenit 75",
+      thickness: "4+16+4 mm",
+      dimensions: "100x100",
+      totalArea: 5,
+      estimatedPrice: 12000,
+      status: "quoted",
+    });
+    createdIds.push(quote.id);
+
+    addAdminMessage({
+      name: "Veli Kaya",
+      phone: "05331112233",
+      subject: "Teklif Talebi",
+      message: "Gizli müşteri mesajı",
+    });
+    saveAdminCustomer({
+      companyName: "Özel Müşteri Ltd.",
+      contactPerson: "Veli Kaya",
+      phone: "05331112233",
+      city: "Adana",
+      customerType: "Kurumsal / Müteahhit",
+      salesRep: "Merkez",
+      paymentTerms: "Peşin",
+      creditLimit: 50000,
+      kvkkConsent: true,
+    });
+    addAdminCheck({
+      direction: "received",
+      serialNo: "CHK-991",
+      counterparty: "Özel Müşteri Ltd.",
+      bankName: "İş Bankası",
+      amount: 15000,
+      dueDate: "30.12.2026",
+      status: "Portföyde (Kasada)",
+    });
+    addAdminCashLedgerEntry({
+      type: "in",
+      accountName: "Merkez Nakit Kasa",
+      category: "Müşteri Sipariş Tahsilatı",
+      counterparty: "Özel Müşteri Ltd.",
+      amount: 5000,
+      description: "Kapora",
+    });
+
+    // Global unscoped localStorage must remain completely empty (zero PII leakage across tabs/visitors)
+    expect(localStorage.getItem("acarpen_live_v3_quotes")).toBeNull();
+    expect(localStorage.getItem("acarpen_live_v3_messages")).toBeNull();
+    expect(localStorage.getItem("acarpen_live_v3_customers")).toBeNull();
+    expect(localStorage.getItem("acarpen_live_v3_checks")).toBeNull();
+    expect(localStorage.getItem("acarpen_live_v3_cash_ledger")).toBeNull();
+
+    // Switching to another session UID immediately wipes prior operational data and blocks unauthorized reads
+    setLiveSession("uid-user-b");
+    expect(getAdminAuthState().isAuthorizedStaff).toBe(false);
+    expect(getAdminQuotes()).toEqual([]);
+    expect(getAdminMessages()).toEqual([]);
+    expect(getAdminCustomers()).toEqual([]);
+    expect(getAdminChecks()).toEqual([]);
+    expect(getAdminCashLedger()).toEqual([]);
+    expect(getAdminAuditLogs()).toEqual([]);
+
+    // Explicit sign-out wipes operational state cleanly
+    setLiveSession(null);
+    expect(getAdminQuotes()).toEqual([]);
+    expect(getAdminMessages()).toEqual([]);
+    expect(getAdminCustomers()).toEqual([]);
+    expect(getAdminChecks()).toEqual([]);
+    expect(getAdminCashLedger()).toEqual([]);
+    expect(getAdminAuditLogs()).toEqual([]);
+  });
 });
 
 describe("Firestore Security Rules & No-reCAPTCHA Contract Verification", () => {
   const rulesPath = path.resolve(process.cwd(), "firestore.rules");
   const rules = fs.readFileSync(rulesPath, "utf-8");
 
-  it("removes hardcoded admin emails, verifies active verified staff, and isolates tenant claims", () => {
+  it("removes hardcoded admin emails, stale JWT role escalation, and unused non-Acarpen collections", () => {
     expect(rules).not.toContain("isPrimaryAdmin");
     expect(rules).not.toContain("admin@acarpen.com.tr");
     expect(rules).toContain("request.auth.token.email_verified == true");
     expect(rules).toContain("exists(userDocPath())");
     expect(rules).toContain("me().active == true");
-    expect(rules).toContain("request.auth.token.acarpenRole");
+    expect(rules).toContain("me().role in roles");
+    expect(rules).not.toMatch(/\|\|\s*\(\('acarpenRole' in request\.auth\.token\)/);
     expect(rules).not.toMatch(/request\.auth\.token\.role\b/);
+    expect(rules).toContain("isSameTenant");
+    expect(rules).toContain("incomingTenantValid");
+    expect(rules).not.toContain("siteSettings");
+    expect(rules).not.toContain("blogPosts");
   });
 
   it("separates PII/financial acarpen_quotes from workshop acarpen_production_orders and locks tracking to two-factor hashes", () => {
@@ -369,7 +462,10 @@ describe("Firestore Security Rules & No-reCAPTCHA Contract Verification", () => 
       rules.match(/match \/acarpen_order_tracking\/\{id\}[\s\S]*?match \/acarpen_rate_limits\/\{id\}/)?.[0] ?? "";
 
     expect(quotesBlock).not.toMatch(/allow get:\s*if\s*true/);
-    expect(quotesBlock).toMatch(/allow get, list:\s*if\s*canSell\(\)\s*\|\|\s*canManageFinance\(\)/);
+    expect(quotesBlock).toContain("canSell() || canManageFinance()");
+    expect(quotesBlock).toContain("isAssignedOrOwnerless");
+    expect(quotesBlock).toContain("validDiscountState");
+    expect(quotesBlock).toContain("validQuoteReleaseTransition");
     expect(prodBlock).toContain("isAdminOrStaff()");
     expect(prodBlock).toContain("'estimatedPrice'");
     expect(prodBlock).toContain("'customerName'");
@@ -383,6 +479,7 @@ describe("Firestore Security Rules & No-reCAPTCHA Contract Verification", () => 
     expect(rules).not.toContain("validLead");
     expect(rules).toMatch(/match \/acarpen_rate_limits\/\{id\}[\s\S]*allow read, write:\s*if\s*false/);
     expect(rules).toMatch(/match \/acarpen_audit_logs\/\{id\}[\s\S]*allow update, delete:\s*if\s*false/);
+    expect(rules).toMatch(/match \/acarpen_audit_logs\/\{id\}[\s\S]*actorUid/);
     expect(rules).toMatch(/match \/users\/\{uid\}[\s\S]*allow write:\s*if\s*isYonetici\(\)/);
     expect(rules).toMatch(/match \/acarpen_prices\/\{id\}[\s\S]*allow write:\s*if\s*canEditPrices\(\)/);
   });

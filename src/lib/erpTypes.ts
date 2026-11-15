@@ -44,6 +44,7 @@ export interface StaffUserRecord {
   displayName: string;
   role: UserRole;
   active: boolean;
+  tenantId?: string;
   updatedAt: number;
 }
 
@@ -159,6 +160,9 @@ export interface QuoteItem {
   status: "new" | "in_review" | "quoted" | "approved" | "completed" | "cancelled";
   urgency?: "high" | "normal" | "low";
   trackingPin?: string;
+  tenantId?: string;
+  createdByUid?: string;
+  assignedToUid?: string;
 }
 
 export interface ProductionOrderItem {
@@ -228,6 +232,9 @@ export interface CustomerRecord {
   kvkkConsent: boolean;
   notes?: string;
   createdAt: number;
+  tenantId?: string;
+  createdByUid?: string;
+  assignedToUid?: string;
 }
 
 export type OpportunityStage =
@@ -274,6 +281,9 @@ export interface OpportunityItem {
   convertedQuoteId?: string;
   createdAt: number;
   date: string;
+  tenantId?: string;
+  createdByUid?: string;
+  assignedToUid?: string;
 }
 
 export interface ActivityItem {
@@ -292,6 +302,9 @@ export interface ActivityItem {
   assignedTo: string;
   completed: boolean;
   createdAt: number;
+  tenantId?: string;
+  createdByUid?: string;
+  assignedToUid?: string;
 }
 
 export interface InventoryItem {
@@ -331,6 +344,9 @@ export interface PurchaseOrderItem {
   requestedBy: string;
   createdAt: number;
   date: string;
+  tenantId?: string;
+  createdByUid?: string;
+  assignedToUid?: string;
 }
 
 export interface QualityInspectionItem {
@@ -369,8 +385,10 @@ export interface AuditEventItem {
     | "RBAC_DENIED"
     | "DATA_EXPORT"
     | "STAFF_ROLE_CHANGE";
+  actorUid?: string;
   actorEmail: string;
   actorRole: UserRole;
+  tenantId?: string;
   targetId: string;
   summary: string;
   timestamp: string;
@@ -388,6 +406,8 @@ export interface ContactMessage {
   createdAt?: number;
   isRead: boolean;
   replied?: boolean;
+  tenantId?: string;
+  assignedToUid?: string;
 }
 
 export interface FactoryPriceItem {
@@ -430,6 +450,9 @@ export interface CheckInstrumentItem {
     | "İade / İptal";
   notes?: string;
   createdAt: number;
+  tenantId?: string;
+  createdByUid?: string;
+  assignedToUid?: string;
 }
 
 export interface CashLedgerItem {
