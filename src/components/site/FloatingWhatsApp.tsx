@@ -1,14 +1,16 @@
 import { MessageCircle, Phone } from "lucide-react";
+import { trackConversion } from "@/lib/conversionTracker";
 
 export const FloatingWhatsApp = () => {
   const whatsappUrl =
-    "https://wa.me/905336253611?text=Merhaba%20Acarpen%20(F%C4%B1ratpen%20Yetkili%20Bayi)%2C%20PVC%20pencere%2C%20kap%C4%B1%20ve%20cam%20balkon%20sistemleri%20hakk%C4%B1nda%20fiyat%20teklifi%20almak%20istiyorum.";
+    "https://wa.me/905336253611?text=Merhaba%20Acarpen%2C%20PVC%20pencere%2C%20kap%C4%B1%20ve%20cam%20balkon%20sistemleri%20hakk%C4%B1nda%20fiyat%20teklifi%20almak%20istiyorum.";
 
   return (
     <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-2">
       {/* Quick Phone Call Button */}
       <a
         href="tel:+905336253611"
+        onClick={() => trackConversion("phone_click", "Floating Phone Button")}
         aria-label="Hemen Ara: 0533 625 36 11"
         className="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-900/95 backdrop-blur-md border border-sky-400/40 text-white shadow-lg hover:border-sky-400 transition-all hover:-translate-y-0.5 text-xs font-semibold"
       >
@@ -21,6 +23,7 @@ export const FloatingWhatsApp = () => {
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackConversion("whatsapp_click", "Floating WhatsApp Button")}
         aria-label="WhatsApp Hızlı Fiyat & Sipariş Hattı: 0533 625 36 11"
         className="group flex items-center gap-2.5 pl-3 pr-4 sm:pl-4 sm:pr-5 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold text-xs sm:text-sm shadow-[0_10px_28px_rgba(16,185,129,0.4)] hover:shadow-[0_14px_34px_rgba(16,185,129,0.6)] transition-all duration-300 hover:-translate-y-0.5"
       >

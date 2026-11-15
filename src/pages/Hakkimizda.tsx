@@ -4,15 +4,15 @@ import { SEO } from "@/components/SEO";
 import { ShieldCheck, Award, Building2, CheckCircle2, Users, Target, Sparkles, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import corporateImg from "@/assets/proje-cukurova-konut-pvc.jpg";
-import productionImg from "@/assets/firatpen-cnc-uretim-hatti.jpg";
+import corporateImg from "@/assets/proje-cukurova-konut-pvc.webp";
+import productionImg from "@/assets/firatpen-cnc-uretim-hatti.webp";
 
 export default function Hakkimizda() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
-        title="Hakkımızda & Kurumsal Kimlik | Acarpen — Adana Fıratpen Yetkili Üretici Bayi"
-        description="Acar Pen İnşaat Sanayi ve Ticaret Limited Şirketi (Acarpen), Adana Seyhan Gülbahçesi Mahallesi'ndeki üretim ve uygulama merkezinde Fıratpen Yetkili Üretici Bayisi olarak PVC pencere, kapı, sürme ve cam balkon sistemleri üretmektedir."
+        title="Hakkımızda & Kurumsal Kimlik | Acarpen — Adana PVC Pencere & Cam Balkon"
+        description="Acar Pen İnşaat Sanayi ve Ticaret Limited Şirketi (Acarpen), Adana Seyhan Gülbahçesi Mahallesi'ndeki üretim ve uygulama merkezinde Fıratpen, Winsa ve Pimapen profillerle PVC pencere, kapı, sürme ve cam balkon sistemleri üretmektedir."
         canonicalPath="/hakkimizda"
         schemaType="AboutPage"
         breadcrumbs={[{ name: "Hakkımızda", path: "/hakkimizda" }]}
@@ -42,7 +42,7 @@ export default function Hakkimizda() {
               <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-md relative group bg-slate-100">
                 <img
                   src={corporateImg}
-                  alt="Acarpen Fıratpen Yetkili Üretici Bayi Seyhan Adana"
+                  alt="Acarpen CNC PVC Doğrama ve Cam Balkon Üretim Merkezi Seyhan Adana"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/75 via-transparent to-transparent" />
@@ -108,7 +108,7 @@ export default function Hakkimizda() {
 
             <div className="grid sm:grid-cols-2 gap-4 pt-4">
               {[
-                "Fıratpen Resmi Yetkili Üretici Bayi Güvencesi",
+                "TSE EN 12608-1 & EN 1279 Standartlarına Uygun CNC Üretim",
                 "70'lik, 75'lik (Selenit) ve 85'lik (Redonit) Seriler",
                 "1.00 mm - 1.50 mm Galvanizli Çelik Destek Sacı",
                 "4+16+4 mm Isıcam S ve Isıcam K Konfor Camlar",

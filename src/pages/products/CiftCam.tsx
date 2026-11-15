@@ -1,10 +1,11 @@
-import heroProductImg from "@/assets/firatpen-selenit-pvc-pencere.jpg";
+import heroProductImg from "@/assets/firatpen-selenit-pvc-pencere.webp";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
-import { SEO } from "@/components/SEO";
+import { SEO, FAQItem } from "@/components/SEO";
+import { ProductSeoEnrichment } from "@/components/site/ProductSeoEnrichment";
 import { PVC_COLOR_ALTERNATIVES, PVC_COLORED_GLASS_OPTIONS } from "@/data/pvcColorAlternatives";
 import {
   Shield,
@@ -30,6 +31,24 @@ const STANDARD_WINDOW_MATRIX = [
   { size: "200×210 cm / 220×210 cm", type: "Ortadan Kanatlı Büyük Cephe", spec: "75'lik / 85'lik Sistem • Maksimum Statik Mukavemet • 19 Renk" },
 ];
 
+const CIFT_CAM_FAQS: FAQItem[] = [
+  {
+    question: "70'lik, 75'lik (Selenit 75) ve 85'lik (Redonit 85) PVC pencere serileri arasındaki fark nedir?",
+    answer:
+      "70 mm sistemler standart konutlar için dengeli bir çözüm sunarken; 75 mm (6 odacıklı) ve 85 mm (3 contalı) seriler daha yüksek ısı ve ses yalıtımı, daha geniş cam yuvası ve güçlü statik mukavemet sağlar.",
+  },
+  {
+    question: "Adana yaz sıcağında PVC pencereler eğilme veya sararma yapar mı?",
+    answer:
+      "Acarpen imalatında TS EN 12608-1 uyumlu A sınıfı UV dayanımlı profiller içinde 1.00 mm–1.50 mm galvanizli çelik destek sacı kullanılır; özellikle antrasit ve koyu renklerde güneş genleşmesine karşı esneme önlenir.",
+  },
+  {
+    question: "PVC pencere fiyatları nasıl belirlenir ve nasıl teklif alınır?",
+    answer:
+      "Fiyatlandırma; seçilen profil serisi, En × Boy ölçüsü, kanat açılım sayısı, laminasyon rengi ve cam tipi (4+16+4 ısıcam veya Solar Low-E Konfor) baz alınarak hesaplanır. Ölçü robotumuzdan veya WhatsApp hattımızdan ücretsiz teklif alabilirsiniz.",
+  },
+];
+
 const CiftCam = () => {
   const [selectedColor, setSelectedColor] = useState(PVC_COLOR_ALTERNATIVES[0]);
 
@@ -37,10 +56,11 @@ const CiftCam = () => {
     <div className="min-h-screen bg-background">
       <SEO
         title="PVC Pencere Sistemleri (Fıratpen • Winsa • Pimapen) | Acarpen Adana"
-        description="Adana Fıratpen yetkili üretici bayi Acarpen'de 40x40'tan 220x210 cm'e hazır standart ve özel ölçü PVC pencereler, 1.00 mm+ destek sacı, 2.5 mm+ et kalınlığı, 4+16+4 ısıcam ve 19 renk seçeneği."
+        description="Adana Acarpen CNC tesisinde Fıratpen, Winsa & Pimapen uyumlu 40x40'tan 220x210 cm'e hazır ve özel ölçü PVC pencereler, 1.00 mm+ destek sacı, 4+16+4 ısıcam ve 19 renk."
         canonicalPath="/urunler/cift-cam"
         schemaType="Product"
-        serviceName="Fıratpen 70'lik & 75'lik PVC Pencere Sistemleri"
+        serviceName="70'lik, 75'lik & 85'lik PVC Pencere Sistemleri"
+        faqs={CIFT_CAM_FAQS}
         breadcrumbs={[
           { name: "Ürünlerimiz", path: "/hizmetler" },
           { name: "PVC Pencere Sistemleri", path: "/urunler/cift-cam" },
@@ -87,7 +107,7 @@ const CiftCam = () => {
             </div>
             <div className="lg:col-span-5">
               <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-slate-900 aspect-[4/3]">
-                <img src={heroProductImg} alt="Fıratpen Selenit 75 ve Redonit 85 PVC Pencere Sistemleri - Acarpen Adana" className="w-full h-full object-cover" />
+                <img src={heroProductImg} width={1200} height={896} loading="eager" decoding="sync" alt="Fıratpen Selenit 75 ve Redonit 85 PVC Pencere Sistemleri - Acarpen Adana" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 <div className="absolute bottom-3 left-3 right-3 px-3 py-2 rounded-xl bg-slate-950/75 backdrop-blur-sm border border-white/10 text-xs font-medium text-white">
                   Fıratpen Selenit 75 • 4+16+4 Isıcam • Çift Açılım İspanyolet
@@ -287,44 +307,34 @@ const CiftCam = () => {
                 ))}
               </div>
             </div>
-
-            {/* PVC İçin Renkli & Reflekte Isıcam Seçenekleri */}
-            <div className="mt-14 bg-slate-900 text-white rounded-3xl p-8 lg:p-10 border border-slate-800 shadow-xl">
-              <div className="max-w-3xl mb-8">
-                <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-sky-400 font-bold mb-2">
-                  <Sparkles className="w-4 h-4" />
-                  PVC Doğramalar İçin Renkli & Güneş Kontrol Camları
-                </span>
-                <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-2">
-                  PVC Pencereleriniz İçin Renkli Isıcam Seçenekleri
-                </h3>
-                <p className="text-sm text-slate-300 leading-relaxed">
-                  Fıratpen PVC pencerelerinizde standart şeffaf çift camın yanı sıra; güneş ısısını kesen, içerinin görünmesini engelleyen ve doğrama renginizle bütünleşen <strong>Füme, Bronz, Mavi/Yeşil Reflekte, Satinato Buzlu ve Solar Low-E Konfor</strong> cam alternatiflerini tercih edebilirsiniz.
-                </p>
-              </div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {PVC_COLORED_GLASS_OPTIONS.map((g) => (
-                  <div key={g.id} className="rounded-2xl bg-slate-950/80 border border-slate-800 p-5 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className={`w-9 h-9 rounded-xl bg-gradient-to-br ${g.gradientClass} border border-white/20 inline-block`} />
-                        <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
-                          {g.solarControl}
-                        </span>
-                      </div>
-                      <h4 className="font-bold text-base text-white mb-1">{g.name}</h4>
-                      <div className="text-xs font-mono text-sky-400 mb-2">{g.spec}</div>
-                      <p className="text-xs text-slate-300 leading-relaxed mb-3">{g.benefit}</p>
-                    </div>
-                    <div className="pt-3 border-t border-slate-800 text-[11px] text-slate-400">
-                      <strong className="text-slate-200">Uyumlu PVC Renkleri:</strong> {g.matchingProfiles}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </section>
+
+        <ProductSeoEnrichment
+          categoryTitle="PVC Pencere Sistemleri"
+          trackingCategory="PVC Pencere"
+          geoSummary="Acarpen (ACAR PEN İNŞAAT SAN. VE TİC. LTD. ŞTİ.), Adana Seyhan'daki CNC otomasyonlu üretim tesisinde Fıratpen (Selenit 75, Elegance 80, Redonit 85), Winsa ve Pimapen profilleriyle 70/75/85 mm PVC pencere üretmektedir. Tüm doğramalarda galvanizli çelik destek sacı, EPDM sızdırmazlık contası ve 4+16+4 ısıcam uygulanır."
+          targetUsers={[
+            "Adana, Mersin ve Çukurova'da enerji tasarruflu sıfır konut veya tadilat yapan ev sahipleri",
+            "Yüksek ses ve güneş ısısı kesici çözüm arayan cadde üzeri ve güney/batı cephe daireleri",
+            "Standart 40×40–220×210 cm hazır ölçü veya şantiye pozuna göre demonte/montajlı sipariş arayan müteahhitler",
+          ]}
+          priceFactors={[
+            "Seçilen profil derinliği (70 mm, 75 mm 6 odacıklı veya 85 mm 3 contalı seri)",
+            "Doğrama toplam en × boy metrajı ve tek açılım / çift açılım / vasistas kanat sayısı",
+            "Laminasyon tercihi (Kristal Beyaz vs Antrasit Gri, Altın Meşe gibi 19 renk seçenekleri)",
+            "Cam donanımı (Standart 4+16+4 ısıcam, Solar Low-E Konfor, füme/bronz reflekte veya akustik lamine)",
+          ]}
+          acarpenProcess="Ücretsiz lazer keşif veya ilettiğiniz ölçüler doğrultusunda aynı gün net teklif hazırlanır. CNC kesim, çelik sac vidalama ve 4 köşe kaynak aşamalarından geçen doğramalarınız PU köpük ve dış cephe mastik izolasyonuyla teslim edilir."
+          faqs={CIFT_CAM_FAQS}
+          relatedLinks={[
+            { label: "19 PVC Renk & Renkli Isıcam", to: "/urunler/renkli-camlar", tag: "Renk Kartelası" },
+            { label: "Hebeschiebe & PVC Sürme Kapılar", to: "/urunler/temperli-cam", tag: "Geniş Açıklık" },
+            { label: "PVC Balkon Kapısı & Panjur", to: "/urunler/jaluzili-isicam", tag: "85×210 & Panjur" },
+            { label: "Plise Sineklik & Aksesuar", to: "/urunler/lamine-cam", tag: "Tamamlayıcı" },
+            { label: "Ölçü & Teklif Robotu", to: "/hesaplama", tag: "Hızlı Hesapla" },
+          ]}
+        />
       </main>
 
       <Footer />

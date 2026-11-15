@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { SEO, FAQItem } from "@/components/SEO";
+import { GeoQuestionHub } from "@/components/site/GeoQuestionHub";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import {
@@ -250,6 +251,10 @@ export default function Rehber() {
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed pl-7">{faq.answer}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-12">
+          <GeoQuestionHub />
         </div>
 
         <div className="mt-12 bg-gradient-to-r from-sky-600 to-sky-700 rounded-3xl p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">

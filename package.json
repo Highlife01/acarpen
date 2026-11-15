@@ -13,8 +13,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "indexnow": "node scripts/ping-indexnow.mjs",
+    "seo:audit": "node scripts/seo-qa-audit.mjs",
     "clean-versions": "node scripts/cleanup-hosting-versions.mjs",
-    "deploy": "npm run build && firebase deploy --only hosting && node scripts/cleanup-hosting-versions.mjs"
+    "deploy": "npm run build && npm run seo:audit && firebase deploy --only hosting && node scripts/cleanup-hosting-versions.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

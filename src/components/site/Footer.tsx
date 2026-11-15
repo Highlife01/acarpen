@@ -19,6 +19,7 @@ import {
 import { Logo } from "./Logo";
 import { useLanguage } from "@/context/LanguageContext";
 import { resetCookieConsent, setCookieConsent } from "@/lib/analytics";
+import { trackConversion } from "@/lib/conversionTracker";
 
 export const Footer = () => {
   const { t } = useLanguage();
@@ -261,7 +262,11 @@ export const Footer = () => {
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-sky-400 shrink-0" />
-                <a href="tel:+905336253611" className="hover:text-white transition-colors font-semibold">
+                <a
+                  href="tel:+905336253611"
+                  onClick={() => trackConversion("phone_click", "Footer Phone Link")}
+                  className="hover:text-white transition-colors font-semibold"
+                >
                   0533 625 36 11
                 </a>
               </li>
@@ -271,6 +276,7 @@ export const Footer = () => {
                   href="https://wa.me/905336253611"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackConversion("whatsapp_click", "Footer WhatsApp Link")}
                   className="text-emerald-400 hover:text-emerald-300 transition-colors font-semibold"
                 >
                   WhatsApp Hattı
@@ -406,7 +412,7 @@ export const Footer = () => {
             {legalModal === "terms" && (
               <div className="text-xs sm:text-sm text-slate-600 space-y-3 leading-relaxed">
                 <p>
-                  <strong className="text-slate-900">1. Profil & Donanım Garantisi:</strong> Acarpen tarafından üretilen Fıratpen PVC doğramalar TS EN 12608-1 standardında olup sararmaya ve üretim hatalarına karşı Fıratpen üretici bayi güvencesi altındadır.
+                  <strong className="text-slate-900">1. Profil & Donanım Garantisi:</strong> Acarpen tarafından üretilen PVC doğramalar TS EN 12608-1 standardında olup sararmaya ve üretim işçiliğine karşı Acarpen üretim ve montaj güvencesi altındadır.
                 </p>
                 <p>
                   <strong className="text-slate-900">2. Isıcam & Cam Balkon Standartları:</strong> Tüm pencerelerimizde 4+16+4 mm Isıcam ve cam balkonlarımızda TSE EN 12150 standardında 8 mm / 10 mm temperli emniyet camı kullanılmaktadır.

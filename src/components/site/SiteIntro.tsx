@@ -154,7 +154,7 @@ export function SiteIntro() {
             FIRATPEN • WINSA • PİMAPEN
           </p>
           <p className="text-xs font-medium tracking-[-0.005em] text-slate-600">
-            Yetkili Üretici Bayi &amp; Adana Üretim Merkezi
+            Adana CNC PVC Doğrama &amp; Cam Balkon Üretim Merkezi
           </p>
         </div>
 

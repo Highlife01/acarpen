@@ -26,6 +26,7 @@ export const ROLE_DEFINITIONS: Record<UserRole, RoleDefinition> = {
       "shipment",
       "finance",
       "reports",
+      "seo_geo",
       "governance",
     ],
     permissions: {
@@ -45,7 +46,7 @@ export const ROLE_DEFINITIONS: Record<UserRole, RoleDefinition> = {
     badgeColor: "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
     description: "CRM, fırsatlar, iskonto onayı, özel fiyat, teklif revizyonu ve satış raporları.",
     maxDiscountPct: 25,
-    allowedModules: ["control_center", "crm", "quotes", "orders", "shipment", "finance", "reports"],
+    allowedModules: ["control_center", "crm", "quotes", "orders", "shipment", "finance", "reports", "seo_geo"],
     permissions: {
       canEditPrices: true,
       canApproveDiscount: true,

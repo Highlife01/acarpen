@@ -1,8 +1,9 @@
-import heroProductImg from "@/assets/firatpen-cnc-uretim-hatti.jpg";
+import heroProductImg from "@/assets/firatpen-cnc-uretim-hatti.webp";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
-import { SEO } from "@/components/SEO";
+import { SEO, FAQItem } from "@/components/SEO";
+import { ProductSeoEnrichment } from "@/components/site/ProductSeoEnrichment";
 import {
   Wrench,
   CheckCircle2,
@@ -44,15 +45,29 @@ const ACCESSORY_GROUPS = [
   },
 ];
 
+const AKSESUAR_FAQS: FAQItem[] = [
+  {
+    question: "Plise sineklik ile menteşeli sineklik arasındaki fark nedir, hangisi daha uygundur?",
+    answer:
+      "Plise sineklik ray içinde katlanarak alan kaplamaz ve özellikle balkon kapıları ile sürme pencereler için idealdir. Menteşeli sineklik ise küçük pencerelerde ekonomik ve kolay çıkarılıp yıkanabilir pratiklik sunar.",
+  },
+  {
+    question: "Evcil hayvanlar (kedi/köpek) için yırtılmaz sineklik yapılıyor mu?",
+    answer:
+      "Evet. Evcil hayvan bulunan konutlarda standart fiberglas tül yerine güçlendirilmiş PetScreen kedi tülü ve alt kilitlemeli sağlam alüminyum kasa profilleri uygulanmaktadır.",
+  },
+];
+
 const LamineCam = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
         title="Pencere Kolları, Plise Sineklik & Montaj İzolasyon Malzemeleri | Acarpen Adana"
-        description="Adana Fıratpen yetkili üretici bayi Acarpen'de PVC pencere kolları, çift açılım aksesuarları, plise sineklik sistemleri, poliüretan montaj köpüğü, silikon ve mastik malzemeleri."
+        description="Adana Acarpen'de PVC pencere kolları, çift açılım aksesuarları, plise ve kedi sineklik sistemleri, poliüretan montaj köpüğü, silikon ve mastik malzemeleri."
         canonicalPath="/urunler/lamine-cam"
         schemaType="Product"
         serviceName="Pencere Kolları, Plise Sineklik & Montaj İzolasyon Malzemeleri"
+        faqs={AKSESUAR_FAQS}
         breadcrumbs={[
           { name: "Ürünlerimiz", path: "/hizmetler" },
           { name: "Sineklik, Kol & Montaj Malzemeleri", path: "/urunler/lamine-cam" },
@@ -98,7 +113,7 @@ const LamineCam = () => {
             </div>
             <div className="lg:col-span-5">
               <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-slate-900 aspect-[4/3]">
-                <img src={heroProductImg} alt="Pencere Kolları, Plise Sineklik ve Montaj İzolasyon Malzemeleri - Acarpen Adana" className="w-full h-full object-cover" />
+                <img src={heroProductImg} width={1280} height={714} loading="eager" decoding="sync" alt="Pencere Kolları, Plise Sineklik ve Montaj İzolasyon Malzemeleri - Acarpen Adana" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 <div className="absolute bottom-3 left-3 right-3 px-3 py-2 rounded-xl bg-slate-950/75 backdrop-blur-sm border border-white/10 text-xs font-medium text-white">
                   Orijinal Pencere Kolları • Plise Sineklik • PU Köpük & Mastik
@@ -158,6 +173,30 @@ const LamineCam = () => {
             </div>
           </div>
         </section>
+
+        <ProductSeoEnrichment
+          categoryTitle="Plise Sineklik, Kol & Montaj İzolasyon Setleri"
+          trackingCategory="Sineklik & Aksesuar"
+          geoSummary="Acarpen Seyhan/Adana atölyesinde her ölçüye uygun yatay/dikey plise sineklik, evcil hayvan dayanımlı kedi tülü sineklik, Secustik kilitli pencere kolları, çift açılım ispanyolet mekanizmaları ile poliüretan montaj köpüğü, nötr UV silikon ve cephe mastikleri temin edilmektedir."
+          targetUsers={[
+            "Sivrisinek ve haşereye karşı antrasit, beyaz veya ahşap desen kasalı plise sineklik yaptırmak isteyen konutlar",
+            "Kedi ve köpeği olan, tül yırtılmasına karşı ekstra dayanıklı PetScreen sineklik arayan ev sahipleri",
+            "Demonte pencere siparişiyle beraber PU köpük, silikon ve montaj vidasını tek pakette almak isteyen ustalar",
+          ]}
+          priceFactors={[
+            "Sineklik tipi (Yatay/dikey plise, duble kapı plise, içe/dışa menteşeli veya PetScreen kedi tülü)",
+            "Alüminyum sineklik kasasının En × Boy ölçüsü ve profil rengi (Beyaz vs Antrasit/Altınmeşe)",
+            "İspanyolet, çocuk emniyet kilidi ve Secustik kilitli kol donanım sayısı",
+          ]}
+          acarpenProcess="Ölçüye göre alüminyum sineklik çerçeveleri kesilip gergi ipi ayarı yapılır; mevcut pencerelere zarar vermeden hızlı montaj gerçekleştirilir veya demonte paketle teslim edilir."
+          faqs={AKSESUAR_FAQS}
+          relatedLinks={[
+            { label: "PVC Pencere Sistemleri", to: "/urunler/cift-cam", tag: "Pencere Kasası" },
+            { label: "PVC Balkon Kapısı & Panjur", to: "/urunler/jaluzili-isicam", tag: "Panjurlu Çözüm" },
+            { label: "Düz, L & U Cam Balkon", to: "/urunler/balkon-cami", tag: "Cam Balkon Sinekliği" },
+            { label: "Ücretsiz Ölçü & İletişim", to: "/iletisim", tag: "Aksesuar İste" },
+          ]}
+        />
       </main>
 
       <Footer />

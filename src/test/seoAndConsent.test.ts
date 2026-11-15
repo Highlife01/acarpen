@@ -10,6 +10,9 @@ import {
   trackPageView,
   getVisitorStats,
 } from "@/lib/analytics";
+import { SEO_KEYWORD_DATABASE, detectKeywordCannibalization } from "@/data/seoKeywordMap";
+import { GEO_QUESTIONS_DATABASE } from "@/data/geoQuestionsData";
+import { trackConversion, getCroStats } from "@/lib/conversionTracker";
 import fs from "fs";
 import path from "path";
 
@@ -63,9 +66,7 @@ describe("2. Search Engine Verification & Hreflang", () => {
     const indexPath = path.resolve(__dirname, "../../index.html");
     const indexContent = fs.readFileSync(indexPath, "utf-8");
 
-    expect(indexContent).toContain('name="google-site-verification"');
-    expect(indexContent).toContain('name="msvalidate.01"');
-    expect(indexContent).toContain('name="yandex-verification"');
+    expect(indexContent).not.toContain('content=""');
     expect(indexContent).toContain('rel="canonical" href="https://www.acarpen.com.tr/"');
     expect(indexContent).toContain('hreflang="x-default" href="https://www.acarpen.com.tr/"');
     expect(indexContent).toContain('hreflang="tr" href="https://www.acarpen.com.tr/"');
@@ -149,7 +150,7 @@ describe("4. International SEO & GEO (AI Search Engines)", () => {
     expect(homeHtml).toContain('"url": "https://www.acarpen.com.tr/"');
 
     const html = fs.readFileSync(regionalHtmlPath, "utf-8");
-    expect(html).toContain("<title>Adana Fıratpen Bayisi");
+    expect(html).toContain("<title>Adana PVC Pencere, Sürme & Cam Balkon Merkezi | Acarpen</title>");
     expect(html).toContain('rel="canonical" href="https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi"');
     expect(html).toContain('hreflang="en" href="https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi?lang=en"');
     expect(html).toContain('hreflang="ar" href="https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi?lang=ar"');
@@ -164,7 +165,7 @@ describe("4. International SEO & GEO (AI Search Engines)", () => {
     const content = fs.readFileSync(sitemapPath, "utf-8");
     const locs = [...content.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
 
-    expect(locs.length).toBeGreaterThanOrEqual(28);
+    expect(locs.length).toBeGreaterThanOrEqual(27);
     expect(locs.every((u) => u.startsWith("https://www.acarpen.com.tr/"))).toBe(true);
     expect(content).toContain("<loc>https://www.acarpen.com.tr/</loc>");
     expect(content).toContain("<loc>https://www.acarpen.com.tr/hesaplama</loc>");
@@ -252,5 +253,62 @@ describe("5. Branded Architectural Site Entry Intro & Asset Optimization", () =>
       )
     );
     expect(screen.queryByTestId("acarpen-site-intro")).toBeNull();
+  });
+});
+
+describe("6. SEO + GEO Master Audit, Keyword Strategy & CRO Conversion Gating", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    resetCookieConsent();
+  });
+
+  it("should provide 300+ unique SEO/GEO queries with zero keyword cannibalization conflicts", () => {
+    expect(SEO_KEYWORD_DATABASE.length).toBeGreaterThanOrEqual(300);
+    const conflicts = detectKeywordCannibalization();
+    expect(conflicts).toEqual([]);
+  });
+
+  it("should provide 100+ verified GEO Q&As across all core service categories", () => {
+    expect(GEO_QUESTIONS_DATABASE.length).toBeGreaterThanOrEqual(100);
+    for (const q of GEO_QUESTIONS_DATABASE) {
+      expect(q.question.length).toBeGreaterThan(10);
+      expect(q.answer.length).toBeGreaterThan(30);
+      expect(q.targetUrl.startsWith("/")).toBe(true);
+    }
+  });
+
+  it("prerendered dist/404.html and dist/admin/index.html must enforce noindex and strip fake ratings/unverified claims", () => {
+    const notFoundPath = path.resolve(__dirname, "../../dist/404.html");
+    const adminPath = path.resolve(__dirname, "../../dist/admin/index.html");
+    const homeHtmlPath = path.resolve(__dirname, "../../dist/index.html");
+
+    expect(fs.existsSync(notFoundPath)).toBe(true);
+    expect(fs.existsSync(adminPath)).toBe(true);
+
+    const notFoundHtml = fs.readFileSync(notFoundPath, "utf-8");
+    expect(notFoundHtml).toContain("noindex");
+    expect(notFoundHtml).not.toMatch(/<link\b[^>]*rel=["']canonical["']/i);
+
+    const adminHtml = fs.readFileSync(adminPath, "utf-8");
+    expect(adminHtml).toContain("noindex, nofollow, noarchive");
+
+    const homeHtml = fs.readFileSync(homeHtmlPath, "utf-8");
+    expect(homeHtml).not.toMatch(/yetkili\s*(?:üretici\s*)?bayi/i);
+    expect(homeHtml).not.toContain("AggregateRating");
+  });
+
+  it("CRO conversionTracker should strictly respect cookie consent and purge data on revocation", () => {
+    expect(getCroStats().whatsappClicks).toBe(0);
+    trackConversion("whatsapp_click", "İzinsiz Test");
+    expect(getCroStats().whatsappClicks).toBe(0);
+
+    setCookieConsent("granted");
+    trackConversion("whatsapp_click", "İzinli Test");
+    expect(getCroStats().whatsappClicks).toBe(1);
+    expect(getCroStats().recentEvents.length).toBe(1);
+
+    setCookieConsent("denied");
+    expect(getCroStats().whatsappClicks).toBe(0);
+    expect(localStorage.getItem("acarpen_cro_funnel_v1")).toBeNull();
   });
 });

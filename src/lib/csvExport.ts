@@ -1,4 +1,5 @@
 import type { QuoteItem } from "./erpTypes";
+import type { SeoKeywordEntry } from "@/data/seoKeywordMap";
 
 const FORMULA_PREFIX_RE = /^[\s\u00A0]*[=+\-@\t\r]/;
 
@@ -49,6 +50,61 @@ export function buildQuotesCsv(quotes: QuoteItem[]): string {
       q.productionStage || 1,
       q.qualityHold ? "BLOKAJLI" : "UYGUN",
       q.invoiceNo || "",
+    ]
+      .map(escapeCsvCell)
+      .join(",")
+  );
+
+  return "\uFEFF" + [headers.map(escapeCsvCell).join(","), ...rows].join("\r\n");
+}
+
+/** Build a UTF-8 BOM RFC 4180 CSV export of the 300+ SEO keyword mapping database. */
+export function buildSeoKeywordsCsv(entries: SeoKeywordEntry[]): string {
+  const headers = [
+    "ID",
+    "Anahtar Kelime",
+    "Kume",
+    "Seviye",
+    "Arama Niyeti",
+    "Hedef Sehir",
+    "Hedef Ilce",
+    "Hedef Sayfa",
+    "Onerilen URL",
+    "GSC Gosterim",
+    "GSC Tiklama",
+    "CTR",
+    "Ort Sira",
+    "Hacim",
+    "Rekabet",
+    "Is Ilgisi (1-5)",
+    "Donusum Potansiyeli",
+    "Oncelik",
+    "Icerik Durumu",
+    "Indeksleme Durumu",
+  ];
+
+  const rows = entries.map((e) =>
+    [
+      e.id,
+      e.keyword,
+      e.clusterLabel,
+      e.tier,
+      e.intent,
+      e.targetCity,
+      e.targetDistrict,
+      e.targetLandingPage,
+      e.suggestedUrl,
+      e.gscImpressions ?? "Veri bekleniyor",
+      e.gscClicks ?? "Veri bekleniyor",
+      e.ctr ?? "Veri bekleniyor",
+      e.avgPosition ?? "Veri bekleniyor",
+      e.searchVolume ?? "Veri bekleniyor",
+      e.competition,
+      e.businessRelevance,
+      e.conversionPotential,
+      e.priority,
+      e.contentStatus,
+      e.indexingStatus,
     ]
       .map(escapeCsvCell)
       .join(",")

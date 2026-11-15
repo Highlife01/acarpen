@@ -18,11 +18,41 @@
     ],
     "redirects": [
       { "source": "/pvc-pencere", "destination": "/urunler/cift-cam", "type": 301 },
+      { "source": "/pvc-pencere-sistemleri", "destination": "/urunler/cift-cam", "type": 301 },
+      { "source": "/firatpen-pvc-pencere", "destination": "/urunler/cift-cam", "type": 301 },
+      { "source": "/firatpen-selenit-75", "destination": "/urunler/cift-cam", "type": 301 },
+      { "source": "/firatpen-elegance-80", "destination": "/urunler/cift-cam", "type": 301 },
+      { "source": "/firatpen-redonit-85", "destination": "/urunler/cift-cam", "type": 301 },
       { "source": "/pvc-surme", "destination": "/urunler/temperli-cam", "type": 301 },
+      { "source": "/pvc-surme-kapi", "destination": "/urunler/temperli-cam", "type": 301 },
+      { "source": "/hebeschiebe-surme-sistemleri", "destination": "/urunler/temperli-cam", "type": 301 },
       { "source": "/cam-balkon", "destination": "/urunler/balkon-cami", "type": 301 },
+      { "source": "/katlanir-cam-balkon", "destination": "/urunler/balkon-cami", "type": 301 },
+      { "source": "/surme-cam-balkon", "destination": "/urunler/balkon-cami", "type": 301 },
+      { "source": "/giyotin-cam-balkon", "destination": "/urunler/balkon-cami", "type": 301 },
       { "source": "/pvc-kapi", "destination": "/urunler/jaluzili-isicam", "type": 301 },
+      { "source": "/pvc-kapi-sistemleri", "destination": "/urunler/jaluzili-isicam", "type": 301 },
+      { "source": "/panjur-sistemleri", "destination": "/urunler/jaluzili-isicam", "type": 301 },
       { "source": "/pvc-renkler", "destination": "/urunler/renkli-camlar", "type": 301 },
-      { "source": "/adana-firatpen-bayisi", "destination": "/bolgeler/adana-cam-fabrikasi", "type": 301 }
+      { "source": "/renkli-pvc-pencere", "destination": "/urunler/renkli-camlar", "type": 301 },
+      { "source": "/antrasit-pvc-pencere", "destination": "/urunler/renkli-camlar", "type": 301 },
+      { "source": "/plise-sineklik", "destination": "/urunler/lamine-cam", "type": 301 },
+      { "source": "/toplu-proje-pvc-dograma", "destination": "/urunler/dis-cephe-camlari", "type": 301 },
+      { "source": "/isi-yalitimli-pvc-pencere", "destination": "/rehber", "type": 301 },
+      { "source": "/pvc-pencere-fiyat-hesaplama", "destination": "/hesaplama", "type": 301 },
+      { "source": "/teklif-al", "destination": "/hesaplama", "type": 301 },
+      { "source": "/referanslar", "destination": "/projeler", "type": 301 },
+      { "source": "/projeler/mersin-tower-plaza", "destination": "/projeler/cukurova-prestij-konutlari", "type": 301 },
+      { "source": "/projeler/gaziantep-osb-tekstil-fabrikasi", "destination": "/projeler/cukurova-prestij-konutlari", "type": 301 },
+      { "source": "/uretim-ve-kalite", "destination": "/uretim-teknolojisi", "type": 301 },
+      { "source": "/adana-firatpen-bayisi", "destination": "/bolgeler/adana-cam-fabrikasi", "type": 301 },
+      { "source": "/bolgeler/adana", "destination": "/bolgeler/adana-cam-fabrikasi", "type": 301 },
+      { "source": "/bolgeler/mersin", "destination": "/bolgeler/mersin-cam-imalati", "type": 301 },
+      { "source": "/bolgeler/osmaniye", "destination": "/bolgeler/osmaniye-cam-ureticisi", "type": 301 },
+      { "source": "/bolgeler/hatay", "destination": "/bolgeler/hatay-cam-firmalari", "type": 301 },
+      { "source": "/bolgeler/gaziantep", "destination": "/bolgeler/gaziantep-cam-cozumleri", "type": 301 },
+      { "source": "/bolgeler/kayseri", "destination": "/bolgeler/kayseri-cam-toptan", "type": 301 },
+      { "source": "/bolgeler/nigde", "destination": "/bolgeler/nigde-cam-sevkiyati", "type": 301 }
     ],
     "headers": [
       {
@@ -64,11 +94,6 @@
         ]
       }
     ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
+    "rewrites": []
   }
 }

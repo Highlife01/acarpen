@@ -4,13 +4,14 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
 import { PVC_COLOR_ALTERNATIVES, WINDOW_COLOR_FEATURES, PVC_COLORED_GLASS_OPTIONS } from "@/data/pvcColorAlternatives";
+import { trackConversion } from "@/lib/conversionTracker";
 
-import imgVillaWindow from "@/assets/firatpen-selenit-pvc-pencere.jpg";
-import imgBalcony from "@/assets/firatpen-cam-balkon-sistemleri.jpg";
-import imgJaluzi from "@/assets/firatpen-balkon-wc-kapi.jpg";
-import imgFacade from "@/assets/firatpen-santiye-toplu-pvc.jpg";
-import imgArchitecture from "@/assets/firatpen-hebeschiebe-surme.jpg";
-import imgTech from "@/assets/firatpen-cnc-uretim-hatti.jpg";
+import imgVillaWindow from "@/assets/firatpen-selenit-pvc-pencere.webp";
+import imgBalcony from "@/assets/firatpen-cam-balkon-sistemleri.webp";
+import imgJaluzi from "@/assets/firatpen-balkon-wc-kapi.webp";
+import imgFacade from "@/assets/firatpen-santiye-toplu-pvc.webp";
+import imgArchitecture from "@/assets/firatpen-hebeschiebe-surme.webp";
+import imgTech from "@/assets/firatpen-cnc-uretim-hatti.webp";
 
 const services = [
   {
@@ -110,7 +111,7 @@ export const Services = () => {
           {[
             {
               brand: "Fıratpen",
-              tag: "Yetkili Üretici Bayi",
+              tag: "CNC İmalat & Proje",
               series: "Selenit 75 • Elegance 80 • Redonit 85 • Zenia Slide",
               desc: "70 mm, 75 mm ve 85 mm çok odacıklı A sınıfı uPVC profil yapısı, orta conta teknolojisi ve maksimum ısı/ses yalıtımı.",
             },
@@ -166,8 +167,11 @@ export const Services = () => {
                     <img
                       src={s.image}
                       alt={s.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      width={1280}
+                      height={714}
                       loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/15 to-transparent" />
                     <div className="absolute top-3.5 left-3.5 h-11 w-11 rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200 grid place-items-center text-sky-600 shadow-md">
@@ -257,6 +261,10 @@ export const Services = () => {
               <img
                 src={activeColor.previewImage}
                 alt={`${activeColor.name} (${activeColor.code}) PVC Pencere Renk Önizleme`}
+                width={480}
+                height={480}
+                loading="lazy"
+                decoding="async"
                 className="max-h-[360px] w-auto object-contain drop-shadow-2xl transition-all duration-300"
               />
               <div className="mt-4 text-center">
@@ -297,8 +305,11 @@ export const Services = () => {
                         <img
                           src={c.swatchImage}
                           alt={c.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                          width={80}
+                          height={80}
                           loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform"
                         />
                       </div>
                       <span className="text-[10px] font-bold text-slate-800 text-center leading-tight line-clamp-1">
@@ -371,6 +382,7 @@ export const Services = () => {
               href="https://wa.me/905336253611?text=Merhaba%20Acarpen%2C%20PVC%20pencere%20ve%20kap%C4%B1%20%C3%B6l%C3%A7%C3%BClerim%20i%C3%A7in%20fiyat%20teklifi%20almak%20istiyorum."
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackConversion("whatsapp_click", "Services Ölçü Listesi WhatsApp")}
             >
               <Button className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5">
                 <MessageCircle className="mr-1.5 h-4 w-4" />

@@ -3,7 +3,7 @@ import { ShieldCheck, Cpu, Truck, Wrench, Award, Headphones, CheckCircle2 } from
 const reasons = [
   {
     icon: ShieldCheck,
-    title: "Fıratpen Resmi Yetkili Üretici Bayi",
+    title: "Fıratpen, Winsa & Pimapen Profil Sistemleri",
     desc: "Selenit 75, Redonit 85 ve Elegans serisi A sınıfı et kalınlığına sahip orijinal Fıratpen profiller, çelik destek sacı ve EPDM contalarla uzun ömürlü üretim yapıyoruz.",
     highlight: "Orijinal Fıratpen Garantisi",
   },

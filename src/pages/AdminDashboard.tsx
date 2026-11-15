@@ -29,6 +29,7 @@ import {
   ExternalLink,
   SlidersHorizontal,
   Download,
+  Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/site/Logo";
@@ -116,6 +117,7 @@ import {
   PrefillCustomerInfo,
 } from "@/components/admin/QuoteConfiguratorModal";
 import { SEO } from "@/components/SEO";
+import { SeoGeoModuleView } from "@/components/admin/SeoGeoModuleView";
 import { getVisitorStats, subscribeVisitorStats, VisitorTelemetryStats } from "@/lib/analytics";
 
 function playNotificationChime(muted: boolean) {
@@ -317,6 +319,15 @@ export default function AdminDashboard() {
       description: "Bugünkü mesajlar, teklifler, atölye durumu ve kasa özetini tek ekrandan yönetin.",
       icon: LayoutDashboard,
       badge: unreadMessagesCount > 0 ? unreadMessagesCount : null,
+    },
+    {
+      id: "seo_geo",
+      group: "genel",
+      label: "SEO, GEO & Dönüşüm",
+      subtitle: "320+ Sorgu, AI Arama & CRO",
+      description: "Organik anahtar kelimeler, AI (GEO) görünürlük testleri, teknik SEO QA ve CRO dönüşüm takibi.",
+      icon: Globe,
+      badge: null,
     },
     {
       id: "crm",
@@ -1135,6 +1146,9 @@ export default function AdminDashboard() {
               onNavigateModule={(modId) => setActiveModule(modId)}
             />
           )}
+
+          {/* MODÜL 12: SEO, GEO VE CRO DÖNÜŞÜM YÖNETİMİ */}
+          {activeModule === "seo_geo" && <SeoGeoModuleView telemetry={telemetry} />}
         </main>
       </div>
 

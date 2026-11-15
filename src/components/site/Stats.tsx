@@ -4,10 +4,10 @@ export const Stats = () => {
   const { t } = useLanguage();
 
   const stats = [
-    { value: "70 / 75 / 85", unit: "mm", label: "Fıratpen PVC Profil Sistemleri" },
-    { value: "4+16+4", unit: "Isıcam", label: "Yüksek Isı & Ses Yalıtım Standardı" },
-    { value: "3.500", unit: "+ Konut", label: t("statCapacity", "Tamamlanan Konut & Villa Projesi") },
-    { value: "%100", unit: "Memnuniyet", label: t("statClients", "Doğrudan Üretim & Tek Muhatap") },
+    { value: "70 / 75 / 85", unit: "mm", label: "Fıratpen, Winsa & Pimapen Profil Serileri" },
+    { value: "4+16+4", unit: "Isıcam", label: "TSE EN 1279 Isı & Ses Yalıtım Standardı" },
+    { value: "19", unit: "Lamine Renk", label: t("statCapacity", "UV Dayanımlı Folyo & Renkli Isıcam") },
+    { value: "7 İl", unit: "Sevkiyat", label: t("statClients", "Adana Merkezli Bölge Dağıtım Ağı") },
   ];
 
   return (

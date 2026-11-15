@@ -4,6 +4,7 @@ import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
+import { trackConversion } from "@/lib/conversionTracker";
 import {
   fetchPublicOrderTrackingWithStatus,
   type PublicOrderTrackingItem,
@@ -130,6 +131,7 @@ export default function SiparisTakip() {
         setMatches(res.items);
         setSelectedOrderId(res.items[0]?.orderId || "");
       }
+      trackConversion("order_lookup", `Sipariş Takip (${res.ok ? res.items.length : 0} sonuç)`);
       setSearched(true);
     } finally {
       setSearchingRemote(false);
@@ -298,7 +300,7 @@ export default function SiparisTakip() {
                     : matchedQuote.estimatedDeliveryDate || "Planlanıyor"}
                 </div>
                 <div className="text-xs text-slate-500 mt-0.5">
-                  Fıratpen, Winsa & Pimapen Yetkili Bayi Garantisi
+                  Fıratpen, Winsa & Pimapen Sistem Kalitesi & Garantisi
                 </div>
               </div>
             </div>

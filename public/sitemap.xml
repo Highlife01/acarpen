@@ -18,7 +18,7 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/?lang=ar" />
     <image:image>
       <image:loc>https://www.acarpen.com.tr/assets/firatpen-selenit-pvc-pencere.jpg</image:loc>
-      <image:title>Acarpen — Adana Fıratpen, Winsa &amp; Pimapen Yetkili Üretici Bayi</image:title>
+      <image:title>Acarpen — Adana Fıratpen, Winsa &amp; Pimapen PVC Pencere ve Cam Balkon</image:title>
       <image:caption>Adana Seyhan Gülbahçesi Mah. 13428 Sok. No:16/17 adresinde PVC pencere, kapı ve cam balkon üretimi</image:caption>
     </image:image>
   </url>
@@ -265,14 +265,14 @@
 
   <!-- 7. Referans Proje Detay Sayfaları -->
   <url>
-    <loc>https://www.acarpen.com.tr/projeler/mersin-tower-plaza</loc>
+    <loc>https://www.acarpen.com.tr/projeler/cukurova-prestij-konutlari</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/projeler/mersin-tower-plaza" />
-    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/projeler/mersin-tower-plaza" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/projeler/mersin-tower-plaza?lang=en" />
-    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/projeler/mersin-tower-plaza?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/projeler/cukurova-prestij-konutlari" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/projeler/cukurova-prestij-konutlari" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/projeler/cukurova-prestij-konutlari?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/projeler/cukurova-prestij-konutlari?lang=ar" />
   </url>
   <url>
     <loc>https://www.acarpen.com.tr/projeler/seyhan-modern-rezidans</loc>
@@ -293,15 +293,5 @@
     <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/projeler/cukurova-panoramik-villa" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/projeler/cukurova-panoramik-villa?lang=en" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/projeler/cukurova-panoramik-villa?lang=ar" />
-  </url>
-  <url>
-    <loc>https://www.acarpen.com.tr/projeler/gaziantep-osb-tekstil-fabrikasi</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.acarpen.com.tr/projeler/gaziantep-osb-tekstil-fabrikasi" />
-    <xhtml:link rel="alternate" hreflang="tr" href="https://www.acarpen.com.tr/projeler/gaziantep-osb-tekstil-fabrikasi" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.acarpen.com.tr/projeler/gaziantep-osb-tekstil-fabrikasi?lang=en" />
-    <xhtml:link rel="alternate" hreflang="ar" href="https://www.acarpen.com.tr/projeler/gaziantep-osb-tekstil-fabrikasi?lang=ar" />
   </url>
 </urlset>

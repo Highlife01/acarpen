@@ -6,11 +6,12 @@ import { CheckCircle2, ArrowRight, FileDown, ShieldCheck, MessageCircle } from "
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { trackConversion } from "@/lib/conversionTracker";
 
 export default function Hizmetler() {
   const handleDownloadCatalog = () => {
     const specContent = `====================================================================
-ACARPEN — FIRATPEN YETKİLİ ÜRETİCİ BAYİ TEKNİK ÜRÜN KATALOĞU (2026)
+ACARPEN — ADANA PVC PENCERE, KAPI & CAM BALKON TEKNİK ÜRÜN KATALOĞU (2026)
 ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ
 Adres: Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan - Seyhan / ADANA
 Telefon & WhatsApp: 0533 625 36 11 | Web: https://www.acarpen.com.tr
@@ -55,6 +56,7 @@ Telefon & WhatsApp: 0533 625 36 11 | Web: https://www.acarpen.com.tr
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    trackConversion("catalog_download", "Hizmetler Teknik Ürün Kataloğu");
     toast.success("Acarpen Teknik Ürün Kataloğu ve Ölçü Tablosu indirildi!");
   };
 
@@ -189,6 +191,7 @@ Telefon & WhatsApp: 0533 625 36 11 | Web: https://www.acarpen.com.tr
               href="https://wa.me/905336253611?text=Merhaba%20Acarpen%2C%20%C3%BCr%C3%BCn%20katalo%C4%9Funuzdaki%20sistemler%20i%C3%A7in%20fiyat%20almak%20istiyorum."
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackConversion("whatsapp_click", "Hizmetler Katalog WhatsApp CTA")}
             >
               <Button className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md">
                 <MessageCircle className="mr-1.5 h-4 w-4" />

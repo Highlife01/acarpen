@@ -1,8 +1,9 @@
-import heroProductImg from "@/assets/firatpen-hebeschiebe-surme.jpg";
+import heroProductImg from "@/assets/firatpen-hebeschiebe-surme.webp";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
-import { SEO } from "@/components/SEO";
+import { SEO, FAQItem } from "@/components/SEO";
+import { ProductSeoEnrichment } from "@/components/site/ProductSeoEnrichment";
 import {
   Shield,
   CheckCircle2,
@@ -37,15 +38,29 @@ const SLIDING_MODELS = [
   },
 ];
 
+const SURME_FAQS: FAQItem[] = [
+  {
+    question: "Hebeschiebe kaldır-sür sistemin normal sürme kapıdan farkı nedir?",
+    answer:
+      "Kaldır-sür (Hebeschiebe) sistemlerde kol çevrildiğinde kanat raydan hafifçe yükselip kayar, kapandığında EPDM contaya tam baskıyla kenetlenerek çok daha yüksek rüzgar ve ısı yalıtımı sağlar.",
+  },
+  {
+    question: "120×120 ve 140×120 cm PVC sürme pencereler hangi mekanlar için uygundur?",
+    answer:
+      "Mutfak tezgahı önü, dar balkon geçişleri ve kanadın içeri açılmasının eşyaları veya perdeleri engellediği tüm pencerelerde çift raylı 4+16+4 ısıcamlı sürme doğrama yer tasarrufu sağlar.",
+  },
+];
+
 const TemperliCam = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="PVC Sürme Pencereler & Hebeschiebe Sürme Kapılar | Acarpen — Fıratpen Bayi"
-        description="Adana Fıratpen yetkili üretici bayi Acarpen'de 120x120, 140x120 çift kanat PVC sürme pencereler, Zenia Slide ve Hebeschiebe kaldır-sür teras kapıları."
+        title="PVC Sürme Pencereler & Hebeschiebe Sürme Kapılar | Acarpen Adana"
+        description="Adana Acarpen CNC tesisinde 120x120, 140x120 çift kanat PVC sürme pencereler, Zenia Slide, Volkswagen ve Hebeschiebe kaldır-sür teras kapıları."
         canonicalPath="/urunler/temperli-cam"
         schemaType="Product"
         serviceName="PVC Sürme Pencereler & Hebeschiebe Sürme Kapılar"
+        faqs={SURME_FAQS}
         breadcrumbs={[
           { name: "Ürünlerimiz", path: "/hizmetler" },
           { name: "PVC Sürme Sistemleri", path: "/urunler/temperli-cam" },
@@ -92,7 +107,7 @@ const TemperliCam = () => {
             </div>
             <div className="lg:col-span-5">
               <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-slate-900 aspect-[4/3]">
-                <img src={heroProductImg} alt="Fıratpen Zenia Hebeschiebe ve Çift Kanat PVC Sürme Sistemleri - Acarpen Adana" className="w-full h-full object-cover" />
+                <img src={heroProductImg} width={1280} height={714} loading="eager" decoding="sync" alt="Fıratpen Zenia Hebeschiebe ve Çift Kanat PVC Sürme Sistemleri - Acarpen Adana" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 <div className="absolute bottom-3 left-3 right-3 px-3 py-2 rounded-xl bg-slate-950/75 backdrop-blur-sm border border-white/10 text-xs font-medium text-white">
                   Fıratpen Zenia Slide & Hebeschiebe • 300 kg Kanat Kapasitesi
@@ -170,6 +185,30 @@ const TemperliCam = () => {
             </div>
           </div>
         </section>
+
+        <ProductSeoEnrichment
+          categoryTitle="PVC Sürme & Hebeschiebe Sistemleri"
+          trackingCategory="PVC Sürme"
+          geoSummary="Acarpen, Adana ve çevre illerdeki villa, teras ve konutlar için Fıratpen Zenia Slide, Winsa Panorama HS ve Pimapen Albatros kaldır-sür (Hebeschiebe) kapılar ile 120×120 ve 140×120 cm çift kanat PVC sürme pencereler üretmektedir. 300 kg'a kadar taşıma kapasitesiyle büyük açıklıklarda sessiz çalışma sunar."
+          targetUsers={[
+            "Geniş bahçe, kış bahçesi ve teras çıkışlarında engelsiz panoramik geçiş isteyen villa sahipleri",
+            "Mutfak ve dar balkonlarda kanat açılım yeri kaybetmek istemeyen konut projeleri",
+            "Yüksek sızdırmazlık ve vasistas özellikli Volkswagen paralel sürme arayan daireler",
+          ]}
+          priceFactors={[
+            "Sistem tipi (Çift Kanat PVC Sürme, Volkswagen Paralel Sürme veya Hebeschiebe Kaldır-Sür)",
+            "Açıklık genişliği × yükseklik ve taşınacak temperli / konfor ısıcam kalınlığı",
+            "Engelsiz alüminyum alt eşik, paslanmaz ray ve 19 renk laminasyon seçeneği",
+          ]}
+          acarpenProcess="Ölçü ve statik rüzgar hesabı sonrası ağır hizmet tipi rulman mekanizması ve yüksek destek saclı kasa-kanatlar CNC hattında hazırlanıp lazer teraziyle kurulur."
+          faqs={SURME_FAQS}
+          relatedLinks={[
+            { label: "Düz, L & U Cam Balkon Sistemleri", to: "/urunler/balkon-cami", tag: "Katlanır & Sürme" },
+            { label: "PVC Pencere Sistemleri", to: "/urunler/cift-cam", tag: "70/75/85 mm" },
+            { label: "19 PVC Renk & Renkli Cam", to: "/urunler/renkli-camlar", tag: "Antrasit & Ahşap" },
+            { label: "Ölçü & Teklif Robotu", to: "/hesaplama", tag: "Anında Teklif" },
+          ]}
+        />
       </main>
 
       <Footer />

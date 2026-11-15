@@ -47,7 +47,7 @@ export default function UretimTeknolojisiPage() {
         canonicalPath="/uretim-teknolojisi"
         keywords={[
           "adana pvc pencere üretimi",
-          "fıratpen üretim bayisi adana",
+          "fıratpen cnc imalat adana",
           "cnc pvc köşe kaynak",
           "destek saclı pvc doğrama",
           "acarpen üretim merkezi",
@@ -110,7 +110,7 @@ export default function UretimTeknolojisiPage() {
 
                 <div className="pt-3 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-600 font-semibold">
                   <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                  <span>TS EN 12608-1 & Fıratpen Üretici Bayi Kalite Kontrolü</span>
+                  <span>TS EN 12608-1 &amp; Acarpen Çok Aşamalı Kalite Kontrolü</span>
                 </div>
               </div>
             );

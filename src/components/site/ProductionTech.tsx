@@ -1,8 +1,8 @@
 import { Cpu, Flame, Layers, Truck, ShieldCheck, CheckCircle2, ArrowRight, Wrench } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import productionHeroImg from "@/assets/firatpen-cnc-uretim-hatti.jpg";
-import villaWindowImg from "@/assets/firatpen-selenit-pvc-pencere.jpg";
+import productionHeroImg from "@/assets/firatpen-cnc-uretim-hatti.webp";
+import villaWindowImg from "@/assets/firatpen-selenit-pvc-pencere.webp";
 
 const productionPillars = [
   {
@@ -67,7 +67,7 @@ export const ProductionTech = () => {
                     Gülbahçesi Mah. Seyhan / Adana
                   </span>
                   <h3 className="font-serif text-xl sm:text-2xl font-bold">
-                    Acarpen — Fıratpen Yetkili Üretici Bayi İmalat Hattı
+                    Acarpen — CNC Otomasyonlu PVC İmalat Hattı
                   </h3>
                   <p className="text-xs text-slate-200">
                     Selenit 75 • Redonit 85 • Elegans • Hebeschiebe Sürme • Isıcamlı Cam Balkon

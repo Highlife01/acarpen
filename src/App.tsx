@@ -39,7 +39,7 @@ const RouteTracker = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     const timer = setTimeout(() => {
-      trackPageView(location.pathname, document.title || "Acarpen — Fıratpen Yetkili Üretici Bayi");
+      trackPageView(location.pathname, document.title || "Acarpen — Adana PVC Pencere, Kapı & Cam Balkon");
     }, 150);
     return () => clearTimeout(timer);
   }, [location.pathname]);

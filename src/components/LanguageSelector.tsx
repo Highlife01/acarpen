@@ -93,7 +93,7 @@ export const LanguageSelector = () => {
               <span className="h-2 w-2 rounded-full bg-sky-500 animate-ping inline-block" />
               Türkçe · English · العربية
             </span>
-            <span className="text-slate-400">Acarpen — Fıratpen Yetkili Bayi</span>
+            <span className="text-slate-400">Acarpen — Adana PVC & Cam Balkon</span>
           </div>
         </DialogContent>
       </Dialog>

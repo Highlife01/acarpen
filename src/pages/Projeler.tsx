@@ -8,7 +8,7 @@ export default function Projeler() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
-        title="Referans Projelerimiz & Uygulamalar | Acarpen Adana Fıratpen Bayisi"
+        title="Referans Projelerimiz & Uygulamalar | Acarpen Adana PVC & Cam Balkon"
         description="Adana ve Çukurova genelinde tamamladığımız Fıratpen PVC pencere, balkon kapısı, çift kanat sürme, motorlu panjur ve Düz/L/U cam balkon referans projelerimiz."
         canonicalPath="/projeler"
         schemaType="CollectionPage"

@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
-import { SEO } from "@/components/SEO";
+import { SEO, FAQItem } from "@/components/SEO";
+import { ProductSeoEnrichment } from "@/components/site/ProductSeoEnrichment";
 import { Palette, Sun, ShieldCheck, Calculator, CheckCircle2, MessageCircle, Sparkles, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -10,6 +11,19 @@ import {
   WINDOW_COLOR_FEATURES,
   PVC_COLORED_GLASS_OPTIONS,
 } from "@/data/pvcColorAlternatives";
+
+const RENKLI_CAM_FAQS: FAQItem[] = [
+  {
+    question: "Antrasit gri ve ahşap desenli PVC pencereler Adana sıcağında solar mı veya yamulur mu?",
+    answer:
+      "UV dayanımlı dış mekan folyosu ile kaplanan profillerin içerisinde en az 1.20 mm–1.50 mm galvanizli çelik destek sacı kullanıldığı için koyu renkli profiller yaz güneşinde esneme veya soyulma yapmaz.",
+  },
+  {
+    question: "PVC doğramalarda beyaz cam yerine hangi renkli ve güneş kontrol camları seçilebilir?",
+    answer:
+      "Füme (Gri), Bronz, Mavi Reflekte, Yeşil Reflekte, ışığı geçirip görüntüyü kesen Satinato Buzlu ve yaz sıcağını kıran Solar Low-E Konfor 4+16+4 ısıcam üniteleri uygulanmaktadır.",
+  },
+];
 
 export default function RenkliCamlar() {
   const [activeColor, setActiveColor] = useState(PVC_COLOR_ALTERNATIVES[0]);
@@ -19,7 +33,7 @@ export default function RenkliCamlar() {
     <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
         title="PVC Pencere Renk Alternatifleri (19 Desen) & PVC İçin Renkli Isıcamlar | Acarpen Adana"
-        description="Acarpen Fıratpen 19 farklı PVC profil renk kartelası (Antrasit Gri, Altın Meşe, Vizon, Maun, Kuvars Platin) ve PVC pencereler ile cam balkonlar için Füme, Bronz, Mavi, Yeşil Reflekte ve Buzlu ısıcam seçenekleri."
+        description="Acarpen 19 farklı PVC profil renk kartelası (Antrasit Gri, Altın Meşe, Vizon, Maun, Kuvars Platin) ve PVC pencereler ile cam balkonlar için Füme, Bronz, Mavi, Yeşil Reflekte ve Buzlu ısıcam seçenekleri."
         canonicalPath="/urunler/renkli-camlar"
         keywords={[
           "pvc pencere renkleri",
@@ -32,6 +46,7 @@ export default function RenkliCamlar() {
         ]}
         schemaType="Product"
         serviceName="PVC Pencere Renk Alternatifleri ve Renkli Isıcam Sistemleri"
+        faqs={RENKLI_CAM_FAQS}
         breadcrumbs={[
           { name: "Ürünlerimiz", path: "/hizmetler" },
           { name: "PVC Renk & Renkli Cam Alternatifleri", path: "/urunler/renkli-camlar" },
@@ -80,6 +95,10 @@ export default function RenkliCamlar() {
             <div className="lg:col-span-4 flex flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 rounded-3xl p-6 border border-slate-200 min-h-[440px]">
               <img
                 src={activeColor.previewImage}
+                width={800}
+                height={800}
+                loading="eager"
+                decoding="sync"
                 alt={`${activeColor.name} (${activeColor.code}) PVC Pencere Renk Önizleme`}
                 className="max-h-[370px] w-auto object-contain drop-shadow-2xl transition-all duration-300"
               />
@@ -273,6 +292,9 @@ export default function RenkliCamlar() {
               >
                 <img
                   src={c.swatchImage}
+                  width={56}
+                  height={56}
+                  loading="lazy"
                   alt={c.name}
                   className="w-14 h-14 rounded-xl object-cover border border-slate-300 shrink-0"
                 />
@@ -286,6 +308,30 @@ export default function RenkliCamlar() {
           </div>
         </div>
       </section>
+
+      <ProductSeoEnrichment
+        categoryTitle="19 PVC Profil Rengi & Renkli Isıcamlar"
+        trackingCategory="Renk & Renkli Cam"
+        geoSummary="Acarpen, Antrasit Gri (RAL 7016), Metalik Antrasit, Altın Meşe, Koyu Meşe, Vizon, Maun ve Kuvars Platin dahil 19 UV dayanımlı lamine PVC profil rengini; Füme, Bronz, Mavi/Yeşil Reflekte, Satinato Buzlu ve Solar Low-E Konfor 4+16+4 ısıcam üniteleriyle kombine etmektedir."
+        targetUsers={[
+          "Cephe rengine ve site yönetim planına uygun Antrasit Gri veya dışa renkli / içe beyaz doğrama isteyen apartmanlar",
+          "Yoğun güneş radyasyonu alan batı/güney cephelerde Solar Low-E veya füme/bronz reflekte ısıcam arayan daire ve ofisler",
+          "Ahşap görünümlü sıcak mimari doku arayan müstakil villa ve bağ evleri",
+        ]}
+        priceFactors={[
+          "Tek yüz (dış cephe lamine / iç beyaz) veya çift yüz tam lamine profil seçimi",
+          "Standart 4+16+4 ısıcam yerine Solar Low-E Konfor, Füme/Bronz Reflekte veya Satinato buzlu cam tercihi",
+          "Koyu renk profillerde yaz genleşmesine karşı güçlendirilmiş galvaniz çelik sac kalınlığı",
+        ]}
+        acarpenProcess="Showroomumuzda gerçek renk kartela kesitlerini ve reflekte cam numunelerini gün ışığında inceleyebilir; seçtiğiniz kombinasyona göre CNC imalat süresi ve teklif alabilirsiniz."
+        faqs={RENKLI_CAM_FAQS}
+        relatedLinks={[
+          { label: "PVC Pencere Sistemleri", to: "/urunler/cift-cam", tag: "70/75/85 mm" },
+          { label: "Düz, L & U Cam Balkon", to: "/urunler/balkon-cami", tag: "Füme & Bronz Cam" },
+          { label: "Hebeschiebe Sürme Kapılar", to: "/urunler/temperli-cam", tag: "Antrasit Sürme" },
+          { label: "Ölçü & Renk Teklif Robotu", to: "/hesaplama", tag: "Renk Seçerek Hesapla" },
+        ]}
+      />
 
       <Footer />
     </main>

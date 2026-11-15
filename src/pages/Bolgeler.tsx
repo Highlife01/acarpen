@@ -3,6 +3,7 @@ import { Footer } from "@/components/site/Footer";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { REGIONS_DATA } from "@/data/regionsData";
+import { trackConversion } from "@/lib/conversionTracker";
 import { MapPin, Building2, Truck, ShieldCheck, Calculator, Phone, CheckCircle2, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -33,7 +34,7 @@ export default function Bolgeler() {
         description="Adana Seyhan'daki (Gülbahçesi Mah. 13428 Sok. No:16/17) Fıratpen üretim tesisimizden Adana, Mersin, Osmaniye, Hatay, Gaziantep, Kayseri ve Niğde illerine PVC pencere, kapı ve cam balkon sevkiyatı."
         canonicalPath="/bolgeler"
         keywords={[
-          "adana fıratpen bayisi",
+          "adana fıratpen pvc doğrama",
           "adana pvc pencere",
           "mersin pvc doğrama",
           "osmaniye fıratpen",
@@ -70,7 +71,7 @@ export default function Bolgeler() {
                 Bölgesel Sevkiyat & <span className="text-gradient">Proje Çözümleri</span>
               </h1>
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl">
-                Adana Seyhan'daki (<strong>Gülbahçesi Mah. 13428 Sok. No:16/17</strong>) Fıratpen yetkili üretim tesisimizden <strong>Adana, Mersin, Osmaniye, Hatay, Gaziantep, Kayseri ve Niğde</strong> illerindeki bireysel konutlara, müteahhit şantiyelerine ve kurumsal projelere PVC doğrama ve cam balkon sevkiyatı gerçekleştiriyoruz.
+                Adana Seyhan'daki (<strong>Gülbahçesi Mah. 13428 Sok. No:16/17</strong>) CNC otomasyonlu üretim tesisimizden <strong>Adana, Mersin, Osmaniye, Hatay, Gaziantep, Kayseri ve Niğde</strong> illerindeki bireysel konutlara, müteahhit şantiyelerine ve kurumsal projelere PVC doğrama ve cam balkon sevkiyatı gerçekleştiriyoruz.
               </p>
             </div>
             <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
@@ -149,6 +150,7 @@ export default function Bolgeler() {
                 </Link>
                 <a
                   href="tel:+905336253611"
+                  onClick={() => trackConversion("phone_click", `Bölgeler Kartı Telefon: ${reg.city}`)}
                   className="text-xs font-mono font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1"
                 >
                   <Phone className="h-3 w-3" /> 0533 625 36 11

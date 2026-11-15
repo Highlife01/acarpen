@@ -1,9 +1,10 @@
-import heroProductImg from "@/assets/firatpen-cam-balkon-sistemleri.jpg";
+import heroProductImg from "@/assets/firatpen-cam-balkon-sistemleri.webp";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
-import { SEO } from "@/components/SEO";
+import { SEO, FAQItem } from "@/components/SEO";
+import { ProductSeoEnrichment } from "@/components/site/ProductSeoEnrichment";
 import {
   Home,
   CheckCircle2,
@@ -15,6 +16,19 @@ import {
   MessageCircle,
 } from "lucide-react";
 
+const BALKON_FAQS: FAQItem[] = [
+  {
+    question: "Düz, L tipi ve U tipi balkonların hepsi katlanır veya sürme cam balkona uygun mudur?",
+    answer:
+      "Evet. Özel 90° veya açılı köşe dönüş profilleri sayesinde düz, L tipi köşe ve üç tarafı açık U tipi balkonlarda su sızdırmaz katlanır ya da sürme cam balkon uygulanabilmektedir.",
+  },
+  {
+    question: "Adana için 8 mm / 10 mm temperli cam balkon mu yoksa ısıcamlı cam balkon mu önerilir?",
+    answer:
+      "Toz, rüzgar ve yağmur koruması için 8/10 mm temperli sistem yeterlidir; balkonunu dört mevsim serin/sıcak tutmak veya odaya katmak isteyenler için ısıcamlı seri çok daha yüksek termal bariyer sağlar.",
+  },
+];
+
 const BalkonCami = () => {
   return (
     <div className="min-h-screen bg-background">
@@ -24,6 +38,7 @@ const BalkonCami = () => {
         canonicalPath="/urunler/balkon-cami"
         schemaType="Product"
         serviceName="Düz, L ve U Katlanır, Sürme & Giyotin Cam Balkon Sistemleri"
+        faqs={BALKON_FAQS}
         breadcrumbs={[
           { name: "Ürünlerimiz", path: "/hizmetler" },
           { name: "Cam Balkon Sistemleri", path: "/urunler/balkon-cami" },
@@ -70,7 +85,7 @@ const BalkonCami = () => {
             </div>
             <div className="lg:col-span-5">
               <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-slate-900 aspect-[4/3]">
-                <img src={heroProductImg} alt="Düz, L ve U Tipi Katlanır ve Sürme Cam Balkon Sistemleri - Acarpen Adana" className="w-full h-full object-cover" />
+                <img src={heroProductImg} width={1280} height={714} loading="eager" decoding="sync" alt="Düz, L ve U Tipi Katlanır ve Sürme Cam Balkon Sistemleri - Acarpen Adana" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 <div className="absolute bottom-3 left-3 right-3 px-3 py-2 rounded-xl bg-slate-950/75 backdrop-blur-sm border border-white/10 text-xs font-medium text-white">
                   Düz • L • U Tipi 8mm/10mm Temperli & Isıcamlı Cam Balkon
@@ -140,6 +155,30 @@ const BalkonCami = () => {
             </div>
           </div>
         </section>
+
+        <ProductSeoEnrichment
+          categoryTitle="Cam Balkon Sistemleri"
+          trackingCategory="Cam Balkon"
+          geoSummary="Acarpen, Adana, Mersin ve Çukurova genelinde düz, L ve U tipi balkonlar için 8 mm / 10 mm temperli ve ısıcamlı katlanır cam balkon, eşikli/eşiksiz sürme cam balkon ve kumandalı motorlu giyotin cam sistemleri üretip monte etmektedir. Alüminyum ara fitil ve paslanmaz rulman standarttır."
+          targetUsers={[
+            "Balkonunu tozdan, yağmurdan ve sıcak/soğuk hava kaybından koruyarak dört mevsim yaşam alanı kazanmak isteyen ev sahipleri",
+            "Kumandalı giyotin veya eşiksiz sürme sistem arayan teras, villa ve kafe-restoran işletmeleri",
+            "Site cephe kurallarına uygun şeffaf, füme, bronz veya yeşil reflekte cam isteyen apartman projeleri",
+          ]}
+          priceFactors={[
+            "Balkon geometrisi (Düz, L köşe dönüşlü veya U tipi çok cepheli balkon)",
+            "Sistem türü (8/10 mm tek camlı katlanır, ısıcamlı katlanır, eşiksiz sürme veya motorlu giyotin)",
+            "Cam rengi (Şeffaf vs Füme/Bronz/Reflekte) ve alüminyum profil rengi (Eloksal vs Antrasit/Ahşap)",
+          ]}
+          acarpenProcess="Ücretsiz lazer keşifte balkon parapeti terazisi ve L/U köşe açısı ölçülür; temper fırınından çıkan güvenlik camları paslanmaz bilyalı rulman ve su damlalık detayıyla monte edilir."
+          faqs={BALKON_FAQS}
+          relatedLinks={[
+            { label: "Hebeschiebe & PVC Sürme Kapılar", to: "/urunler/temperli-cam", tag: "Villa & Teras" },
+            { label: "PVC Pencere Sistemleri", to: "/urunler/cift-cam", tag: "Isı & Ses Yalıtımı" },
+            { label: "Plise Sineklik & Kilitler", to: "/urunler/lamine-cam", tag: "Uyumlu Sineklik" },
+            { label: "B2B Kış Bahçesi & Proje", to: "/urunler/dis-cephe-camlari", tag: "Toptan Çözüm" },
+          ]}
+        />
       </main>
 
       <Footer />

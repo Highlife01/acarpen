@@ -1,9 +1,10 @@
-import heroProductImg from "@/assets/firatpen-santiye-toplu-pvc.jpg";
+import heroProductImg from "@/assets/firatpen-santiye-toplu-pvc.webp";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
-import { SEO } from "@/components/SEO";
+import { SEO, FAQItem } from "@/components/SEO";
+import { ProductSeoEnrichment } from "@/components/site/ProductSeoEnrichment";
 import {
   Building2,
   CheckCircle2,
@@ -15,15 +16,29 @@ import {
   MessageCircle,
 } from "lucide-react";
 
+const B2B_FAQS: FAQItem[] = [
+  {
+    question: "Müteahhit şantiyeleri için demonte (montajsız) toplu PVC doğrama teslimatı yapılıyor mu?",
+    answer:
+      "Evet. Kendi montaj ekibi bulunan inşaat firmaları ve bölge bayileri için CNC kesim-kaynaklı, destek sacı ve ispanyolet aksamı takılı doğramalar kat ve blok numarasına göre etiketlenerek sevk edilmektedir.",
+  },
+  {
+    question: "Adana dışındaki Hatay, Mersin, Gaziantep ve Osmaniye şantiyelerine termin süreci nasıl işler?",
+    answer:
+      "Mahal listesi veya proje metrajının netleşmesinin ardından şantiye iş programınıza göre haftalık/etaplı üretim planı çıkarılır ve korumalı araçlarla düzenli sevkiyat sağlanır.",
+  },
+];
+
 const DisCepheCamlari = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
         title="B2B Müteahhit Toplu PVC Siparişi, Alüminyum Doğrama & Kış Bahçesi | Acarpen Adana"
-        description="Adana Fıratpen yetkili üretici bayi Acarpen'de müteahhit ve inşaat projelerine özel toplu PVC doğrama, ısı yalıtımlı alüminyum doğrama, kış bahçesi ve ofis bölme sistemleri."
+        description="Adana Acarpen CNC tesisinde müteahhit ve inşaat projelerine özel toplu PVC doğrama, ısı yalıtımlı alüminyum doğrama, kış bahçesi ve ofis bölme sistemleri."
         canonicalPath="/urunler/dis-cephe-camlari"
         schemaType="Service"
         serviceName="B2B Müteahhit Toplu PVC Siparişi, Alüminyum Doğrama & Kış Bahçesi"
+        faqs={B2B_FAQS}
         breadcrumbs={[
           { name: "Ürünlerimiz", path: "/hizmetler" },
           { name: "B2B Proje & Alüminyum Sistemleri", path: "/urunler/dis-cephe-camlari" },
@@ -70,7 +85,7 @@ const DisCepheCamlari = () => {
             </div>
             <div className="lg:col-span-5">
               <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-slate-900 aspect-[4/3]">
-                <img src={heroProductImg} alt="B2B Müteahhit, Şantiye ve Toplu Konut PVC Doğrama Tedariki - Acarpen Adana" className="w-full h-full object-cover" />
+                <img src={heroProductImg} width={1280} height={714} loading="eager" decoding="sync" alt="B2B Müteahhit, Şantiye ve Toplu Konut PVC Doğrama Tedariki - Acarpen Adana" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 <div className="absolute bottom-3 left-3 right-3 px-3 py-2 rounded-xl bg-slate-950/75 backdrop-blur-sm border border-white/10 text-xs font-medium text-white">
                   Toplu Konut & Şantiye Projeleri • Planlı Termin & Sevkiyat
@@ -140,6 +155,30 @@ const DisCepheCamlari = () => {
             </div>
           </div>
         </section>
+
+        <ProductSeoEnrichment
+          categoryTitle="B2B Şantiye Tedariki, Alüminyum & Kış Bahçesi"
+          trackingCategory="B2B & Alüminyum"
+          geoSummary="Acarpen (ACAR PEN İNŞAAT SAN. VE TİC. LTD. ŞTİ.), Adana AOSB, Çukurova, Mersin, Hatay ve Gaziantep'teki müteahhit şantiyeleri için blok/kat etiketli toplu PVC doğrama, ısı yalıtımlı alüminyum mağaza vitrinleri, ofis bölmeleri ve villa/kafe kış bahçesi sistemleri üretmektedir."
+          targetUsers={[
+            "Çok bloklu konut ve kentsel dönüşüm şantiyeleri için planlı termin ve fason/anahtar teslim teklif arayan müteahhitler",
+            "Mağaza vitrini, banka/ofis bölmesi ve OSB idari bina cephe doğraması yaptırmak isteyen ticari işletmeler",
+            "Özel mimari villa ve restoran projeleri için ısıcamlı kış bahçesi sistemi planlayan yatırımcılar",
+          ]}
+          priceFactors={[
+            "Şantiye toplam doğrama adedi ve blok/etap bazlı teslim takvimi",
+            "Profil şartnamesi (Fıratpen 70/75/85 mm, Winsa, Pimapen veya ısı bariyerli alüminyum)",
+            "Demonte fabrika teslimi vs montaj + PU köpük/mastik saha ekibi dahil uygulama modeli",
+          ]}
+          acarpenProcess="Excel/AutoCAD doğrama mahal listenizi paylaştığınızda teknik ekibimiz profil ve cam kombinasyonu bazlı detaylı B2B keşif teklifi hazırlar; onay sonrası üretim etiketli sevkiyat başlar."
+          faqs={B2B_FAQS}
+          relatedLinks={[
+            { label: "PVC Pencere Sistemleri", to: "/urunler/cift-cam", tag: "Standart & Özel" },
+            { label: "CNC Üretim & Kalite Süreci", to: "/uretim-teknolojisi", tag: "Fabrika Hattı" },
+            { label: "Tamamlanan Referans Projeler", to: "/projeler", tag: "Örnek Çalışmalar" },
+            { label: "Online Ölçü Listesi Oluştur", to: "/hesaplama", tag: "Proje Listesi" },
+          ]}
+        />
       </main>
 
       <Footer />

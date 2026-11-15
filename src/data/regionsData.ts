@@ -38,11 +38,11 @@ export const REGIONS_DATA: RegionCityData[] = [
     geoPosition: "36.9850;35.2880",
     distanceKm: "Merkez Üretim Üssü (Seyhan / Adana)",
     deliverySchedule: "Aynı Gün Keşif, Montaj & Şantiye Sevkiyatı",
-    heroBadge: "Merkez Fabrika & Fıratpen Yetkili Üretici Bayi",
-    title: "Adana Fıratpen Yetkili Bayi: PVC Pencere, Balkon Kapısı, Sürme & Cam Balkon",
-    metaTitle: "Adana Fıratpen Bayisi | PVC Pencere, Sürme & Cam Balkon | Acarpen",
+    heroBadge: "Merkez Fabrika & CNC Üretim Atölyesi",
+    title: "Adana PVC Pencere, Balkon Kapısı, Sürme & Cam Balkon Üreticisi",
+    metaTitle: "Adana PVC Pencere, Fıratpen Doğrama & Cam Balkon | Acarpen",
     metaDescription:
-      "Adana Seyhan Gülbahçesi Mah. 13428 Sok. No:16/17 adresindeki fabrikamızda Fıratpen yetkili üretici bayisi olarak 70'lik & 75'lik PVC pencere, balkon kapısı, sürme ve cam balkon üretimi.",
+      "Adana Seyhan Gülbahçesi Mah. 13428 Sok. No:16/17 adresindeki fabrikamızda CNC otomasyonla 70'lik & 75'lik PVC pencere, balkon kapısı, sürme ve cam balkon üretimi.",
     summary:
       "Adana Seyhan (Gülbahçesi Mah. 13428 Sok. No:16/17) merkez tesisimizde Fıratpen Selenit 75, Elegance 80 ve Redonit 85 serisi PVC pencereler, 85×198 / 85×210 balkon kapıları, çift kanat sürme doğramalar ve Düz/L/U katlanır & giyotin cam balkon sistemlerini 19 farklı lamine renk seçeneğiyle üretiyoruz.",
     climateProfile: "Yüksek Yaz Sıcaklığı (+42°C) ve Yoğun Güneş Işıması",
@@ -59,7 +59,7 @@ export const REGIONS_DATA: RegionCityData[] = [
     ],
     keywords: [
       "acarpen adana",
-      "adana fıratpen bayisi",
+      "adana fıratpen pvc pencere",
       "adana pvc pencere",
       "adana cam balkon",
       "seyhan pimapen",
@@ -102,10 +102,10 @@ export const REGIONS_DATA: RegionCityData[] = [
     geoRegion: "TR-33",
     geoPosition: "36.8121;34.6415",
     distanceKm: "65 km (Otoyol Bağlantılı 45 Dk)",
-    deliverySchedule: "Düzenli Proje & Bayi Sevkiyatı",
+    deliverySchedule: "Düzenli Konut & Şantiye Sevkiyatı",
     heroBadge: "Mersin, Tarsus & Sahil Şeridi PVC & Cam Balkon Sevkiyatı",
     title: "Mersin & Tarsus Fıratpen PVC Doğrama, Sürme ve Cam Balkon Sistemleri",
-    metaTitle: "Mersin PVC Pencere, Sürme & Cam Balkon | Acarpen — Fıratpen Bayi",
+    metaTitle: "Mersin & Tarsus PVC Pencere, Sürme & Cam Balkon | Acarpen",
     metaDescription:
       "Mersin Yenişehir, Mezitli, Tarsus ve Erdemli projelerine Fıratpen PVC pencere, Hebeschiebe sürme kapı ve rüzgar dayanımlı 10mm cam balkon sevkiyatı.",
     summary:
@@ -152,7 +152,7 @@ export const REGIONS_DATA: RegionCityData[] = [
     deliverySchedule: "Planlı Şantiye & Konut Sevkiyatı",
     heroBadge: "Osmaniye, Kadirli & Düziçi PVC ve Cam Balkon Tedariki",
     title: "Osmaniye, Kadirli & Düziçi Fıratpen PVC Pencere ve Cam Balkon Çözümleri",
-    metaTitle: "Osmaniye PVC Pencere, Kapı & Cam Balkon | Acarpen — Fıratpen Bayi",
+    metaTitle: "Osmaniye & Kadirli PVC Pencere, Kapı & Cam Balkon | Acarpen",
     metaDescription:
       "Osmaniye merkez, Kadirli, Düziçi ve Toprakkale projelerine standart ve özel ölçü Fıratpen PVC pencere, balkon kapısı ve cam balkon sevkiyatı.",
     summary:
@@ -236,7 +236,7 @@ export const REGIONS_DATA: RegionCityData[] = [
     deliverySchedule: "Haftalık Düzenli Proje Sevkiyatı",
     heroBadge: "Şehitkamil, Şahinbey & OSB Proje Çözümleri",
     title: "Gaziantep Fıratpen PVC Pencere, Hebeschiebe Sürme ve Cam Balkon",
-    metaTitle: "Gaziantep PVC Pencere, Sürme & Cam Balkon | Acarpen — Fıratpen Bayi",
+    metaTitle: "Gaziantep PVC Pencere, Sürme & Cam Balkon | Acarpen",
     metaDescription:
       "Gaziantep Şehitkamil, Şahinbey ve OSB projeleri için 75'lik ve 85'lik Fıratpen PVC doğrama, Zenia Slide sürme, jaluzili ısıcam ve cam balkon çözümleri.",
     summary:
@@ -278,7 +278,7 @@ export const REGIONS_DATA: RegionCityData[] = [
     deliverySchedule: "Planlı Toptan & Proje Sevkiyatı",
     heroBadge: "Kayseri Kış İklimine Özel Maksimum Yalıtımlı PVC Sistemler",
     title: "Kayseri 75'lik & 85'lik Fıratpen PVC Pencere ve Isıcamlı Cam Balkon",
-    metaTitle: "Kayseri PVC Pencere & Isıcamlı Cam Balkon | Acarpen — Fıratpen Bayi",
+    metaTitle: "Kayseri PVC Pencere & Isıcamlı Cam Balkon | Acarpen",
     metaDescription:
       "Kayseri Melikgazi, Kocasinan ve Talas projeleri için sert kış şartlarına dayanıklı Fıratpen Redonit 85 / Selenit 75 PVC pencere ve ısıcamlı cam balkon.",
     summary:
@@ -320,7 +320,7 @@ export const REGIONS_DATA: RegionCityData[] = [
     deliverySchedule: "Haftalık Düzenli Proje Sevkiyatı",
     heroBadge: "Niğde, Bor & Çamardı Hattına Otoyol Bağlantılı Hızlı Tedarik",
     title: "Niğde & Bor Fıratpen PVC Pencere, Balkon Kapısı ve Isıcamlı Cam Balkon",
-    metaTitle: "Niğde PVC Pencere, Kapı & Cam Balkon | Acarpen — Fıratpen Bayi",
+    metaTitle: "Niğde & Bor PVC Pencere, Kapı & Cam Balkon | Acarpen",
     metaDescription:
       "Niğde merkez, Bor, Ulukışla ve Çamardı'daki konut ve şantiye projelerine otoyol hattından hızlı Fıratpen PVC pencere, kapı ve ısıcamlı cam balkon sevkiyatı.",
     summary:

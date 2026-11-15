@@ -201,7 +201,7 @@ export function printProposalDocument(q: QuoteItem): void {
   footer.className = "footer";
   const fText = doc.createElement("div");
   fText.textContent =
-    "Bu teklif Acarpen ERP sistemi tarafından oluşturulmuştur. Fıratpen yetkili üretici bayi güvencesi ve TSE standartlarında garantilidir.";
+    "Bu teklif Acarpen ERP sistemi tarafından oluşturulmuştur. ACAR PEN İNŞAAT SAN. VE TİC. LTD. ŞTİ. CNC üretim kalitesi ve TSE EN 12608-1 / EN 1279 standartlarına uygun hazırlanmıştır.";
   const pinQuery = q.trackingPin ? `&pin=${encodeURIComponent(q.trackingPin)}` : "";
   const qrWrap = doc.createElement("div");
   const trackingUrl = `https://www.acarpen.com.tr/siparis-takip?id=${encodeURIComponent(q.id)}${pinQuery}`;

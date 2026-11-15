@@ -14,6 +14,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Logo } from "./Logo";
 import { LanguageSelector } from "../LanguageSelector";
 import { useLanguage } from "@/context/LanguageContext";
+import { trackConversion } from "@/lib/conversionTracker";
 
 const productLinks = [
   { label: "PVC Pencereler (Fıratpen • Winsa • Pimapen)", href: "/urunler/cift-cam", badge: "70 / 75 / 80 mm" },
@@ -71,6 +72,7 @@ export const Navbar = () => {
           <div className="flex items-center gap-4">
             <a
               href="tel:+905336253611"
+              onClick={() => trackConversion("phone_click", "Navbar Top Bar Phone")}
               className="flex items-center gap-1.5 font-semibold text-slate-100 hover:text-sky-300 transition-colors"
             >
               <Phone className="h-3.5 w-3.5 text-sky-400" />
@@ -81,6 +83,7 @@ export const Navbar = () => {
               href="https://wa.me/905336253611"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackConversion("whatsapp_click", "Navbar Top Bar WhatsApp")}
               className="flex items-center gap-1.5 font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
             >
               <MessageCircle className="h-3.5 w-3.5" />

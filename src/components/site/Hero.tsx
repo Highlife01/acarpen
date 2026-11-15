@@ -12,12 +12,13 @@ import {
 import { useLanguage } from "@/context/LanguageContext";
 import { PVC_COLOR_ALTERNATIVES } from "@/data/pvcColorAlternatives";
 import { toast } from "sonner";
+import { trackConversion } from "@/lib/conversionTracker";
 
-import slideFacade from "@/assets/firatpen-santiye-toplu-pvc.jpg";
-import slideVilla from "@/assets/firatpen-selenit-pvc-pencere.jpg";
-import slideBalcony from "@/assets/firatpen-cam-balkon-sistemleri.jpg";
-import slideJaluzi from "@/assets/firatpen-balkon-wc-kapi.jpg";
-import slideArchitecture from "@/assets/firatpen-hebeschiebe-surme.jpg";
+import slideFacade from "@/assets/firatpen-santiye-toplu-pvc.webp";
+import slideVilla from "@/assets/firatpen-selenit-pvc-pencere.webp";
+import slideBalcony from "@/assets/firatpen-cam-balkon-sistemleri.webp";
+import slideJaluzi from "@/assets/firatpen-balkon-wc-kapi.webp";
+import slideArchitecture from "@/assets/firatpen-hebeschiebe-surme.webp";
 
 const heroSlides = [
   {
@@ -151,6 +152,7 @@ export const Hero = () => {
     }
 
     markFormSubmitted("hero_quick_quote");
+    trackConversion("quote_form_submit", `Hero Konfigüratör: ${selectedBrand} / ${selectedModel.name}`);
     const trackingPin = result.trackingPin || "";
     setSubmittedConfirmation({ id: result.id, trackingPin });
 
@@ -191,6 +193,11 @@ export const Hero = () => {
             <img
               src={slide.image}
               alt={slide.badge}
+              width={1280}
+              height={714}
+              loading={index === 0 ? "eager" : "lazy"}
+              fetchPriority={index === 0 ? "high" : "low"}
+              decoding={index === 0 ? "sync" : "async"}
               className="w-full h-full object-cover object-center brightness-[0.82] contrast-[1.05]"
             />
           </div>
@@ -217,7 +224,7 @@ export const Hero = () => {
             <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md border border-sky-200 shadow-lg max-w-full">
               <Sparkles className="h-4 w-4 text-sky-600 shrink-0" />
               <span className="font-display text-[11px] sm:text-xs font-bold tracking-[0.08em] uppercase text-slate-900 leading-snug">
-                {t("heroBadge", "Fıratpen, Winsa & Pimapen Yetkili Bayi • Seyhan / Adana")}
+                {t("heroBadge", "Fıratpen, Winsa & Pimapen Sistem Çözümleri • Seyhan / Adana")}
               </span>
             </div>
 
@@ -251,6 +258,7 @@ export const Hero = () => {
                 href="https://wa.me/905336253611?text=Merhaba%20Acarpen%2C%20PVC%20pencere%2C%20kap%C4%B1%20ve%20cam%20balkon%20sistemleri%20i%C3%A7in%20fiyat%20teklifi%20almak%20istiyorum."
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackConversion("whatsapp_click", "Hero WhatsApp CTA")}
               >
                 <Button
                   size="lg"

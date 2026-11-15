@@ -4,6 +4,7 @@ import { Phone, Mail, MapPin, Clock, Send, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { submitPublicLead } from "@/lib/adminStorage";
+import { trackConversion } from "@/lib/conversionTracker";
 import {
   checkSubmissionCooldown,
   isHoneypotTripped,
@@ -73,6 +74,7 @@ export const Contact = () => {
     }
 
     markFormSubmitted("contact_lead_form");
+    trackConversion("quote_form_submit", `İletişim Formu: ${glassType}`);
     const trackingPin = result.trackingPin || "";
     setLastTicket({ id: result.id, trackingPin });
     toast.success(
@@ -85,8 +87,9 @@ export const Contact = () => {
   };
 
   const handleSendWhatsAppDirect = () => {
+    trackConversion("whatsapp_click", `İletişim Formu WhatsApp: ${glassType}`);
     const text = encodeURIComponent(
-      `Merhaba Acarpen (Fıratpen Yetkili Bayi),\nWeb siteniz üzerinden teklif/keşif talebi iletiyorum:\n\n` +
+      `Merhaba Acarpen,\nWeb siteniz üzerinden teklif/keşif talebi iletiyorum:\n\n` +
         `• Ad Soyad / Firma: ${name || "-"}\n` +
         `• Telefon: ${phone || "-"}\n` +
         `• Ürün / Kategori: ${glassType}\n` +

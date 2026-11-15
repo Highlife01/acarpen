@@ -8,7 +8,7 @@ export default function Iletisim() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
-        title="İletişim, Adres & Ücretsiz Keşif | Acarpen — Seyhan / Adana Fıratpen Bayisi"
+        title="İletişim, Adres & Ücretsiz Keşif | Acarpen — Seyhan / Adana"
         description="Acarpen (Acar Pen İnşaat San. ve Tic. Ltd. Şti.) iletişim bilgileri: Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana. Telefon & WhatsApp: 0533 625 36 11."
         canonicalPath="/iletisim"
         schemaType="ContactPage"

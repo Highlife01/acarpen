@@ -1,8 +1,9 @@
-import heroProductImg from "@/assets/firatpen-balkon-wc-kapi.jpg";
+import heroProductImg from "@/assets/firatpen-balkon-wc-kapi.webp";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
-import { SEO } from "@/components/SEO";
+import { SEO, FAQItem } from "@/components/SEO";
+import { ProductSeoEnrichment } from "@/components/site/ProductSeoEnrichment";
 import {
   DoorOpen,
   CheckCircle2,
@@ -35,15 +36,29 @@ const DOOR_MODELS = [
   },
 ];
 
+const KAPI_PANJUR_FAQS: FAQItem[] = [
+  {
+    question: "PVC WC ve banyo kapıları suya ve buhara dayanıklı mıdır?",
+    answer:
+      "Evet. 85×200 cm standart veya özel ölçülerde üretilen PVC lambri/buzlu camlı banyo kapıları neme karşı şişme ve kabarma yapmaz; kilitlenebilir barelli kol ve EPDM contalı kasa ile uzun ömürlü kullanım sunar.",
+  },
+  {
+    question: "Mevcut pencereme sonradan motorlu alüminyum panjur takılabilir mi?",
+    answer:
+      "Yeni inşaatlarda monoblok pencere üstü panjur kutusu uygulanırken, mevcut pencereli ev ve dükkanlara duvar kırmadan dıştan takma kutulu Mosel veya Somfy kumandalı alüminyum panjur uygulanmaktadır.",
+  },
+];
+
 const JaluziliIsicam = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
         title="PVC Balkon Kapıları (85x198, 85x210), WC Kapıları & Panjur | Acarpen Adana"
-        description="Adana Fıratpen yetkili üretici bayi Acarpen'de 85x198 cm, 85x210 cm PVC balkon kapıları, 85x200 cm PVC WC/banyo kapıları, motorlu panjur ve jaluzili ısıcam sistemleri."
+        description="Adana Acarpen CNC tesisinde 85x198 cm, 85x210 cm PVC balkon kapıları, 85x200 cm PVC WC/banyo kapıları, motorlu panjur ve jaluzili ısıcam sistemleri."
         canonicalPath="/urunler/jaluzili-isicam"
         schemaType="Product"
         serviceName="PVC Balkon Kapıları, WC Kapıları & Motorlu Panjur"
+        faqs={KAPI_PANJUR_FAQS}
         breadcrumbs={[
           { name: "Ürünlerimiz", path: "/hizmetler" },
           { name: "PVC Kapı & Panjur Sistemleri", path: "/urunler/jaluzili-isicam" },
@@ -89,7 +104,7 @@ const JaluziliIsicam = () => {
             </div>
             <div className="lg:col-span-5">
               <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-slate-900 aspect-[4/3]">
-                <img src={heroProductImg} alt="Fıratpen PVC Balkon Kapıları, WC Kapıları ve Motorlu Panjur - Acarpen Adana" className="w-full h-full object-cover" />
+                <img src={heroProductImg} width={896} height={1200} loading="eager" decoding="sync" alt="Fıratpen PVC Balkon Kapıları, WC Kapıları ve Motorlu Panjur - Acarpen Adana" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 <div className="absolute bottom-3 left-3 right-3 px-3 py-2 rounded-xl bg-slate-950/75 backdrop-blur-sm border border-white/10 text-xs font-medium text-white">
                   85×210 PVC Balkon Kapısı • 85×200 WC Kapısı • Motorlu Panjur
@@ -155,6 +170,30 @@ const JaluziliIsicam = () => {
             </div>
           </div>
         </section>
+
+        <ProductSeoEnrichment
+          categoryTitle="PVC Balkon/WC Kapısı & Motorlu Panjur"
+          trackingCategory="Kapı & Panjur"
+          geoSummary="Acarpen Seyhan/Adana üretim merkezinde standart 85×198 cm ve 85×210 cm PVC balkon kapıları, 85×200 cm suya dayanıklı PVC banyo/WC kapıları, çift cam arası mıknatıslı jaluzili ısıcam sistemleri ve poliüretan dolgulu Somfy/Mosel motorlu panjurlar özel/hazır ölçülerde imal edilmektedir."
+          targetUsers={[
+            "Balkon çıkışlarında çift açılım havalandırmalı veya barelli kilitli yalıtımlı PVC kapı arayan daireler",
+            "Nem ve su buharından etkilenmeyen, buzlu camlı/lambri panelli banyo ve WC kapısı isteyen kullanıcılar",
+            "Adana yaz güneşini kesmek, gece güvenliği ve akustik bariyer kurmak için monoblok veya dıştan takma panjur isteyen evler",
+          ]}
+          priceFactors={[
+            "Kapı kanat ölçüsü (85×198, 85×200, 85×210 veya özel ölçü) ve sağ/sol açılım + çift taraflı kilit opsiyonu",
+            "Panjur kontrol tipi (Manuel ipli/redüktörlü vs Somfy/Mosel uzaktan kumandalı motorlu)",
+            "Cam içi mıknatıslı jaluzi ünitesi veya lamine renk seçimi (Beyaz vs 19 renk)",
+          ]}
+          acarpenProcess="Ölçü ve cephe doğrama uyumunun ardından galvaniz saclı kapı kanatları ile poliüretan dolgulu alüminyum panjur kutuları hazırlanır; montaj ekibimiz elektrik bağlantısı hariç tüm mekanik kurulumu tamamlar."
+          faqs={KAPI_PANJUR_FAQS}
+          relatedLinks={[
+            { label: "PVC Pencere Sistemleri", to: "/urunler/cift-cam", tag: "Pencere & Panjur" },
+            { label: "Plise Sineklik & Kilit Kollar", to: "/urunler/lamine-cam", tag: "Kapı Sinekliği" },
+            { label: "19 PVC Renk & Buzlu Camlar", to: "/urunler/renkli-camlar", tag: "Buzlu & Antrasit" },
+            { label: "Ölçü & Fiyat Hesapla", to: "/hesaplama", tag: "Kapı Ölçüsü Gir" },
+          ]}
+        />
       </main>
 
       <Footer />

@@ -15,6 +15,7 @@ import {
 } from "@/lib/formGuard";
 import { PVC_COLOR_ALTERNATIVES } from "@/data/pvcColorAlternatives";
 import { trackEvent } from "@/lib/analytics";
+import { trackConversion } from "@/lib/conversionTracker";
 
 interface CalcRow {
   id: number;
@@ -183,6 +184,9 @@ export default function Hesaplama() {
       city,
       total_area_m2: grandTotalArea,
     });
+    trackConversion("calculator_used", `Ölçü Robotu: ${city} (${grandTotalArea} m²)`);
+    trackConversion("quote_form_submit", `Ölçü Robotu Formu: ${city}`);
+    trackConversion("whatsapp_click", `Ölçü Robotu WhatsApp: ${city}`);
 
     toast.success(
       `Ölçü listeniz (#${result.id} / PIN: ${result.trackingPin}) Acarpen sistemine kaydedildi! WhatsApp üzerinden müşteri temsilcimize yönlendiriliyorsunuz.`
@@ -219,6 +223,7 @@ export default function Hesaplama() {
       toast.error("Lütfen tarayıcınızda açılır pencerelere izin verin.");
       return;
     }
+    trackConversion("catalog_download", `Ölçü Listesi PDF (${totalPieceCount} Adet)`);
 
     const doc = printWin.document;
     doc.title = "Acarpen - PVC Pencere & Cam Balkon Ölçü Listesi";
@@ -324,7 +329,7 @@ export default function Hesaplama() {
     <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
         title="PVC Pencere, Kapı & Cam Balkon Ölçü ve Teklif Robotu | Acarpen Adana"
-        description="Adana Acarpen Fıratpen Yetkili Bayi online PVC pencere, balkon kapısı, sürme pencere ve cam balkon ölçü yapılandırıcı. Ölçü, renk (19 alternatif) ve açılım yönü seçerek anında teklif alın."
+        description="Adana Acarpen online PVC pencere, balkon kapısı, sürme pencere ve cam balkon ölçü yapılandırıcı. Ölçü, 19 renk ve açılım yönü seçerek anında teklif alın."
         canonicalPath="/hesaplama"
         keywords={[
           "pvc pencere hesaplama",

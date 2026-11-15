@@ -40,20 +40,13 @@ function buildPrerenderProductSchema(params) {
     url: params.url,
     brand: { "@type": "Brand", name: "Acarpen • Fıratpen • Winsa • Pimapen" },
     manufacturer: { "@id": `${BASE_URL}/#organization` },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      reviewCount: "148",
-      bestRating: "5",
-      worstRating: "1",
-    },
   };
 }
 
 const ORGANIZATION_BASE_SCHEMA = {
   "@type": ["LocalBusiness", "HomeAndConstructionBusiness", "Organization"],
   "@id": `${BASE_URL}/#organization`,
-  name: "Acarpen — Fıratpen, Winsa & Pimapen Yetkili Bayi",
+  name: "Acarpen — Adana Fıratpen, Winsa & Pimapen PVC Doğrama ve Cam Balkon Merkezi",
   legalName: "ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ",
   url: `${BASE_URL}/`,
   logo: {
@@ -107,17 +100,17 @@ const ROUTES = [
     title: "Acarpen | Adana Fıratpen, Winsa & Pimapen PVC Pencere, Kapı, Sürme ve Cam Balkon",
     description:
       "Acarpen (Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana); Fıratpen, Winsa ve Pimapen PVC Pencere Sistemleri, Balkon & WC Kapıları, Hebeschiebe Sürme, Renkli Isıcamlar ve Düz/L/U Cam Balkon üretimi yapmaktadır.",
-    keywords: "acarpen, adana fıratpen bayisi, adana winsa bayisi, adana pimapen, winsa dorado 76, pimapen nirvana, adana pvc pencere, cam balkon adana",
+    keywords: "acarpen, adana fıratpen pvc pencere, adana winsa pvc pencere, adana pimapen, winsa dorado 76, pimapen nirvana, adana pvc pencere, cam balkon adana",
     geoRegion: "TR-01",
     geoPlacename: "Adana",
     geoPosition: "36.9850;35.2880",
     breadcrumbs: [],
-    h1: "Adana Fıratpen, Winsa & Pimapen Yetkili Bayi: PVC Pencere, Kapı, Sürme ve Cam Balkon Sistemleri",
+    h1: "Adana Fıratpen, Winsa & Pimapen PVC Pencere, Kapı, Sürme ve Cam Balkon Sistemleri",
     summary:
       "Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana adresindeki modern üretim tesisimizde Fıratpen Selenit 75, Elegance 80 ve Redonit 85 serisi PVC pencereler, balkon ve WC kapıları, sürme doğramalar ve cam balkon sistemleri üretiyoruz.",
     specsTitle: "Üretim ve Kalite Standartlarımız",
     specs: [
-      { label: "Yetkili Üretici Statüsü", val: "Fıratpen Resmi Yetkili Üretici Bayi" },
+      { label: "Profil & Sistem Grupları", val: "Fıratpen, Winsa & Pimapen PVC Doğrama ve Cam Balkon Üretimi" },
       { label: "Merkez Fabrika & Showroom", val: "Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana" },
       { label: "Profil & Donanım", val: "70 mm & 75 mm A Sınıfı Profil, 1.00 mm+ Destek Sacı, 2.5 mm+ Et Kalınlığı, 4+16+4 Isıcam" },
       { label: "Renk Seçenekleri", val: "Antrasit Gri, Altın Meşe, Metalik Antrasit ve Vizon dahil 19 Lamine Renk" },
@@ -125,8 +118,8 @@ const ROUTES = [
     ],
     faqs: [
       {
-        q: "Acarpen Fıratpen yetkili üretici bayisi midir ve adresi nerededir?",
-        a: "Evet, Acarpen Fıratpen resmi yetkili üretici bayisidir. Üretim ve showroom merkezimiz Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana adresindedir.",
+        q: "Acarpen hangi profil sistemleriyle üretim yapmaktadır ve adresi nerededir?",
+        a: "Acarpen olarak Fıratpen, Winsa ve Pimapen PVC pencere, kapı ve cam balkon sistemleri üretiyoruz. Üretim ve showroom merkezimiz Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana adresindedir.",
       },
       {
         q: "Nasıl fiyat teklifi alabilirim?",
@@ -193,7 +186,7 @@ const ROUTES = [
     path: "/urunler/cift-cam",
     title: "PVC Pencere Sistemleri (70'lik & 75'lik Hazır ve Özel Ölçü) | Acarpen",
     description:
-      "Adana Fıratpen yetkili üretici bayi Acarpen'de 40x40'tan 220x210 cm'e hazır standart ve özel ölçü PVC pencereler, 1.00 mm+ destek sacı, 2.5 mm+ et kalınlığı ve 4+16+4 ısıcam.",
+      "Adana Acarpen'de 40x40'tan 220x210 cm'e hazır standart ve özel ölçü Fıratpen, Winsa ve Pimapen PVC pencereler, 1.00 mm+ destek sacı, 2.5 mm+ et kalınlığı ve 4+16+4 ısıcam.",
     keywords: "pvc pencere adana, fıratpen selenit 75, hazır pvc pencere ölçüleri, çift açılım pencere",
     geoRegion: "TR-01",
     geoPlacename: "Adana",
@@ -220,7 +213,7 @@ const ROUTES = [
     path: "/urunler/temperli-cam",
     title: "PVC Sürme Pencereler & Hebeschiebe Sürme Kapılar | Acarpen",
     description:
-      "Adana Fıratpen yetkili üretici bayi Acarpen'de 120x120, 140x120 çift kanat PVC sürme pencereler, Zenia Slide ve Hebeschiebe kaldır-sür teras kapıları.",
+      "Adana Acarpen'de 120x120, 140x120 çift kanat PVC sürme pencereler, Zenia Slide ve Hebeschiebe kaldır-sür teras kapıları.",
     keywords: "pvc sürme pencere, çift kanat sürme, hebeschiebe adana, fıratpen zenia slide",
     geoRegion: "TR-01",
     geoPlacename: "Adana",
@@ -272,7 +265,7 @@ const ROUTES = [
     path: "/urunler/jaluzili-isicam",
     title: "PVC Balkon Kapıları (85x198, 85x210), WC Kapıları & Panjur | Acarpen",
     description:
-      "Adana Fıratpen yetkili üretici bayi Acarpen'de 85x198 cm, 85x210 cm PVC balkon kapıları, 85x200 cm PVC WC/banyo kapıları, motorlu panjur ve jaluzili ısıcam sistemleri.",
+      "Adana Acarpen'de 85x198 cm, 85x210 cm PVC balkon kapıları, 85x200 cm PVC WC/banyo kapıları, motorlu panjur ve jaluzili ısıcam sistemleri.",
     keywords: "pvc balkon kapısı, pvc wc kapısı, 85x200 pvc kapı, 85x210 balkon kapısı, motorlu panjur adana",
     geoRegion: "TR-01",
     geoPlacename: "Adana",
@@ -298,7 +291,7 @@ const ROUTES = [
     path: "/urunler/dis-cephe-camlari",
     title: "B2B Müteahhit Toplu PVC Siparişi, Alüminyum Doğrama & Kış Bahçesi | Acarpen",
     description:
-      "Adana Fıratpen yetkili üretici bayi Acarpen'de müteahhit ve inşaat projelerine özel toplu PVC doğrama, ısı yalıtımlı alüminyum doğrama ve kış bahçesi sistemleri.",
+      "Adana Acarpen'de müteahhit ve inşaat projelerine özel toplu PVC doğrama, ısı yalıtımlı alüminyum doğrama ve kış bahçesi sistemleri.",
     keywords: "müteahhit toplu pvc pencere, şantiye pvc doğrama adana, kış bahçesi adana, alüminyum doğrama",
     geoRegion: "TR-01",
     geoPlacename: "Adana",
@@ -324,7 +317,7 @@ const ROUTES = [
     path: "/urunler/lamine-cam",
     title: "Pencere Kolları, Plise Sineklik & Montaj İzolasyon Malzemeleri | Acarpen",
     description:
-      "Adana Fıratpen yetkili üretici bayi Acarpen'de PVC pencere kolları, çift açılım aksesuarları, plise sineklik sistemleri, poliüretan montaj köpüğü, silikon ve mastik malzemeleri.",
+      "Adana Acarpen'de PVC pencere kolları, çift açılım aksesuarları, plise sineklik sistemleri, poliüretan montaj köpüğü, silikon ve mastik malzemeleri.",
     keywords: "plise sineklik adana, pvc pencere kolu, çift açılım mekanizması, montaj köpüğü silikon mastik",
     geoRegion: "TR-01",
     geoPlacename: "Adana",
@@ -382,7 +375,7 @@ const ROUTES = [
     title: "Hizmet Bölgelerimiz: Adana, Mersin, Osmaniye, Hatay, Gaziantep, Kayseri, Niğde | Acarpen",
     description:
       "Adana Seyhan merkez fabrikamızdan Mersin, Osmaniye, Hatay, Gaziantep, Kayseri ve Niğde'ye Fıratpen PVC pencere, kapı ve cam balkon sevkiyatı.",
-    keywords: "adana fıratpen bayisi, mersin pvc pencere, osmaniye fıratpen, hatay pvc doğrama",
+    keywords: "adana pvc pencere fabrikası, mersin pvc pencere, osmaniye fıratpen, hatay pvc doğrama",
     geoRegion: "TR-01",
     geoPlacename: "Adana",
     geoPosition: "36.9850;35.2880",
@@ -404,15 +397,15 @@ const ROUTES = [
   },
   {
     path: "/bolgeler/adana-cam-fabrikasi",
-    title: "Adana Fıratpen Bayisi | PVC Pencere, Sürme & Cam Balkon | Acarpen",
+    title: "Adana PVC Pencere, Sürme & Cam Balkon Merkezi | Acarpen",
     description:
-      "Adana Seyhan Gülbahçesi Mah. 13428 Sok. No:16/17 adresindeki fabrikamızda Fıratpen yetkili üretici bayisi olarak 70'lik & 75'lik PVC pencere, balkon kapısı, sürme ve cam balkon üretimi.",
-    keywords: "adana fıratpen bayisi, adana pvc pencere, seyhan pimapen, adana cam balkon, acarpen",
+      "Adana Seyhan Gülbahçesi Mah. 13428 Sok. No:16/17 adresindeki fabrikamızda 70'lik & 75'lik Fıratpen, Winsa ve Pimapen PVC pencere, balkon kapısı, sürme ve cam balkon üretimi.",
+    keywords: "adana pvc pencere, seyhan pimapen, çukurova fıratpen, adana cam balkon, acarpen",
     geoRegion: "TR-01",
     geoPlacename: "Adana",
     geoPosition: "36.9850;35.2880",
-    breadcrumbs: [{ name: "Bölgelerimiz", path: "/bolgeler" }, { name: "Adana Fıratpen Bayisi", path: "/bolgeler/adana-cam-fabrikasi" }],
-    h1: "Adana Fıratpen Yetkili Bayi: PVC Pencere, Balkon Kapısı, Sürme & Cam Balkon",
+    breadcrumbs: [{ name: "Bölgelerimiz", path: "/bolgeler" }, { name: "Adana Merkez Tesis", path: "/bolgeler/adana-cam-fabrikasi" }],
+    h1: "Adana Seyhan Üretim Merkezi: PVC Pencere, Balkon Kapısı, Sürme & Cam Balkon",
     summary:
       "Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana merkez tesisimizde 70'lik ve 75'lik Fıratpen PVC pencere, balkon kapısı, sürme ve cam balkon sistemleri üretiyoruz.",
     specsTitle: "Adana Hizmet ve Teknik Standartlarımız",
@@ -430,7 +423,7 @@ const ROUTES = [
   },
   {
     path: "/bolgeler/mersin-cam-imalati",
-    title: "Mersin PVC Pencere, Sürme & Cam Balkon | Acarpen — Fıratpen Bayi",
+    title: "Mersin & Tarsus PVC Pencere, Sürme & Cam Balkon | Acarpen",
     description: "Mersin Yenişehir, Mezitli, Tarsus ve Erdemli projelerine Fıratpen PVC pencere, Hebeschiebe sürme ve cam balkon sevkiyatı.",
     keywords: "mersin pvc pencere, tarsus fıratpen, mersin cam balkon",
     geoRegion: "TR-33",
@@ -445,7 +438,7 @@ const ROUTES = [
   },
   {
     path: "/bolgeler/osmaniye-cam-ureticisi",
-    title: "Osmaniye PVC Pencere, Kapı & Cam Balkon | Acarpen — Fıratpen Bayi",
+    title: "Osmaniye & Kadirli PVC Pencere, Kapı & Cam Balkon | Acarpen",
     description: "Osmaniye merkez, Kadirli ve Düziçi projelerine standart ve özel ölçü Fıratpen PVC pencere ve cam balkon sevkiyatı.",
     keywords: "osmaniye pvc pencere, kadirli cam balkon, osmaniye fıratpen",
     geoRegion: "TR-80",
@@ -475,7 +468,7 @@ const ROUTES = [
   },
   {
     path: "/bolgeler/gaziantep-cam-cozumleri",
-    title: "Gaziantep PVC Pencere, Sürme & Cam Balkon | Acarpen — Fıratpen Bayi",
+    title: "Gaziantep PVC Pencere, Sürme & Cam Balkon | Acarpen",
     description: "Gaziantep Şehitkamil ve Şahinbey projeleri için Fıratpen PVC doğrama, Zenia Slide sürme ve cam balkon çözümleri.",
     keywords: "gaziantep pvc pencere, gaziantep fıratpen, şehitkamil cam balkon",
     geoRegion: "TR-27",
@@ -490,7 +483,7 @@ const ROUTES = [
   },
   {
     path: "/bolgeler/kayseri-cam-toptan",
-    title: "Kayseri PVC Pencere & Isıcamlı Cam Balkon | Acarpen — Fıratpen Bayi",
+    title: "Kayseri PVC Pencere & Isıcamlı Cam Balkon | Acarpen",
     description: "Kayseri Melikgazi, Kocasinan ve Talas projeleri için sert kış şartlarına dayanıklı Fıratpen PVC pencere ve ısıcamlı cam balkon.",
     keywords: "kayseri pvc pencere, kayseri ısıcamlı cam balkon",
     geoRegion: "TR-38",
@@ -505,7 +498,7 @@ const ROUTES = [
   },
   {
     path: "/bolgeler/nigde-cam-sevkiyati",
-    title: "Niğde PVC Pencere, Kapı & Cam Balkon | Acarpen — Fıratpen Bayi",
+    title: "Niğde & Bor PVC Pencere, Kapı & Cam Balkon | Acarpen",
     description: "Niğde merkez, Bor, Ulukışla ve Çamardı'daki konut ve şantiye projelerine Fıratpen PVC pencere ve ısıcamlı cam balkon sevkiyatı.",
     keywords: "niğde pvc pencere, bor cam balkon, çamardı pvc doğrama",
     geoRegion: "TR-51",
@@ -538,7 +531,7 @@ const ROUTES = [
   },
   {
     path: "/projeler",
-    title: "Referans Projelerimiz & Uygulamalarımız | Acarpen — Fıratpen Bayi",
+    title: "Referans Projelerimiz & Uygulamalarımız | Acarpen Adana",
     description: "Adana ve Çukurova genelinde tamamladığımız Fıratpen PVC pencere, Hebeschiebe sürme, cam balkon ve kış bahçesi projeleri.",
     keywords: "acarpen referanslar, adana pvc pencere projeleri, adana cam balkon uygulamaları",
     geoRegion: "TR-01",
@@ -574,15 +567,15 @@ const ROUTES = [
   },
   {
     path: "/hakkimizda",
-    title: "Hakkımızda & Kurumsal Kimlik | Acarpen — Fıratpen Yetkili Bayi",
-    description: "Adana Seyhan Gülbahçesi Mah. 13428 Sok. No:16/17 adresinde Fıratpen yetkili üretici bayisi olarak hizmet veren Acarpen kurumsal bilgileri.",
-    keywords: "acarpen hakkında, acar pen inşaat sanayi, adana fıratpen yetkili bayi",
+    title: "Hakkımızda & Kurumsal Kimlik | Acarpen — Adana PVC Doğrama & Cam Balkon",
+    description: "Adana Seyhan Gülbahçesi Mah. 13428 Sok. No:16/17 adresinde Fıratpen, Winsa ve Pimapen PVC doğrama ve cam balkon üretimi yapan Acarpen kurumsal bilgileri.",
+    keywords: "acarpen hakkında, acar pen inşaat sanayi, adana pvc doğrama fabrikası",
     geoRegion: "TR-01",
     geoPlacename: "Adana",
     geoPosition: "36.9850;35.2880",
     breadcrumbs: [{ name: "Hakkımızda", path: "/hakkimizda" }],
-    h1: "Acarpen — Adana Fıratpen Resmi Yetkili Üretici Bayisi",
-    summary: "ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ olarak Adana Seyhan'daki tesisimizde Fıratpen kalitesiyle üretim yapıyoruz.",
+    h1: "Acarpen — Adana PVC Doğrama & Cam Balkon Üretim Merkezi",
+    summary: "ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ olarak Adana Seyhan'daki tesisimizde Fıratpen, Winsa ve Pimapen profil sistemleriyle üretim yapıyoruz.",
     specsTitle: "Kurumsal Bilgilerimiz",
     specs: [
       { label: "Ticari Unvan", val: "ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ" },
@@ -593,8 +586,8 @@ const ROUTES = [
   },
   {
     path: "/iletisim",
-    title: "İletişim & Adres Bilgileri | Acarpen — Fıratpen Yetkili Bayi Adana",
-    description: "Acarpen Adana Fıratpen Bayisi adres (Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana) ve WhatsApp/telefon (0533 625 36 11) bilgileri.",
+    title: "İletişim & Adres Bilgileri | Acarpen Adana Seyhan",
+    description: "Acarpen Adana adres (Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana) ve WhatsApp/telefon (0533 625 36 11) bilgileri.",
     keywords: "acarpen iletişim, acarpen telefon, adana fıratpen adres, 0533 625 36 11",
     geoRegion: "TR-01",
     geoPlacename: "Adana",
@@ -630,14 +623,14 @@ const ROUTES = [
     faqs: [{ q: "Sipariş numaramı nasıl öğrenebilirim?", a: "Teklif veya sipariş formunuzun sağ üst köşesindeki kod ile sorgulama yapabilirsiniz." }],
   },
   {
-    path: "/projeler/mersin-tower-plaza",
+    path: "/projeler/cukurova-prestij-konutlari",
     title: "Çukurova Prestij Konutları PVC Doğrama & Sürme Projesi | Acarpen",
     description: "Çukurova'daki konut projesinde Antrasit Gri Fıratpen Selenit 75 PVC pencereler ve Hebeschiebe sürme sistemleri uygulaması.",
     keywords: "adana pvc pencere referans, selenit 75 antrasit gri proje",
     geoRegion: "TR-01",
     geoPlacename: "Adana",
     geoPosition: "36.9850;35.2880",
-    breadcrumbs: [{ name: "Referans Projeler", path: "/projeler" }, { name: "Çukurova Prestij Konutları", path: "/projeler/mersin-tower-plaza" }],
+    breadcrumbs: [{ name: "Referans Projeler", path: "/projeler" }, { name: "Çukurova Prestij Konutları", path: "/projeler/cukurova-prestij-konutlari" }],
     h1: "Çukurova Prestij Konutları: Antrasit Gri Selenit 75 & Sürme Uygulaması",
     summary: "Antrasit Gri (2613) Fıratpen Selenit 75 serisi pencereler ve Zenia Slide sürme kapıların anahtar teslim montajı.",
     specsTitle: "Proje Detayları",
@@ -673,21 +666,6 @@ const ROUTES = [
     specsTitle: "Proje Detayları",
     specs: [{ label: "Kullanılan Sistem", val: "Fıratpen Zenia Slide Altın Meşe + Motorlu Panjur" }],
     faqs: [{ q: "Motorlu panjurlar uzaktan kumandalı mı?", a: "Evet, tüm pencerelerde uzaktan kumandalı monoblok panjur sistemi uygulandı." }],
-  },
-  {
-    path: "/projeler/gaziantep-osb-tekstil-fabrikasi",
-    title: "AOSB Fabrika İdari Binası PVC & Alüminyum Doğrama | Acarpen",
-    description: "Adana OSB'deki sanayi tesisinin idari binası için yüksek ses yalıtımlı PVC pencereler, ofis bölmeleri ve alüminyum giriş kapıları.",
-    keywords: "adana osb pvc doğrama, alüminyum ofis bölme adana",
-    geoRegion: "TR-01",
-    geoPlacename: "Adana",
-    geoPosition: "36.9850;35.2880",
-    breadcrumbs: [{ name: "Referans Projeler", path: "/projeler" }, { name: "AOSB İdari Bina", path: "/projeler/gaziantep-osb-tekstil-fabrikasi" }],
-    h1: "AOSB Fabrika İdari Binası: Akustik Yalıtımlı Doğrama ve Ofis Bölme",
-    summary: "Sanayi gürültüsünü kesen 75'lik Fıratpen pencereler, jaluzili ısıcamlı ofis bölmeleri ve alüminyum cephe doğramaları.",
-    specsTitle: "Proje Detayları",
-    specs: [{ label: "Kullanılan Sistem", val: "Fıratpen Elegance 80 + Jaluzili Ofis Bölme Sistemleri" }],
-    faqs: [{ q: "Ofis bölmelerinde jaluzili ısıcam kullanıldı mı?", a: "Evet, yönetici ofislerinde çift cam arası mıknatıslı jaluzi sistemleri uygulandı." }],
   },
 ];
 
@@ -769,7 +747,7 @@ function buildSemanticHTML(route) {
 
       <header style="margin-bottom:2.5rem;">
         <span style="display:inline-block;padding:0.35rem 0.85rem;background:#e0f2fe;color:#0369a1;border-radius:9999px;font-size:0.75rem;font-weight:bold;text-transform:uppercase;margin-bottom:0.75rem;">
-          Fıratpen, Winsa & Pimapen Yetkili Bayi • Acarpen Adana
+          Fıratpen, Winsa &amp; Pimapen PVC Sistemleri • Acarpen Adana
         </span>
         <h1 style="font-size:2.25rem;font-weight:800;color:#0f172a;letter-spacing:-0.03em;margin-top:0.25rem;line-height:1.2;">
           ${route.h1}
@@ -826,7 +804,7 @@ function buildSemanticHTML(route) {
         </div>
         <div>
           <strong style="color:#ffffff;display:block;margin-bottom:0.75rem;">Hizmet Bölgelerimiz</strong>
-          <p style="margin:0.25rem 0;"><a href="/bolgeler/adana-cam-fabrikasi" style="color:#38bdf8;text-decoration:none;">Adana Fıratpen Bayisi (Seyhan/Çukurova)</a></p>
+          <p style="margin:0.25rem 0;"><a href="/bolgeler/adana-cam-fabrikasi" style="color:#38bdf8;text-decoration:none;">Adana Merkez (Seyhan / Çukurova)</a></p>
           <p style="margin:0.25rem 0;"><a href="/bolgeler/mersin-cam-imalati" style="color:#38bdf8;text-decoration:none;">Mersin & Tarsus PVC Sistemleri</a></p>
           <p style="margin:0.25rem 0;"><a href="/bolgeler/osmaniye-cam-ureticisi" style="color:#38bdf8;text-decoration:none;">Osmaniye & Kadirli PVC Doğrama</a></p>
           <p style="margin:0.25rem 0;"><a href="/bolgeler/hatay-cam-firmalari" style="color:#38bdf8;text-decoration:none;">Hatay & İskenderun Şantiye Tedarik</a></p>
@@ -844,7 +822,7 @@ function buildJSONLDSchemas(route) {
       "@type": "WebSite",
       "@id": `${BASE_URL}/#website`,
       url: `${BASE_URL}/`,
-      name: "Acarpen — Fıratpen, Winsa & Pimapen Yetkili Bayi",
+      name: "Acarpen — Adana PVC Pencere, Kapı ve Cam Balkon Merkezi",
       inLanguage: ["tr", "en", "ar"],
       publisher: { "@id": `${BASE_URL}/#organization` },
       potentialAction: {
@@ -1022,7 +1000,20 @@ async function main() {
       );
     }
 
-    const jsonLdTag = `\n    <script type="application/ld+json" id="static-prerender-jsonld">\n${jsonLdContent}\n    </script>\n  </head>`;
+    const extraVerifyTags = [
+      process.env.VITE_GSC_VERIFICATION
+        ? `<meta name="google-site-verification" content="${process.env.VITE_GSC_VERIFICATION}" />`
+        : "",
+      process.env.VITE_BING_VERIFICATION
+        ? `<meta name="msvalidate.01" content="${process.env.VITE_BING_VERIFICATION}" />`
+        : "",
+      process.env.VITE_YANDEX_VERIFICATION
+        ? `<meta name="yandex-verification" content="${process.env.VITE_YANDEX_VERIFICATION}" />`
+        : "",
+    ]
+      .filter(Boolean)
+      .join("\n    ");
+    const jsonLdTag = `\n    ${extraVerifyTags ? `${extraVerifyTags}\n    ` : ""}<script type="application/ld+json" id="static-prerender-jsonld">\n${jsonLdContent}\n    </script>\n  </head>`;
     html = html.replace("</head>", jsonLdTag);
     html = html.replace('<div id="root"></div>', `<div id="root">${semanticBody}</div>`);
 
@@ -1038,6 +1029,56 @@ async function main() {
     fs.writeFileSync(targetFilePath, html, "utf-8");
     generatedCount++;
     console.log(`✓ [Prerender] ${route.path.padEnd(42)} -> ${path.relative(distDir, targetFilePath)}`);
+  }
+
+  // Generate explicit noindex static entry for /admin
+  {
+    const adminDir = path.join(distDir, "admin");
+    fs.mkdirSync(adminDir, { recursive: true });
+    let adminHtml = baseHtml
+      .replace(/<title>.*?<\/title>/s, `<title>Yönetici &amp; ERP Portalı | Acarpen</title>`)
+      .replace(
+        /<meta\s+name=["']robots["']\s+content=["'].*?["']\s*\/?>/i,
+        `<meta name="robots" content="noindex, nofollow, noarchive" />`
+      )
+      .replace(/<meta\s+name=["']googlebot["']\s+content=["'].*?["']\s*\/?>/i, "")
+      .replace(/<meta\s+name=["']bingbot["']\s+content=["'].*?["']\s*\/?>/i, "");
+    fs.writeFileSync(path.join(adminDir, "index.html"), adminHtml, "utf-8");
+    generatedCount++;
+    console.log(`✓ [Prerender] ${"/admin".padEnd(42)} -> admin/index.html (noindex)`);
+  }
+
+  // Generate genuine HTTP 404 static document (no SPA catch-all rewrite in firebase.json!)
+  {
+    const notFoundSemantic = `
+      <main style="max-width:760px;margin:5rem auto;padding:2.5rem;font-family:'Inter','Plus Jakarta Sans',system-ui,sans-serif;text-align:center;color:#0f172a;">
+        <div style="font-size:4rem;font-weight:900;color:#0284c7;line-height:1;">404</div>
+        <h1 style="font-size:1.75rem;font-weight:800;margin-top:0.75rem;">Aradığınız Sayfa Bulunamadı</h1>
+        <p style="color:#475569;margin-top:0.75rem;line-height:1.6;">
+          Talep ettiğiniz adres taşınmış, silinmiş veya hatalı yazılmış olabilir. Acarpen Adana ana sayfasına veya ürün kataloğuna geçebilirsiniz.
+        </p>
+        <div style="margin-top:1.75rem;display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+          <a href="/" style="padding:0.75rem 1.5rem;background:#0284c7;color:#ffffff;text-decoration:none;border-radius:9999px;font-weight:700;">Ana Sayfaya Dön</a>
+          <a href="/hizmetler" style="padding:0.75rem 1.5rem;border:1px solid #cbd5e1;color:#0f172a;text-decoration:none;border-radius:9999px;font-weight:700;">Ürün Kataloğu</a>
+          <a href="/hesaplama" style="padding:0.75rem 1.5rem;border:1px solid #cbd5e1;color:#0f172a;text-decoration:none;border-radius:9999px;font-weight:700;">Ölçü &amp; Fiyat Hesapla</a>
+        </div>
+      </main>`;
+    let notFoundHtml = baseHtml
+      .replace(/<title>.*?<\/title>/s, `<title>Sayfa Bulunamadı (404) | Acarpen Adana</title>`)
+      .replace(
+        /<meta\s+name=["']description["']\s+content=["'].*?["']\s*\/?>/i,
+        `<meta name="description" content="Aradığınız sayfa Acarpen web sitesinde bulunamadı (HTTP 404)." />`
+      )
+      .replace(
+        /<meta\s+name=["']robots["']\s+content=["'].*?["']\s*\/?>/i,
+        `<meta name="robots" content="noindex, nofollow" />`
+      )
+      .replace(/<link\s+rel=["']canonical["'][^>]*>/gi, "")
+      .replace(/<link\s+rel=["']alternate["']\s+hreflang=["'][^"']*["'][^>]*>/gi, "")
+      .replace('<div id="root"></div>', `<div id="root">${notFoundSemantic}</div>`);
+    fs.writeFileSync(path.join(distDir, "404.html"), notFoundHtml, "utf-8");
+    generatedCount++;
+    console.log(`✓ [Prerender] ${"/404.html".padEnd(42)} -> 404.html (genuine 404, noindex)`);
   }
 
   console.log("======================================================");

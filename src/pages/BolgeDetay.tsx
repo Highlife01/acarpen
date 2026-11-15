@@ -4,6 +4,7 @@ import { Footer } from "@/components/site/Footer";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { getRegionBySlug, REGIONS_DATA } from "@/data/regionsData";
+import { trackConversion } from "@/lib/conversionTracker";
 import {
   MapPin,
   Truck,
@@ -83,6 +84,7 @@ export default function BolgeDetay() {
                   )}`}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() => trackConversion("region_cta_click", `Bölge Detay WhatsApp: ${region.city}`)}
                 >
                   <Button
                     size="lg"
@@ -128,6 +130,7 @@ export default function BolgeDetay() {
 
               <a
                 href="tel:+905336253611"
+                onClick={() => trackConversion("phone_click", `Bölge Detay Telefon: ${region.city}`)}
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors"
               >
                 <Phone className="h-4 w-4" /> Hızlı İletişim: 0533 625 36 11
@@ -146,7 +149,7 @@ export default function BolgeDetay() {
               <ShieldCheck className="h-4 w-4" /> Neden {region.city} Projelerinde Acarpen?
             </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold text-slate-900">
-              Fıratpen Yetkili Üretici Gücüyle {region.city} Projelerine Doğrudan Üretim
+              CNC Üretim Kalitesiyle {region.city} Projelerine Doğrudan Tedarik
             </h2>
             <ul className="space-y-3.5 pt-2">
               {region.highlights.map((item, i) => (

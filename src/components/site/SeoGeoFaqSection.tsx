@@ -5,9 +5,9 @@ import { FAQItem } from "@/components/SEO";
 
 export const HOME_GEO_FAQS: FAQItem[] = [
   {
-    question: "Acarpen Fıratpen yetkili üretici bayisi midir ve Adana'daki adresi nerededir?",
+    question: "Acarpen Adana'daki üretim adresi nerededir ve hangi profillerle imalat yapmaktadır?",
     answer:
-      "Evet, Acarpen (Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti.), Fıratpen resmi yetkili üretici bayisidir. CNC otomasyonlu üretim fabrikamız ve showroom merkezimiz Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan - Seyhan / Adana adresinde hizmet vermektedir.",
+      "Acarpen (Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti.), Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana adresindeki CNC otomasyonlu üretim tesisinde ve showroom merkezinde Fıratpen, Winsa ve Pimapen PVC profillerle pencere, kapı, sürme ve cam balkon sistemleri üretmektedir.",
   },
   {
     question: "Acarpen'de Fıratpen dışında Winsa ve Pimapen PVC pencere serileri de üretiliyor mu?",

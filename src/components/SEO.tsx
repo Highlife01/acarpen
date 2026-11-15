@@ -37,7 +37,7 @@ interface SEOProps {
 
 const BASE_URL = "https://www.acarpen.com.tr";
 const DEFAULT_IMAGE = `${BASE_URL}/assets/firatpen-selenit-pvc-pencere.jpg`;
-const COMPANY_NAME = "Acarpen — Fıratpen, Winsa & Pimapen Yetkili Bayi";
+const COMPANY_NAME = "Acarpen — Adana PVC Pencere, Kapı & Cam Balkon Üreticisi";
 
 const DNS_GOOGLE_VERIFICATION_FALLBACK = "";
 
@@ -264,15 +264,27 @@ export const CANONICAL_PATH_MAP: Record<string, string> = {
   "/hizmetler/cift-cam": "/urunler/cift-cam",
   "/cift-cam": "/urunler/cift-cam",
   "/pvc-pencere": "/urunler/cift-cam",
+  "/pvc-pencere-sistemleri": "/urunler/cift-cam",
+  "/firatpen-pvc-pencere": "/urunler/cift-cam",
+  "/firatpen-selenit-75": "/urunler/cift-cam",
+  "/firatpen-elegance-80": "/urunler/cift-cam",
+  "/firatpen-redonit-85": "/urunler/cift-cam",
   "/hizmetler/temperli-cam": "/urunler/temperli-cam",
   "/temperli-cam": "/urunler/temperli-cam",
   "/pvc-surme": "/urunler/temperli-cam",
+  "/pvc-surme-kapi": "/urunler/temperli-cam",
+  "/hebeschiebe-surme-sistemleri": "/urunler/temperli-cam",
   "/hizmetler/balkon-cami": "/urunler/balkon-cami",
   "/balkon-cami": "/urunler/balkon-cami",
   "/cam-balkon": "/urunler/balkon-cami",
+  "/katlanir-cam-balkon": "/urunler/balkon-cami",
+  "/surme-cam-balkon": "/urunler/balkon-cami",
+  "/giyotin-cam-balkon": "/urunler/balkon-cami",
   "/hizmetler/jaluzili-isicam": "/urunler/jaluzili-isicam",
   "/jaluzili-isicam": "/urunler/jaluzili-isicam",
   "/pvc-kapi": "/urunler/jaluzili-isicam",
+  "/pvc-kapi-sistemleri": "/urunler/jaluzili-isicam",
+  "/panjur-sistemleri": "/urunler/jaluzili-isicam",
   "/hizmetler/dis-cephe-camlari": "/urunler/dis-cephe-camlari",
   "/dis-cephe-camlari": "/urunler/dis-cephe-camlari",
   "/hizmetler/lamine-cam": "/urunler/lamine-cam",
@@ -280,7 +292,25 @@ export const CANONICAL_PATH_MAP: Record<string, string> = {
   "/hizmetler/renkli-camlar": "/urunler/renkli-camlar",
   "/renkli-camlar": "/urunler/renkli-camlar",
   "/pvc-renkler": "/urunler/renkli-camlar",
+  "/renkli-pvc-pencere": "/urunler/renkli-camlar",
+  "/antrasit-pvc-pencere": "/urunler/renkli-camlar",
+  "/plise-sineklik": "/urunler/lamine-cam",
+  "/toplu-proje-pvc-dograma": "/urunler/dis-cephe-camlari",
+  "/isi-yalitimli-pvc-pencere": "/rehber",
+  "/pvc-pencere-fiyat-hesaplama": "/hesaplama",
+  "/teklif-al": "/hesaplama",
+  "/referanslar": "/projeler",
+  "/projeler/mersin-tower-plaza": "/projeler/cukurova-prestij-konutlari",
+  "/projeler/gaziantep-osb-tekstil-fabrikasi": "/projeler/cukurova-prestij-konutlari",
+  "/uretim-ve-kalite": "/uretim-teknolojisi",
   "/adana-firatpen-bayisi": "/bolgeler/adana-cam-fabrikasi",
+  "/bolgeler/adana": "/bolgeler/adana-cam-fabrikasi",
+  "/bolgeler/mersin": "/bolgeler/mersin-cam-imalati",
+  "/bolgeler/osmaniye": "/bolgeler/osmaniye-cam-ureticisi",
+  "/bolgeler/hatay": "/bolgeler/hatay-cam-firmalari",
+  "/bolgeler/gaziantep": "/bolgeler/gaziantep-cam-cozumleri",
+  "/bolgeler/kayseri": "/bolgeler/kayseri-cam-toptan",
+  "/bolgeler/nigde": "/bolgeler/nigde-cam-sevkiyati",
   "/teklif": "/hesaplama",
   "/fiyat-hesaplama": "/hesaplama",
 };
@@ -314,10 +344,8 @@ const absoluteUrl = (value: string) => {
 const KEYWORDS_BY_LANG: Record<SupportedLanguageCode, string[]> = {
   tr: [
     "acarpen",
-    "adana fıratpen bayisi",
-    "fıratpen adana yetkili bayi",
+    "fıratpen adana pvc doğrama",
     "adana pvc pencere",
-    "adana winsa bayisi",
     "winsa pvc pencere adana",
     "winsa dorado 76",
     "adana pimapen",
@@ -367,7 +395,7 @@ export const SEO = ({
   keywords = [],
   ogType = "website",
   ogImage = DEFAULT_IMAGE,
-  ogImageAlt = "Acarpen — Adana Fıratpen, Winsa & Pimapen Yetkili Bayi PVC Pencere, Renkli Isıcam ve Cam Balkon Sistemleri",
+  ogImageAlt = "Acarpen — Adana PVC Pencere, Kapı, Renkli Isıcam ve Cam Balkon Sistemleri",
   faqs,
   schemaType = "LocalBusiness",
   serviceName,
@@ -398,7 +426,7 @@ export const SEO = ({
         ? localizedEntry.ar.title
         : title.includes("Acarpen")
           ? title
-          : `${title} | Acarpen — Fıratpen, Winsa & Pimapen Yetkili Bayi`;
+          : `${title} | Acarpen Adana`;
 
   const resolvedDescription =
     activeLang === "en" && localizedEntry?.en
@@ -407,14 +435,13 @@ export const SEO = ({
         ? localizedEntry.ar.description
         : description;
 
-  const allKeywords = Array.from(
-    new Set([
-      ...keywords,
-      ...KEYWORDS_BY_LANG.tr,
-      ...KEYWORDS_BY_LANG.en,
-      ...KEYWORDS_BY_LANG.ar,
-    ])
-  ).join(", ");
+  const langKeywords =
+    activeLang === "en"
+      ? KEYWORDS_BY_LANG.en
+      : activeLang === "ar"
+        ? KEYWORDS_BY_LANG.ar
+        : KEYWORDS_BY_LANG.tr;
+  const allKeywords = Array.from(new Set([...keywords, ...langKeywords])).join(", ");
 
   useEffect(() => {
     const setMeta = (name: string, content: string, isProperty = false) => {
@@ -521,7 +548,7 @@ export const SEO = ({
         name: COMPANY_NAME,
         alternateName: [
           "Acarpen",
-          "Acarpen Adana Fıratpen, Winsa & Pimapen Bayisi",
+          "Acarpen Adana PVC Pencere, Kapı ve Cam Balkon",
         ],
         inLanguage: ["tr", "en", "ar"],
         publisher: { "@id": `${BASE_URL}/#organization` },

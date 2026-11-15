@@ -82,7 +82,7 @@ export const GoogleMapLocation = () => {
           {/* Right: Interactive Google Map Embed */}
           <div className="lg:col-span-7 rounded-3xl overflow-hidden border border-slate-200 min-h-[380px] relative bg-slate-100 shadow-lg">
             <iframe
-              title="Acarpen Fıratpen Yetkili Bayi — Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan Adana Harita Konumu"
+              title="Acarpen Üretim & Showroom Merkezi — Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan Adana Harita Konumu"
               src="https://www.google.com/maps?q=G%C3%BClbah%C3%A7esi+Mah.+13428+Sok.+No:16/17+Seyhan+Adana&output=embed"
               width="100%"
               height="100%"

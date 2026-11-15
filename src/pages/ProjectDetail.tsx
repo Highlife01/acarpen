@@ -15,6 +15,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
+import { trackConversion } from "@/lib/conversionTracker";
 
 export default function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -22,7 +23,7 @@ export default function ProjectDetail() {
 
   const handleDownloadSpec = () => {
     const specContent = `====================================================================
-ACARPEN — FIRATPEN YETKİLİ ÜRETİCİ BAYİ MİMARİ PROJE ŞARTNAMESİ
+ACARPEN — FIRATPEN, WINSA & PİMAPEN MİMARİ PROJE ŞARTNAMESİ
 ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ
 ====================================================================
 Proje Adı        : ${project.title}
@@ -58,6 +59,7 @@ Telefon & WhatsApp: 0533 625 36 11 | Web: https://www.acarpen.com.tr
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    trackConversion("catalog_download", `Proje Şartnamesi: ${project.slug}`);
     toast.success(`${project.title} teknik şartnamesi indirildi!`);
   };
 
@@ -89,6 +91,9 @@ Telefon & WhatsApp: 0533 625 36 11 | Web: https://www.acarpen.com.tr
               <img
                 src={project.image}
                 alt={project.title}
+                width={1200}
+                height={900}
+                decoding="async"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent" />

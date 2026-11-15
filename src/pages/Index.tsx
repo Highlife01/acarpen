@@ -24,8 +24,8 @@ const Index = () => {
         canonicalPath="/"
         keywords={[
           "acarpen",
-          "adana fıratpen bayisi",
-          "adana winsa bayisi",
+          "adana fıratpen pvc pencere",
+          "adana winsa pvc pencere",
           "adana pimapen",
           "winsa pvc pencere adana",
           "pimapen nirvana adana",

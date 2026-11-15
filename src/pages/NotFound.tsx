@@ -12,7 +12,7 @@ const NotFound = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
       <SEO
-        title="Sayfa Bulunamadı (404) | Acarpen — Adana Fıratpen, Winsa & Pimapen Yetkili Bayi"
+        title="Sayfa Bulunamadı (404) | Acarpen — Adana PVC Pencere & Cam Balkon"
         description="Aradığınız sayfa taşınmış veya kaldırılmış olabilir. Acarpen ana sayfasına dönerek PVC pencere, kapı ve cam balkon ürünlerimizi inceleyebilirsiniz."
         canonicalPath="/404"
         noindex
