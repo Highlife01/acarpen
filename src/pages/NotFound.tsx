@@ -12,9 +12,10 @@ const NotFound = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
       <SEO
-        title="Sayfa Bulunamadı (404) | Acarpen — Adana Fıratpen Yetkili Bayi"
+        title="Sayfa Bulunamadı (404) | Acarpen — Adana Fıratpen, Winsa & Pimapen Yetkili Bayi"
         description="Aradığınız sayfa taşınmış veya kaldırılmış olabilir. Acarpen ana sayfasına dönerek PVC pencere, kapı ve cam balkon ürünlerimizi inceleyebilirsiniz."
         canonicalPath="/404"
+        noindex
       />
       <div className="text-center max-w-md bg-white p-8 rounded-3xl border border-slate-200 shadow-lg">
         <h1 className="mb-3 font-serif text-5xl font-bold text-sky-600">404</h1>

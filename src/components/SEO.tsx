@@ -221,7 +221,7 @@ const SERVED_CITIES_SCHEMA = [
 
 const OFFER_CATALOG_SCHEMA = {
   "@type": "OfferCatalog",
-  name: "Acarpen — Fıratpen PVC Doğrama, Renkli Isıcam ve Cam Balkon Sistemleri",
+  name: "Acarpen — Fıratpen, Winsa & Pimapen PVC Doğrama, Renkli Isıcam ve Cam Balkon Sistemleri",
   itemListElement: [
     {
       "@type": "OfferCatalog",
@@ -367,7 +367,7 @@ export const SEO = ({
   keywords = [],
   ogType = "website",
   ogImage = DEFAULT_IMAGE,
-  ogImageAlt = "Acarpen — Adana Fıratpen Yetkili Üretici Bayi PVC Pencere, Renkli Isıcam ve Cam Balkon Sistemleri",
+  ogImageAlt = "Acarpen — Adana Fıratpen, Winsa & Pimapen Yetkili Bayi PVC Pencere, Renkli Isıcam ve Cam Balkon Sistemleri",
   faqs,
   schemaType = "LocalBusiness",
   serviceName,
@@ -398,7 +398,7 @@ export const SEO = ({
         ? localizedEntry.ar.title
         : title.includes("Acarpen")
           ? title
-          : `${title} | Acarpen — Fıratpen Yetkili Bayi`;
+          : `${title} | Acarpen — Fıratpen, Winsa & Pimapen Yetkili Bayi`;
 
   const resolvedDescription =
     activeLang === "en" && localizedEntry?.en
@@ -517,9 +517,12 @@ export const SEO = ({
       {
         "@type": "WebSite",
         "@id": `${BASE_URL}/#website`,
-        url: BASE_URL,
+        url: `${BASE_URL}/`,
         name: COMPANY_NAME,
-        alternateName: ["Acarpen", "Acarpen Adana Fıratpen Bayisi"],
+        alternateName: [
+          "Acarpen",
+          "Acarpen Adana Fıratpen, Winsa & Pimapen Bayisi",
+        ],
         inLanguage: ["tr", "en", "ar"],
         publisher: { "@id": `${BASE_URL}/#organization` },
         potentialAction: {
@@ -534,7 +537,7 @@ export const SEO = ({
         name: COMPANY_NAME,
         alternateName: ["Acarpen", "Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti."],
         legalName: "ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ",
-        url: BASE_URL,
+        url: `${BASE_URL}/`,
         logo: {
           "@type": "ImageObject",
           url: `${BASE_URL}/assets/acarpen-logo.png`,

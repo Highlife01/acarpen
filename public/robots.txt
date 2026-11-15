@@ -1,10 +1,11 @@
-# Robots.txt for Acarpen — Fıratpen, Winsa & Pimapen Yetkili Bayi (https://www.acarpen.com.tr)
+# Robots.txt for Acarpen — Fıratpen, Winsa & Pimapen Yetkili Bayi (https://www.acarpen.com.tr/)
 # Search Engine Optimization (SEO) & Generative Engine Optimization (GEO)
 
 User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /api/
+Disallow: /404
 
 # AI Search Engines & Foundation Model Answer Crawlers (GEO)
 User-agent: GPTBot

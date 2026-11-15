@@ -62,21 +62,33 @@ describe("2. Search Engine Verification & Hreflang", () => {
     expect(indexContent).toContain('name="google-site-verification"');
     expect(indexContent).toContain('name="msvalidate.01"');
     expect(indexContent).toContain('name="yandex-verification"');
-    expect(indexContent).toContain('hreflang="x-default"');
-    expect(indexContent).toContain('hreflang="tr"');
-    expect(indexContent).toContain('hreflang="en"');
-    expect(indexContent).toContain('hreflang="ar"');
+    expect(indexContent).toContain('rel="canonical" href="https://www.acarpen.com.tr/"');
+    expect(indexContent).toContain('hreflang="x-default" href="https://www.acarpen.com.tr/"');
+    expect(indexContent).toContain('hreflang="tr" href="https://www.acarpen.com.tr/"');
+    expect(indexContent).toContain('hreflang="en" href="https://www.acarpen.com.tr/?lang=en"');
+    expect(indexContent).toContain('hreflang="ar" href="https://www.acarpen.com.tr/?lang=ar"');
+    expect(indexContent).toContain("acarpen.com.tr");
+    expect(indexContent).toContain("acarpen.web.app");
+    expect(indexContent).toContain("acarpen.firebaseapp.com");
     expect(indexContent).not.toContain('hreflang="de"');
     expect(indexContent).not.toContain('hreflang="ru"');
+  });
+
+  it("NotFound page should enforce noindex so soft-404 routes are not indexed", () => {
+    const notFoundPath = path.resolve(__dirname, "../pages/NotFound.tsx");
+    const content = fs.readFileSync(notFoundPath, "utf-8");
+    expect(content).toContain("noindex");
   });
 });
 
 describe("3. IndexNow Automation & Endpoints", () => {
-  it("ping-indexnow.mjs should exist and include all 3 fallback endpoints", () => {
+  it("ping-indexnow.mjs should exist, use www.acarpen.com.tr exclusively, and include all 3 endpoints", () => {
     const scriptPath = path.resolve(__dirname, "../../scripts/ping-indexnow.mjs");
     expect(fs.existsSync(scriptPath)).toBe(true);
     const scriptContent = fs.readFileSync(scriptPath, "utf-8");
 
+    expect(scriptContent).toContain("www.acarpen.com.tr");
+    expect(scriptContent).not.toContain("acarpen.web.app");
     expect(scriptContent).toContain("https://www.bing.com/indexnow");
     expect(scriptContent).toContain("https://yandex.com/indexnow");
     expect(scriptContent).toContain("https://api.indexnow.org/indexnow");
@@ -122,9 +134,15 @@ describe("4. International SEO & GEO (AI Search Engines)", () => {
     expect(robotsContent).toContain("ai.txt");
   });
 
-  it("prerender script should produce valid semantic static HTML with route-specific hreflang and SpeakableSpecification", () => {
+  it("prerender script should produce valid semantic static HTML with www.acarpen.com.tr canonical, hreflang and SpeakableSpecification", () => {
+    const homeHtmlPath = path.resolve(__dirname, "../../dist/index.html");
     const regionalHtmlPath = path.resolve(__dirname, "../../dist/bolgeler/adana-cam-fabrikasi/index.html");
+    expect(fs.existsSync(homeHtmlPath)).toBe(true);
     expect(fs.existsSync(regionalHtmlPath)).toBe(true);
+
+    const homeHtml = fs.readFileSync(homeHtmlPath, "utf-8");
+    expect(homeHtml).toContain('rel="canonical" href="https://www.acarpen.com.tr/"');
+    expect(homeHtml).toContain('"url": "https://www.acarpen.com.tr/"');
 
     const html = fs.readFileSync(regionalHtmlPath, "utf-8");
     expect(html).toContain("<title>Adana Fıratpen Bayisi");
@@ -137,15 +155,19 @@ describe("4. International SEO & GEO (AI Search Engines)", () => {
     expect(html).toContain("prerender-faqs");
   });
 
-  it("sitemap.xml should contain valid URLs and updated lastmod", () => {
+  it("sitemap.xml should contain valid www.acarpen.com.tr URLs exclusively and updated lastmod", () => {
     const sitemapPath = path.resolve(__dirname, "../../public/sitemap.xml");
     const content = fs.readFileSync(sitemapPath, "utf-8");
+    const locs = [...content.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
 
+    expect(locs.length).toBeGreaterThanOrEqual(28);
+    expect(locs.every((u) => u.startsWith("https://www.acarpen.com.tr/"))).toBe(true);
     expect(content).toContain("<loc>https://www.acarpen.com.tr/</loc>");
     expect(content).toContain("<loc>https://www.acarpen.com.tr/hesaplama</loc>");
     expect(content).toContain("<loc>https://www.acarpen.com.tr/urunler/cift-cam</loc>");
     expect(content).toContain("<loc>https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi</loc>");
-    expect(content).toContain("2026-10-26");
+    expect(content).toContain("2026-11-15");
+    expect(content).not.toContain("acarpen.web.app");
   });
 
   it("all Acarpen favicon, app icon, manifest and Organization logo assets should exist and be linked", () => {

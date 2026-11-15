@@ -55,7 +55,7 @@ const ORGANIZATION_BASE_SCHEMA = {
   "@id": `${BASE_URL}/#organization`,
   name: "Acarpen — Fıratpen, Winsa & Pimapen Yetkili Bayi",
   legalName: "ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ",
-  url: BASE_URL,
+  url: `${BASE_URL}/`,
   logo: {
     "@type": "ImageObject",
     url: `${BASE_URL}/assets/acarpen-logo.png`,
@@ -112,7 +112,7 @@ const ROUTES = [
     geoPlacename: "Adana",
     geoPosition: "36.9850;35.2880",
     breadcrumbs: [],
-    h1: "Adana Fıratpen Yetkili Üretici Bayi: PVC Pencere, Kapı, Sürme ve Cam Balkon Sistemleri",
+    h1: "Adana Fıratpen, Winsa & Pimapen Yetkili Bayi: PVC Pencere, Kapı, Sürme ve Cam Balkon Sistemleri",
     summary:
       "Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana adresindeki modern üretim tesisimizde Fıratpen Selenit 75, Elegance 80 ve Redonit 85 serisi PVC pencereler, balkon ve WC kapıları, sürme doğramalar ve cam balkon sistemleri üretiyoruz.",
     specsTitle: "Üretim ve Kalite Standartlarımız",
@@ -769,7 +769,7 @@ function buildSemanticHTML(route) {
 
       <header style="margin-bottom:2.5rem;">
         <span style="display:inline-block;padding:0.35rem 0.85rem;background:#e0f2fe;color:#0369a1;border-radius:9999px;font-size:0.75rem;font-weight:bold;text-transform:uppercase;margin-bottom:0.75rem;">
-          Fıratpen Yetkili Üretici Bayi • Acarpen Adana
+          Fıratpen, Winsa & Pimapen Yetkili Bayi • Acarpen Adana
         </span>
         <h1 style="font-size:2.25rem;font-weight:800;color:#0f172a;letter-spacing:-0.03em;margin-top:0.25rem;line-height:1.2;">
           ${route.h1}
@@ -843,7 +843,7 @@ function buildJSONLDSchemas(route) {
     {
       "@type": "WebSite",
       "@id": `${BASE_URL}/#website`,
-      url: BASE_URL,
+      url: `${BASE_URL}/`,
       name: "Acarpen — Fıratpen, Winsa & Pimapen Yetkili Bayi",
       inLanguage: ["tr", "en", "ar"],
       publisher: { "@id": `${BASE_URL}/#organization` },

@@ -15,7 +15,6 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 
 const PRIMARY_HOST = process.env.INDEXNOW_HOST || "www.acarpen.com.tr";
-const SECONDARY_HOST = "acarpen.web.app";
 const INDEXNOW_KEY = process.env.INDEXNOW_KEY || "c9e46a782b1d40f28e57f6b9318a4d70";
 
 const keyFilePath = path.join(rootDir, "public", `${INDEXNOW_KEY}.txt`);
@@ -42,8 +41,7 @@ if (urls.length === 0) {
 console.log(`\n======================================================`);
 console.log(`🚀 Acarpen IndexNow Otomasyonu Başlatıldı`);
 console.log(`======================================================`);
-console.log(`• Birincil Host: ${PRIMARY_HOST}`);
-console.log(`• İkincil Host: ${SECONDARY_HOST}`);
+console.log(`• Birincil Kanonik Host: ${PRIMARY_HOST}`);
 console.log(`• Toplam İndekslenecek URL: ${urls.length} adet`);
 console.log(`• Doğrulama Dosyası: https://${PRIMARY_HOST}/${INDEXNOW_KEY}.txt`);
 
@@ -120,7 +118,7 @@ async function run() {
   let anySuccess = false;
   const results = [];
 
-  for (const host of [PRIMARY_HOST, SECONDARY_HOST]) {
+  for (const host of [PRIMARY_HOST]) {
     console.log(`\n------------------------------------------------------`);
     console.log(`🌐 Dağıtım Başlatılıyor: ${host}`);
     console.log(`------------------------------------------------------`);
