@@ -3,11 +3,14 @@ import fs from "node:fs";
 import path from "node:path";
 import { buildQuotesCsv, escapeCsvCell, sanitizeCsvFormula } from "../lib/csvExport";
 import {
+  generateOrderId,
+  generateTrackingPin,
   getOrderTrackingDocId,
   getPhoneTrackingDocId,
   maskCustomerName,
   normalizeTrPhone10,
   sha256Hex,
+  toProductionOrderItem,
   toPublicOrderTrackingItem,
 } from "../lib/orderTracking";
 import {
@@ -20,8 +23,10 @@ import {
 import {
   addAdminQuality,
   addAdminQuote,
+  clearAdminSyncError,
   deleteAdminQuote,
   fetchPublicOrderTracking,
+  fetchPublicOrderTrackingWithStatus,
   getAdminAuditLogs,
   releaseAdminQualityHold,
   setActiveUserRole,
@@ -94,16 +99,36 @@ describe("Public Order Tracking Sanitization & Hashed Phone Lookup", () => {
     expect(normalizeTrPhone10("5336253611")).toBe("5336253611");
     expect(normalizeTrPhone10("12345")).toBe("");
 
-    const d1 = getPhoneTrackingDocId("0533 625 36 11");
-    const d2 = getPhoneTrackingDocId("+90 533 625 36 11");
+    expect(getPhoneTrackingDocId("0533 625 36 11")).toBeNull();
+    expect(getOrderTrackingDocId("tkf-2026-123")).toBe("");
+
+    const d1 = getPhoneTrackingDocId("0533 625 36 11", "K7M9PQ");
+    const d2 = getPhoneTrackingDocId("+90 533 625 36 11", "k7m9pq");
     expect(d1).toMatch(/^PHONE_[a-f0-9]{64}$/);
     expect(d1).toBe(d2);
-    expect(getOrderTrackingDocId(" tkf-2026-123 ")).toBe("ORDER_TKF-2026-123");
+    expect(d1).not.toBe(getPhoneTrackingDocId("0533 625 36 11", "X2Y3Z4"));
+
+    const o1 = getOrderTrackingDocId(" tkf-2026-123 ", "K7M9PQ");
+    const o2 = getOrderTrackingDocId("TKF-2026-123", "k7m9pq");
+    expect(o1).toMatch(/^ORDER_[a-f0-9]{64}$/);
+    expect(o1).toBe(o2);
+    expect(o1).not.toBe(getOrderTrackingDocId("TKF-2026-123", "X2Y3Z4"));
   });
 
-  it("masks customer names and strips all PII/financial fields from public tracking output", () => {
+  it("generates CSPRNG order IDs and 6-character tracking PINs", () => {
+    const id1 = generateOrderId(2026);
+    const id2 = generateOrderId(2026);
+    const pin = generateTrackingPin();
+
+    expect(id1).toMatch(/^TKF-2026-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{8}$/);
+    expect(id1).not.toBe(id2);
+    expect(pin).toMatch(/^[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}$/);
+  });
+
+  it("masks customer names and strips all PII/metadata/financial fields from public tracking and workshop output", () => {
     const internalQuote: QuoteItem = {
       id: "TKF-2026-777777",
+      trackingPin: "K7M9PQ",
       customerName: "Ahmet Yılmaz İnşaat",
       phone: "05336253611",
       email: "ahmet@example.com",
@@ -129,14 +154,20 @@ describe("Public Order Tracking Sanitization & Hashed Phone Lookup", () => {
     const tracking = toPublicOrderTrackingItem(internalQuote) as unknown as Record<string, unknown>;
     expect(maskCustomerName("Ahmet Yılmaz İnşaat")).toBe("A*** Y*** İ***");
     expect(tracking.orderId).toBe("TKF-2026-777777");
-    expect(tracking.maskedCustomer).toBe("A*** Y*** İ***");
+    expect(tracking.systemCategory).toBe("PVC Doğrama Sistemleri");
     expect(tracking.productionStage).toBe(4);
 
     for (const forbidden of [
       "phone",
       "email",
       "customerName",
+      "maskedCustomer",
+      "city",
       "deliveryAddress",
+      "glassType",
+      "thickness",
+      "dimensions",
+      "totalArea",
       "estimatedPrice",
       "paidAmount",
       "estimatedCost",
@@ -145,8 +176,29 @@ describe("Public Order Tracking Sanitization & Hashed Phone Lookup", () => {
       "invoiceNo",
       "notes",
       "lines",
+      "trackingPin",
     ]) {
       expect(forbidden in tracking).toBe(false);
+    }
+
+    const workshopOrder = toProductionOrderItem(internalQuote) as unknown as Record<string, unknown>;
+    expect(workshopOrder.id).toBe("TKF-2026-777777");
+    expect(workshopOrder.dimensions).toBe("120x120 cm");
+    for (const workshopForbidden of [
+      "phone",
+      "email",
+      "customerName",
+      "city",
+      "deliveryAddress",
+      "estimatedPrice",
+      "paidAmount",
+      "estimatedCost",
+      "actualCost",
+      "discountRate",
+      "invoiceNo",
+      "waybillNo",
+    ]) {
+      expect(workshopForbidden in workshopOrder).toBe(false);
     }
   });
 });
@@ -204,6 +256,7 @@ describe("ERP RBAC, Quality Hold Gate & Order Lookup Integration", () => {
       const id = createdIds.pop();
       if (id) deleteAdminQuote(id);
     }
+    clearAdminSyncError();
   });
 
   it("blocks unauthorized roles from changing prices, adjusting stock, or releasing quality holds", () => {
@@ -260,9 +313,10 @@ describe("ERP RBAC, Quality Hold Gate & Order Lookup Integration", () => {
     expect(updateQuoteStatus(quote.id, "completed").ok).toBe(true);
   });
 
-  it("finds public tracking projections by both order ID and phone number without exposing PII", async () => {
+  it("requires valid two-factor PIN and finds public tracking projections without exposing PII", async () => {
     const quote = addAdminQuote({
       id: "TKF-2026-882244",
+      trackingPin: "K7M9PQ",
       customerName: "Mehmet Aydın",
       phone: "0542 111 22 33",
       city: "Mersin",
@@ -275,39 +329,69 @@ describe("ERP RBAC, Quality Hold Gate & Order Lookup Integration", () => {
     });
     createdIds.push(quote.id);
 
-    const byOrder = await fetchPublicOrderTracking("TKF-2026-882244");
-    expect(byOrder).toHaveLength(1);
-    expect(byOrder[0].maskedCustomer).toBe("M*** A***");
+    expect(await fetchPublicOrderTracking("TKF-2026-882244")).toEqual([]);
+    expect(await fetchPublicOrderTracking("TKF-2026-882244", "WRONG1")).toEqual([]);
+    expect(await fetchPublicOrderTracking("+90 542 111 22 33", "WRONG1")).toEqual([]);
 
-    const byPhone = await fetchPublicOrderTracking("+90 542 111 22 33");
+    const byOrder = await fetchPublicOrderTrackingWithStatus("TKF-2026-882244", "k7m9pq");
+    expect(byOrder.ok).toBe(true);
+    expect(byOrder.items).toHaveLength(1);
+    expect(byOrder.items[0].orderId).toBe("TKF-2026-882244");
+    expect(byOrder.items[0].systemCategory).toBe("PVC Doğrama Sistemleri");
+    expect("maskedCustomer" in (byOrder.items[0] as unknown as Record<string, unknown>)).toBe(false);
+
+    const byPhone = await fetchPublicOrderTracking("+90 542 111 22 33", "K7M9PQ");
     expect(byPhone).toHaveLength(1);
     expect(byPhone[0].orderId).toBe("TKF-2026-882244");
   });
 });
 
-describe("Firestore Security Rules Contract Verification", () => {
+describe("Firestore Security Rules & No-reCAPTCHA Contract Verification", () => {
   const rulesPath = path.resolve(process.cwd(), "firestore.rules");
   const rules = fs.readFileSync(rulesPath, "utf-8");
 
-  it("denies public reads on internal acarpen_quotes and denies list on acarpen_order_tracking", () => {
-    const quotesBlock =
-      rules.match(/match \/acarpen_quotes\/\{id\}[\s\S]*?match \/acarpen_order_tracking\/\{id\}/)?.[0] ?? "";
-    const trackingBlock =
-      rules.match(/match \/acarpen_order_tracking\/\{id\}[\s\S]*?match \/acarpen_messages\/\{id\}/)?.[0] ?? "";
-
-    expect(quotesBlock).not.toMatch(/allow get:\s*if\s*true/);
-    expect(quotesBlock).toMatch(/allow get, list:\s*if\s*isAdminOrStaff\(\)/);
-    expect(trackingBlock).toMatch(/allow list:\s*if\s*false/);
-    expect(trackingBlock).toMatch(/allow get:\s*if\s*id\.matches/);
+  it("removes hardcoded admin emails, verifies active verified staff, and isolates tenant claims", () => {
+    expect(rules).not.toContain("isPrimaryAdmin");
+    expect(rules).not.toContain("admin@acarpen.com.tr");
+    expect(rules).toContain("request.auth.token.email_verified == true");
+    expect(rules).toContain("exists(userDocPath())");
+    expect(rules).toContain("me().active == true");
+    expect(rules).toContain("request.auth.token.acarpenRole");
+    expect(rules).not.toMatch(/request\.auth\.token\.role\b/);
   });
 
-  it("enforces strict field whitelists and immutable audit logs", () => {
-    expect(rules).toContain("function validPublicQuote()");
-    expect(rules).toContain("function validPublicMessage()");
-    expect(rules).toMatch(/function validPublicQuote\(\)[\s\S]*d\.keys\(\)\.hasOnly\(\[/);
-    expect(rules).toMatch(/function validPublicMessage\(\)[\s\S]*d\.keys\(\)\.hasOnly\(\[/);
+  it("separates PII/financial acarpen_quotes from workshop acarpen_production_orders and locks tracking to two-factor hashes", () => {
+    const quotesBlock =
+      rules.match(/match \/acarpen_quotes\/\{id\}[\s\S]*?match \/acarpen_production_orders\/\{id\}/)?.[0] ?? "";
+    const prodBlock =
+      rules.match(/match \/acarpen_production_orders\/\{id\}[\s\S]*?match \/acarpen_order_tracking\/\{id\}/)?.[0] ?? "";
+    const trackingBlock =
+      rules.match(/match \/acarpen_order_tracking\/\{id\}[\s\S]*?match \/acarpen_rate_limits\/\{id\}/)?.[0] ?? "";
+
+    expect(quotesBlock).not.toMatch(/allow get:\s*if\s*true/);
+    expect(quotesBlock).toMatch(/allow get, list:\s*if\s*canSell\(\)\s*\|\|\s*canManageFinance\(\)/);
+    expect(prodBlock).toContain("isAdminOrStaff()");
+    expect(prodBlock).toContain("'estimatedPrice'");
+    expect(prodBlock).toContain("'customerName'");
+    expect(trackingBlock).toMatch(/allow list:\s*if\s*false/);
+    expect(trackingBlock).toContain("^(ORDER|PHONE)_[a-f0-9]{64}$");
+  });
+
+  it("blocks all anonymous Firestore lead writes and locks rate-limit counters and audit logs", () => {
+    expect(rules).not.toContain("validPublicQuote");
+    expect(rules).not.toContain("validPublicMessage");
+    expect(rules).not.toContain("validLead");
+    expect(rules).toMatch(/match \/acarpen_rate_limits\/\{id\}[\s\S]*allow read, write:\s*if\s*false/);
     expect(rules).toMatch(/match \/acarpen_audit_logs\/\{id\}[\s\S]*allow update, delete:\s*if\s*false/);
     expect(rules).toMatch(/match \/users\/\{uid\}[\s\S]*allow write:\s*if\s*isYonetici\(\)/);
     expect(rules).toMatch(/match \/acarpen_prices\/\{id\}[\s\S]*allow write:\s*if\s*canEditPrices\(\)/);
+  });
+
+  it("keeps reCAPTCHA / App Check completely removed from Firebase client and CSP", () => {
+    const firebaseTs = fs.readFileSync(path.resolve(process.cwd(), "src/lib/firebase.ts"), "utf-8");
+    const firebaseJson = fs.readFileSync(path.resolve(process.cwd(), "firebase.json"), "utf-8");
+    expect(firebaseTs).not.toMatch(/recaptcha|ReCaptcha|initializeAppCheck/i);
+    expect(firebaseJson).not.toMatch(/recaptcha|gstatic\.com\/recaptcha/i);
+    expect(firebaseJson).toContain("cloudfunctions.net");
   });
 });

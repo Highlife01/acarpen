@@ -13,7 +13,8 @@ interface QrOrderLabelModalProps {
 export const QrOrderLabelModal: React.FC<QrOrderLabelModalProps> = ({ order, onClose }) => {
   if (!order) return null;
 
-  const trackingUrl = `https://www.acarpen.com.tr/siparis-takip?id=${encodeURIComponent(order.id)}`;
+  const pinQuery = order.trackingPin ? `&pin=${encodeURIComponent(order.trackingPin)}` : "";
+  const trackingUrl = `https://www.acarpen.com.tr/siparis-takip?id=${encodeURIComponent(order.id)}${pinQuery}`;
   const { totalSize, pathData } = getQrSvgPath(trackingUrl, 2);
 
   return (
@@ -24,7 +25,14 @@ export const QrOrderLabelModal: React.FC<QrOrderLabelModalProps> = ({ order, onC
             <div className="text-xs font-black uppercase text-sky-700">
               ACARPEN ÜRETİM & SEVK ETİKETİ
             </div>
-            <div className="font-mono text-lg font-black text-slate-950">{order.id}</div>
+            <div className="font-mono text-lg font-black text-slate-950">
+              {order.id}
+              {order.trackingPin && (
+                <span className="ml-2 text-xs bg-sky-100 text-sky-900 px-2 py-0.5 rounded">
+                  PIN: {order.trackingPin}
+                </span>
+              )}
+            </div>
           </div>
           <button
             type="button"

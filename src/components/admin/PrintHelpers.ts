@@ -202,8 +202,9 @@ export function printProposalDocument(q: QuoteItem): void {
   const fText = doc.createElement("div");
   fText.textContent =
     "Bu teklif Acarpen ERP sistemi tarafından oluşturulmuştur. Fıratpen yetkili üretici bayi güvencesi ve TSE standartlarında garantilidir.";
+  const pinQuery = q.trackingPin ? `&pin=${encodeURIComponent(q.trackingPin)}` : "";
   const qrWrap = doc.createElement("div");
-  const trackingUrl = `https://www.acarpen.com.tr/siparis-takip?id=${encodeURIComponent(q.id)}`;
+  const trackingUrl = `https://www.acarpen.com.tr/siparis-takip?id=${encodeURIComponent(q.id)}${pinQuery}`;
   const svgDoc = new DOMParser().parseFromString(
     generateQrSvgMarkup(trackingUrl, 84, 1),
     "image/svg+xml"
@@ -282,9 +283,10 @@ export function printThermalLabelDocument(q: QuoteItem): void {
     `Sehpa: ${q.rackNo || "SHP-01"} • Lot: ${q.reservedLotNo || "STD"} • Termin: ${q.estimatedDeliveryDate || "-"}`
   );
 
+  const pinQuery = q.trackingPin ? `&pin=${encodeURIComponent(q.trackingPin)}` : "";
   const qrBox = doc.createElement("div");
   qrBox.className = "qr-box";
-  const trackingUrl = `https://www.acarpen.com.tr/siparis-takip?id=${encodeURIComponent(q.id)}`;
+  const trackingUrl = `https://www.acarpen.com.tr/siparis-takip?id=${encodeURIComponent(q.id)}${pinQuery}`;
   const svgDoc = new DOMParser().parseFromString(
     generateQrSvgMarkup(trackingUrl, 130, 1),
     "image/svg+xml"
@@ -294,7 +296,9 @@ export function printThermalLabelDocument(q: QuoteItem): void {
   cap.style.fontSize = "10px";
   cap.style.fontWeight = "bold";
   cap.style.marginTop = "4px";
-  cap.textContent = "QR OKUTARAK İSTASYON & SEVKIYAT DOĞRULAYIN";
+  cap.textContent = q.trackingPin
+    ? `TAKİP PIN: ${q.trackingPin} • QR OKUTARAK DOĞRULAYIN`
+    : "QR OKUTARAK İSTASYON & SEVKIYAT DOĞRULAYIN";
   qrBox.appendChild(cap);
 
   card.appendChild(qrBox);

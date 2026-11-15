@@ -513,7 +513,9 @@ export const ShipmentModuleView: React.FC<ShipmentModuleProps> = ({ quotes }) =>
                           <Printer className="h-3.5 w-3.5" />
                         </Button>
                         <a
-                          href={`/siparis-takip?id=${encodeURIComponent(q.id)}`}
+                          href={`/siparis-takip?id=${encodeURIComponent(q.id)}${
+                            q.trackingPin ? `&pin=${encodeURIComponent(q.trackingPin)}` : ""
+                          }`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="h-8 px-2.5 rounded-lg border border-slate-700 text-sky-400 hover:bg-slate-800 inline-flex items-center text-xs"

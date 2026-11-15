@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
 import { Calculator, Plus, Trash2, CheckCircle2, Send, ShieldCheck, Printer, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
-import { addAdminQuote } from "@/lib/adminStorage";
+import { submitPublicLead } from "@/lib/adminStorage";
 import {
   checkSubmissionCooldown,
   isHoneypotTripped,
@@ -76,6 +77,12 @@ export default function Hesaplama() {
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("Adana - Seyhan");
   const [websiteTrap, setWebsiteTrap] = useState("");
+  const [submittingQuote, setSubmittingQuote] = useState(false);
+  const [lastSubmittedQuote, setLastSubmittedQuote] = useState<{
+    id: string;
+    trackingPin: string;
+  } | null>(null);
+  const formLoadedAtRef = useRef<number>(Date.now());
 
   const addRow = () => {
     setRows((prev) => [
@@ -117,8 +124,9 @@ export default function Hesaplama() {
   );
   const totalPieceCount = calculatedRows.reduce((sum, r) => sum + Number(r.qty || 1), 0);
 
-  const handleRequestOfficialQuote = (e: React.FormEvent) => {
+  const handleRequestOfficialQuote = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submittingQuote) return;
     if (isHoneypotTripped(websiteTrap)) {
       return;
     }
@@ -142,27 +150,42 @@ export default function Hesaplama() {
       .map((r) => `${r.widthCm}x${r.heightCm}cm (${r.qty} Adet - ${r.color})`)
       .join(", ");
 
-    const created = addAdminQuote({
+    setSubmittingQuote(true);
+    const result = await submitPublicLead({
+      kind: "quote",
       customerName: customerName.trim(),
       phone: phone.trim(),
       city,
+      leadSource: "Ölçü Hesaplama Robotu",
       glassType: `${calculatedRows[0]?.brand || "Fıratpen"} — ${calculatedRows[0]?.productType || "PVC Pencere & Kapı"}`,
       thickness: `${calculatedRows[0]?.color || "Beyaz"} • ${calculatedRows[0]?.accessory || "Çift Açılım"}`,
       dimensions: summaryDims,
       totalArea: grandTotalArea,
-      estimatedPrice: 0,
-      status: "new",
+      website: websiteTrap,
+      formElapsedMs: Date.now() - formLoadedAtRef.current,
     });
+    setSubmittingQuote(false);
+
+    if (!result.ok || !result.id || !result.trackingPin) {
+      toast.error(
+        result.error ||
+          "Teklif kaydı sunucuya iletilemedi. Lütfen internet bağlantınızı kontrol edip tekrar deneyin."
+      );
+      return;
+    }
+
     markFormSubmitted("hesaplama_quote_form");
+    formLoadedAtRef.current = Date.now();
+    setLastSubmittedQuote({ id: result.id, trackingPin: result.trackingPin });
 
     trackEvent("quote_calculated", {
-      quote_id: created.id,
+      quote_id: result.id,
       city,
       total_area_m2: grandTotalArea,
     });
 
     toast.success(
-      `Ölçü listeniz (#${created.id}) Acarpen sistemine kaydedildi! WhatsApp üzerinden müşteri temsilcimize yönlendiriliyorsunuz.`
+      `Ölçü listeniz (#${result.id} / PIN: ${result.trackingPin}) Acarpen sistemine kaydedildi! WhatsApp üzerinden müşteri temsilcimize yönlendiriliyorsunuz.`
     );
 
     const wpLines = calculatedRows
@@ -174,9 +197,10 @@ export default function Hesaplama() {
 
     const wpMessage = encodeURIComponent(
       `Merhaba Acarpen,\nWeb sitenizdeki Çoklu Pencere & Cam Balkon Ölçü Robotundan fiyat teklifi rica ediyorum:\n\n` +
-        `• Talep No: ${created.id}\n` +
-        `• Müşteri / Firma: ${customerName}\n` +
-        `• Telefon: ${phone}\n` +
+        `• Talep No: ${result.id}\n` +
+        `• Takip PIN: ${result.trackingPin}\n` +
+        `• Müşteri / Firma: ${customerName.trim()}\n` +
+        `• Telefon: ${phone.trim()}\n` +
         `• Bölge: ${city}\n\n` +
         `ÖLÇÜ VE KALEM LİSTESİ:\n${wpLines}\n\n` +
         `• Toplam Adet: ${totalPieceCount} Doğrama\n` +
@@ -596,11 +620,32 @@ export default function Hesaplama() {
 
                 <Button
                   type="submit"
-                  className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12 shadow-md text-xs sm:text-sm"
+                  disabled={submittingQuote}
+                  className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-bold h-12 shadow-md text-xs sm:text-sm"
                 >
                   <MessageCircle className="mr-2 h-4 w-4" />
-                  WhatsApp'tan Net Fiyat Teklifi Al
+                  {submittingQuote ? "Teklifiniz Kaydediliyor..." : "WhatsApp'tan Net Fiyat Teklifi Al"}
                 </Button>
+
+                {lastSubmittedQuote && (
+                  <div className="rounded-xl border border-emerald-200 bg-emerald-50/90 p-3.5 text-xs text-emerald-950 space-y-1.5">
+                    <div className="flex items-center gap-1.5 font-bold text-emerald-800">
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                      <span>Talebiniz Başarıyla Kaydedildi</span>
+                    </div>
+                    <p className="text-emerald-900/90">
+                      Talep No:{" "}
+                      <strong className="font-mono">{lastSubmittedQuote.id}</strong> • Takip PIN:{" "}
+                      <strong className="font-mono">{lastSubmittedQuote.trackingPin}</strong>
+                    </p>
+                    <Link
+                      to={`/siparis-takip?id=${encodeURIComponent(lastSubmittedQuote.id)}&pin=${encodeURIComponent(lastSubmittedQuote.trackingPin)}`}
+                      className="inline-flex items-center gap-1 font-bold text-emerald-700 underline underline-offset-2 hover:text-emerald-900"
+                    >
+                      Sipariş Durumunu Şimdi Sorgula →
+                    </Link>
+                  </div>
+                )}
               </form>
             </div>
           </div>

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Logo } from "./Logo";
 import { useLanguage } from "@/context/LanguageContext";
+import { resetCookieConsent, setCookieConsent } from "@/lib/analytics";
 
 export const Footer = () => {
   const { t } = useLanguage();
@@ -369,11 +370,36 @@ export const Footer = () => {
             {legalModal === "cookies" && (
               <div className="text-xs sm:text-sm text-slate-600 space-y-3 leading-relaxed">
                 <p>
-                  Acarpen web sitesi, dil tercihinizi (TR / EN / AR) hatırlamak ve pencere/cam balkon ölçü robotu hesaplamalarınızı kesintisiz sunmak amacıyla yalnızca zorunlu oturum çerezleri kullanmaktadır.
+                  <strong className="text-slate-900">1. Zorunlu Depolama:</strong> Dil seçiminiz (TR / EN / AR) ve çerez onay tercihiniz tarayıcınızda saklanır; bu temel işlevler için izleme yapılmaz.
                 </p>
                 <p>
-                  Tarayıcı ayarlarınız üzerinden çerezleri dilediğiniz zaman temizleyebilir veya engelleyebilirsiniz.
+                  <strong className="text-slate-900">2. Analiz Çerezleri (Açık Rıza İle):</strong> Çerez banner&apos;ında &ldquo;Tümünü Kabul Et&rdquo; seçildiğinde Google Analytics (GA4) ve tarayıcı içi ziyaret sayacı devreye girer. Onayınızı istediğiniz an geri çekebilirsiniz; reddettiğinizde GA4 devre dışı bırakılır, analiz çerezleri ve yerel ziyaret istatistikleri temizlenir.
                 </p>
+                <p>
+                  <strong className="text-slate-900">3. Harici Google Bileşenleri:</strong> İletişim bölümünde gömülü Google Haritalar ve kullanıcı tercihine bağlı çoklu dil çevirisi (Google Çeviri), ilgili servislerin kendi Google gizlilik koşullarına tabidir.
+                </p>
+                <div className="pt-2 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      resetCookieConsent();
+                      setLegalModal(null);
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-colors"
+                  >
+                    Çerez Tercihlerimi Güncelle
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCookieConsent("denied");
+                      setLegalModal(null);
+                    }}
+                    className="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition-colors"
+                  >
+                    Analiz Çerezlerini Reddet &amp; Temizle
+                  </button>
+                </div>
               </div>
             )}
 

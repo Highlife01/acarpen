@@ -55,18 +55,17 @@ export type AnalyticsEventParams = Record<string, string | number | boolean | un
 interface WindowWithGtag extends Window {
   dataLayer?: unknown[];
   gtag?: (...args: unknown[]) => void;
+  [key: `ga-disable-${string}`]: boolean | undefined;
+}
+
+function getGtagWindow(): WindowWithGtag {
+  return window as unknown as WindowWithGtag;
 }
 
 class AnalyticsManager {
   private listeners: Set<(stats: VisitorTelemetryStats) => void> = new Set();
   private consentListeners: Set<(consent: CookieConsentStatus) => void> = new Set();
-  private stats: VisitorTelemetryStats = {
-    ...INITIAL_STATS,
-    topPages: [],
-    languages: [],
-    deviceTypes: { ...INITIAL_STATS.deviceTypes },
-    recentVisits: [],
-  };
+  private stats: VisitorTelemetryStats = this.createEmptyStats();
   private currentConsent: CookieConsentStatus = null;
   private gaInitialized = false;
 
@@ -74,31 +73,42 @@ class AnalyticsManager {
     this.init();
   }
 
+  private createEmptyStats(): VisitorTelemetryStats {
+    return {
+      ...INITIAL_STATS,
+      topPages: [],
+      languages: [],
+      deviceTypes: { ...INITIAL_STATS.deviceTypes },
+      recentVisits: [],
+    };
+  }
+
   private init() {
     if (typeof window === "undefined") return;
 
     try {
-      if (typeof window !== "undefined" && window.localStorage) {
+      if (window.localStorage) {
         const savedConsent = window.localStorage.getItem(CONSENT_STORAGE_KEY) as CookieConsentStatus;
         if (savedConsent === "granted" || savedConsent === "denied") {
           this.currentConsent = savedConsent;
         }
 
-        const savedTelemetry = window.localStorage.getItem(TELEMETRY_STORAGE_KEY);
-        if (savedTelemetry) {
-          try {
-            const parsed = JSON.parse(savedTelemetry);
-            if (parsed && typeof parsed.totalPageviews === "number") {
-              this.stats = parsed;
+        if (this.currentConsent === "granted") {
+          const savedTelemetry = window.localStorage.getItem(TELEMETRY_STORAGE_KEY);
+          if (savedTelemetry) {
+            try {
+              const parsed = JSON.parse(savedTelemetry);
+              if (parsed && typeof parsed.totalPageviews === "number") {
+                this.stats = parsed;
+              }
+            } catch {
+              // keep default
             }
-          } catch {
-            // keep default
           }
+          this.initGA();
+        } else if (this.currentConsent === "denied") {
+          this.clearLocalTelemetry();
         }
-      }
-
-      if (this.currentConsent === "granted") {
-        this.initGA();
       }
     } catch (e) {
       console.warn("Analytics initialization notice:", e);
@@ -107,6 +117,62 @@ class AnalyticsManager {
 
   public getConsent(): CookieConsentStatus {
     return this.currentConsent;
+  }
+
+  private clearLocalTelemetry() {
+    this.stats = this.createEmptyStats();
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage?.removeItem(TELEMETRY_STORAGE_KEY);
+      window.sessionStorage?.removeItem(VISITOR_ID_KEY);
+    } catch {
+      // Ignore storage cleanup errors
+    }
+  }
+
+  private expireAnalyticsCookies() {
+    if (typeof document === "undefined" || typeof window === "undefined") return;
+    try {
+      const gaId = (import.meta.env.VITE_GA_MEASUREMENT_ID || DEFAULT_GA_ID).replace(/^G-/, "");
+      const cookieNames = ["_ga", "_gid", "_gat", `_ga_${gaId}`];
+      const host = window.location.hostname;
+      const rootDomain = host.includes(".") ? `.${host.replace(/^www\./, "")}` : "";
+      for (const name of cookieNames) {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`;
+        if (rootDomain) {
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${rootDomain}; SameSite=Lax`;
+        }
+      }
+    } catch {
+      // Ignore cookie expiration errors
+    }
+  }
+
+  private revokeGA() {
+    if (typeof window === "undefined") return;
+    try {
+      const gaId = import.meta.env.VITE_GA_MEASUREMENT_ID || DEFAULT_GA_ID;
+      const win = getGtagWindow();
+      win[`ga-disable-${gaId}`] = true;
+
+      if (typeof win.gtag === "function") {
+        win.gtag("consent", "update", {
+          analytics_storage: "denied",
+          ad_storage: "denied",
+          functionality_storage: "denied",
+          personalization_storage: "denied",
+        });
+      }
+
+      const script = document.getElementById("ga4-script");
+      if (script && script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+      this.gaInitialized = false;
+      this.expireAnalyticsCookies();
+    } catch {
+      // Ignore GA revocation errors
+    }
   }
 
   public setConsent(status: "granted" | "denied") {
@@ -122,17 +188,34 @@ class AnalyticsManager {
         if (status === "granted") {
           this.stats.consentsGranted += 1;
           this.initGA();
+          this.saveTelemetry();
           this.trackPageView(window.location.pathname, document.title);
         } else {
-          this.stats.consentsDenied += 1;
+          this.revokeGA();
+          this.clearLocalTelemetry();
         }
 
-        this.saveTelemetry();
         this.notifyConsentListeners();
         this.notifyStatsListeners();
       }
     } catch (e) {
       console.warn("Set consent error:", e);
+    }
+  }
+
+  public resetConsent() {
+    this.currentConsent = null;
+    try {
+      if (typeof window !== "undefined") {
+        window.localStorage?.removeItem(CONSENT_STORAGE_KEY);
+        window.localStorage?.removeItem(CONSENT_DATE_KEY);
+        this.revokeGA();
+        this.clearLocalTelemetry();
+        this.notifyConsentListeners();
+        this.notifyStatsListeners();
+      }
+    } catch (e) {
+      console.warn("Reset consent error:", e);
     }
   }
 
@@ -147,11 +230,12 @@ class AnalyticsManager {
   }
 
   public initGA() {
-    if (this.gaInitialized || typeof window === "undefined") return;
+    if (this.currentConsent !== "granted" || this.gaInitialized || typeof window === "undefined") return;
 
     try {
       const gaId = import.meta.env.VITE_GA_MEASUREMENT_ID || DEFAULT_GA_ID;
-      const win = window as WindowWithGtag;
+      const win = getGtagWindow();
+      win[`ga-disable-${gaId}`] = false;
 
       win.dataLayer = win.dataLayer || [];
       function gtag(...args: unknown[]) {
@@ -161,7 +245,7 @@ class AnalyticsManager {
 
       gtag("consent", "default", {
         analytics_storage: "granted",
-        ad_storage: "granted",
+        ad_storage: "denied",
         wait_for_update: 500,
       });
 
@@ -191,6 +275,9 @@ class AnalyticsManager {
 
     if (path.startsWith("/admin")) return;
 
+    // Require explicit consent before collecting any visitor statistics or writing local telemetry
+    if (this.currentConsent !== "granted") return;
+
     const pageTitle = title || document.title || "Acarpen";
     const currentLang = document.documentElement.lang || "tr";
     const userAgent = navigator.userAgent || "";
@@ -198,8 +285,8 @@ class AnalyticsManager {
     const isTablet = /iPad|Tablet/i.test(userAgent);
     const deviceType: "Masaüstü" | "Mobil" | "Tablet" = isTablet ? "Tablet" : isMobile ? "Mobil" : "Masaüstü";
 
-    const win = window as WindowWithGtag;
-    if (this.currentConsent === "granted" && typeof win.gtag === "function") {
+    const win = getGtagWindow();
+    if (typeof win.gtag === "function") {
       try {
         win.gtag("event", "page_view", {
           page_title: pageTitle,
@@ -269,7 +356,7 @@ class AnalyticsManager {
   }
 
   public trackEvent(eventName: string, params: AnalyticsEventParams = {}) {
-    const win = window as WindowWithGtag;
+    const win = getGtagWindow();
     if (this.currentConsent === "granted" && typeof win.gtag === "function") {
       try {
         win.gtag("event", eventName, params);
@@ -295,6 +382,7 @@ class AnalyticsManager {
   }
 
   private saveTelemetry() {
+    if (this.currentConsent !== "granted") return;
     try {
       if (typeof window !== "undefined" && window.localStorage) {
         window.localStorage.setItem(TELEMETRY_STORAGE_KEY, JSON.stringify(this.stats));
@@ -309,6 +397,7 @@ export const analyticsManager = new AnalyticsManager();
 
 export const getCookieConsent = () => analyticsManager.getConsent();
 export const setCookieConsent = (status: "granted" | "denied") => analyticsManager.setConsent(status);
+export const resetCookieConsent = () => analyticsManager.resetConsent();
 export const subscribeCookieConsent = (cb: (consent: CookieConsentStatus) => void) =>
   analyticsManager.subscribeConsent(cb);
 

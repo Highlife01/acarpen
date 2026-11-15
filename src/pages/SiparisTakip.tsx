@@ -5,7 +5,7 @@ import { Footer } from "@/components/site/Footer";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import {
-  fetchPublicOrderTracking,
+  fetchPublicOrderTrackingWithStatus,
   type PublicOrderTrackingItem,
 } from "@/lib/adminStorage";
 import {
@@ -15,12 +15,13 @@ import {
   Flame,
   Layers,
   Truck,
-  CheckCircle2,
   Clock,
-  Phone,
+  KeyRound,
   FileText,
   ShieldCheck,
   AlertCircle,
+  CheckCircle2,
+  Phone,
 } from "lucide-react";
 
 const STAGES = [
@@ -91,21 +92,44 @@ function getActiveStepIndex(item: PublicOrderTrackingItem): number {
 export default function SiparisTakip() {
   const [searchParams] = useSearchParams();
   const initialQuery = searchParams.get("id") || "";
+  const initialPin = searchParams.get("pin") || "";
   const [query, setQuery] = useState(initialQuery);
+  const [trackingPin, setTrackingPin] = useState(initialPin);
   const [matches, setMatches] = useState<PublicOrderTrackingItem[]>([]);
   const [selectedOrderId, setSelectedOrderId] = useState<string>("");
   const [searched, setSearched] = useState(false);
+  const [lookupError, setLookupError] = useState<string | null>(null);
   const [searchingRemote, setSearchingRemote] = useState(false);
 
-  const handleSearchValue = useCallback(async (val: string) => {
+  const handleSearchValue = useCallback(async (val: string, pinVal: string) => {
     const trimmed = val.trim();
+    const cleanPin = pinVal.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
     if (!trimmed) return;
 
+    if (cleanPin.length < 6) {
+      setMatches([]);
+      setSelectedOrderId("");
+      setSearched(true);
+      setLookupError(
+        "Güvenlik amacıyla sipariş veya telefon numarasıyla birlikte 6 haneli Takip Güvenlik Kodunu (PIN) girmelisiniz."
+      );
+      return;
+    }
+
     setSearchingRemote(true);
+    setLookupError(null);
     try {
-      const results = await fetchPublicOrderTracking(trimmed);
-      setMatches(results);
-      setSelectedOrderId(results[0]?.orderId || "");
+      const res = await fetchPublicOrderTrackingWithStatus(trimmed, cleanPin);
+      if (!res.ok) {
+        setMatches([]);
+        setSelectedOrderId("");
+        setLookupError(
+          res.error || "Sipariş takip sunucusuna bağlanılamadı. Lütfen tekrar deneyin."
+        );
+      } else {
+        setMatches(res.items);
+        setSelectedOrderId(res.items[0]?.orderId || "");
+      }
       setSearched(true);
     } finally {
       setSearchingRemote(false);
@@ -113,14 +137,14 @@ export default function SiparisTakip() {
   }, []);
 
   useEffect(() => {
-    if (initialQuery) {
-      void handleSearchValue(initialQuery);
+    if (initialQuery && initialPin) {
+      void handleSearchValue(initialQuery, initialPin);
     }
-  }, [initialQuery, handleSearchValue]);
+  }, [initialQuery, initialPin, handleSearchValue]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    void handleSearchValue(query);
+    void handleSearchValue(query, trackingPin);
   };
 
   const matchedQuote =
@@ -131,7 +155,7 @@ export default function SiparisTakip() {
     <main className="min-h-screen bg-slate-50 text-slate-900 pt-28 lg:pt-32">
       <SEO
         title="Canlı Sipariş & Üretim Takip Portalı | Acarpen Adana"
-        description="Acarpen Fıratpen, Winsa ve Pimapen PVC pencere, kapı ve cam balkon siparişinizin CNC kesim, köşe kaynak, ısıcam ve montaj aşamalarını sipariş numaranızla veya telefon numaranızla canlı takip edin."
+        description="Acarpen Fıratpen, Winsa ve Pimapen PVC pencere, kapı ve cam balkon siparişinizin CNC kesim, köşe kaynak, ısıcam ve montaj aşamalarını sipariş numaranız ve 6 haneli takip güvenlik kodunuzla canlı takip edin."
         canonicalPath="/siparis-takip"
         breadcrumbs={[{ name: "Sipariş Takip", path: "/siparis-takip" }]}
       />
@@ -141,26 +165,38 @@ export default function SiparisTakip() {
         <div className="max-w-4xl mx-auto px-6 text-center space-y-4">
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-100 border border-sky-200 text-xs font-mono uppercase tracking-widest text-sky-800 font-bold">
             <Clock className="h-3.5 w-3.5 text-sky-600" />
-            Acarpen Canlı İmalat & Sevkiyat İzleme
+            Acarpen Çift Doğrulamalı İmalat İzleme
           </span>
           <h1 className="font-serif text-3xl sm:text-5xl font-bold text-slate-900">
             Sipariş & Üretim <span className="text-gradient italic">Takip Portalı</span>
           </h1>
           <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto font-normal">
-            Size iletilen Sipariş/Teklif Numarasını veya Telefon Numaranızı girerek PVC doğrama ve cam
-            balkon siparişinizin hangi aşamada olduğunu tüm cihazlardan KVKK uyumlu şekilde anlık
-            görüntüleyin.
+            Başvuru sonrası size verilen Sipariş/Teklif Numarası (veya Telefon Numarası) ile{" "}
+            <strong className="text-slate-800">6 Haneli Takip Güvenlik Kodunuzu (PIN)</strong>{" "}
+            girerek imalat aşamasını kişisel verileriniz korunarak anlık görüntüleyin.
           </p>
 
-          <form onSubmit={handleSubmit} className="pt-4 max-w-xl mx-auto flex flex-col sm:flex-row gap-3">
+          <form onSubmit={handleSubmit} className="pt-4 max-w-2xl mx-auto flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <Search className="h-4 w-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Sipariş No (TKF-...) veya Telefon Numaranız (05XX...)..."
+                placeholder="Sipariş No (TKF-...) veya Telefon (05XX...)..."
                 className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-white border border-slate-300 text-slate-900 text-sm font-medium focus:outline-none focus:border-sky-600 shadow-sm"
+              />
+            </div>
+            <div className="relative sm:w-44">
+              <KeyRound className="h-4 w-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                maxLength={12}
+                value={trackingPin}
+                onChange={(e) => setTrackingPin(e.target.value.toUpperCase())}
+                placeholder="Takip PIN *"
+                aria-label="6 Haneli Takip Güvenlik Kodu"
+                className="w-full pl-10 pr-3 py-3.5 rounded-2xl bg-white border border-slate-300 text-slate-900 font-mono uppercase tracking-widest text-sm font-bold focus:outline-none focus:border-sky-600 shadow-sm"
               />
             </div>
             <Button
@@ -178,11 +214,20 @@ export default function SiparisTakip() {
         {searched && !matchedQuote && (
           <div className="bg-white rounded-3xl p-8 border border-rose-200 text-center max-w-xl mx-auto space-y-4 shadow-md">
             <AlertCircle className="h-12 w-12 text-rose-500 mx-auto" />
-            <h2 className="font-serif text-2xl font-bold text-slate-900">Kayıt Bulunamadı</h2>
+            <h2 className="font-serif text-2xl font-bold text-slate-900">
+              {lookupError ? "Doğrulama / Bağlantı Uyarısı" : "Kayıt Bulunamadı"}
+            </h2>
             <p className="text-xs sm:text-sm text-slate-600">
-              Girdiğiniz <strong className="text-slate-900">"{query}"</strong> bilgisiyle eşleşen
-              aktif bir sipariş kaydı bulunamadı. Lütfen numaranızı kontrol edin veya müşteri
-              temsilcimizle iletişime geçin.
+              {lookupError ? (
+                lookupError
+              ) : (
+                <>
+                  Girdiğiniz <strong className="text-slate-900">"{query}"</strong> ve{" "}
+                  <strong className="font-mono text-slate-900">PIN</strong> bilgisiyle eşleşen aktif
+                  bir sipariş kaydı bulunamadı. Lütfen Sipariş Numaranızı ve 6 haneli PIN kodunuzu
+                  kontrol edin.
+                </>
+              )}
             </p>
             <div className="pt-2">
               <a
@@ -201,7 +246,7 @@ export default function SiparisTakip() {
         {matches.length > 1 && matchedQuote && (
           <div className="mb-6 bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-wrap items-center gap-2">
             <span className="text-xs font-bold text-slate-700 mr-1">
-              Bu telefonla eşleşen siparişler ({matches.length}):
+              Bu doğrulamayla eşleşen siparişler ({matches.length}):
             </span>
             {matches.map((m) => (
               <button
@@ -222,7 +267,7 @@ export default function SiparisTakip() {
 
         {matchedQuote && (
           <div className="space-y-8 animate-fade-up">
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-lg grid md:grid-cols-4 gap-6">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-lg grid md:grid-cols-3 gap-6">
               <div>
                 <div className="text-[11px] font-mono uppercase text-sky-700 font-bold">
                   Sipariş / Teklif No
@@ -234,28 +279,23 @@ export default function SiparisTakip() {
               </div>
               <div>
                 <div className="text-[11px] font-mono uppercase text-sky-700 font-bold">
-                  Müşteri (KVKK Korumalı)
+                  Üretim Grubu (KVKK Korumalı)
                 </div>
                 <div className="font-bold text-base text-slate-900 mt-1">
-                  {matchedQuote.maskedCustomer}
+                  {matchedQuote.systemCategory || "PVC Doğrama Sistemleri"}
                 </div>
-                <div className="text-xs text-slate-500 mt-0.5">{matchedQuote.city}</div>
-              </div>
-              <div>
-                <div className="text-[11px] font-mono uppercase text-sky-700 font-bold">
-                  Sistem & Donanım
-                </div>
-                <div className="font-bold text-sm text-slate-900 mt-1">{matchedQuote.glassType}</div>
-                <div className="text-xs text-emerald-700 font-mono font-semibold mt-0.5">
-                  {matchedQuote.thickness} • {matchedQuote.dimensions}
+                <div className="text-xs text-emerald-700 font-medium mt-0.5">
+                  Kişisel ve teknik ölçü detayları gizlilik amacıyla maskelenmiştir
                 </div>
               </div>
               <div className="md:text-right">
                 <div className="text-[11px] font-mono uppercase text-sky-700 font-bold">
-                  Toplam Metraj
+                  Planlanan Termin / Kalite
                 </div>
-                <div className="font-serif text-2xl font-extrabold text-slate-900 mt-1">
-                  {matchedQuote.totalArea} m²
+                <div className="font-serif text-xl font-extrabold text-slate-900 mt-1">
+                  {matchedQuote.qualityHold
+                    ? "Kalite İncelemesinde"
+                    : matchedQuote.estimatedDeliveryDate || "Planlanıyor"}
                 </div>
                 <div className="text-xs text-slate-500 mt-0.5">
                   Fıratpen, Winsa & Pimapen Yetkili Bayi Garantisi

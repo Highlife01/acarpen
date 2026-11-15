@@ -84,8 +84,12 @@ import {
   subscribeAdminAuthState,
   getStaffUsers,
   subscribeStaffUsers,
+  getAdminSyncState,
+  clearAdminSyncError,
+  subscribeAdminSyncState,
   purgeAllAdminTransactionalData,
   type AdminAuthState,
+  type AdminSyncState,
   type StaffUserRecord,
 } from "@/lib/adminStorage";
 import { auth, isFirebaseConfigured } from "@/lib/firebase";
@@ -150,6 +154,7 @@ const MODULE_GROUPS: { key: ModuleGroupKey; title: string }[] = [
 
 export default function AdminDashboard() {
   const [authState, setAuthState] = useState<AdminAuthState>(() => getAdminAuthState());
+  const [syncState, setSyncState] = useState<AdminSyncState>(() => getAdminSyncState());
   const [staffUsers, setStaffUsers] = useState<StaffUserRecord[]>(() => getStaffUsers());
   const isAuthenticated = Boolean(
     authState.sessionUid && authState.authResolved && authState.isAuthorizedStaff
@@ -206,6 +211,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const unsubAuthState = subscribeAdminAuthState(setAuthState);
+    const unsubSync = subscribeAdminSyncState(setSyncState);
     const unsubStaff = subscribeStaffUsers(setStaffUsers);
     const unsubRole = subscribeActiveUserRole((r) => setActiveRole(r));
     const unsubQuotes = subscribeAdminQuotes((items) => {
@@ -239,6 +245,7 @@ export default function AdminDashboard() {
 
     return () => {
       unsubAuthState();
+      unsubSync();
       unsubStaff();
       unsubRole();
       unsubQuotes();
@@ -951,6 +958,28 @@ export default function AdminDashboard() {
         {/* ACTIVE MODULE BODY                                                 */}
         {/* ================================================================== */}
         <main className="p-4 sm:p-6 flex-1 space-y-6 overflow-x-hidden">
+          {syncState.status === "error" && syncState.lastError && (
+            <div
+              role="alert"
+              className="rounded-2xl bg-rose-950/90 border-2 border-rose-500 text-rose-100 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg"
+            >
+              <div className="space-y-1">
+                <div className="text-xs font-black uppercase tracking-wider text-rose-300">
+                  Firestore Sunucu Eşitleme Hatası ({syncState.failedCount} başarısız işlem)
+                </div>
+                <p className="text-xs sm:text-sm font-medium text-white">{syncState.lastError}</p>
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={clearAdminSyncError}
+                className="shrink-0 rounded-xl border-rose-400 text-rose-100 hover:bg-rose-800 text-xs font-bold"
+              >
+                Uyarıyı Kapat
+              </Button>
+            </div>
+          )}
           {/* ================================================================ */}
           {/* ================================================================ */}
           {/* MODÜL 1: GENEL ÖZET & BUGÜN (PRATİK HIZLI KONTROL MERKEZİ)       */}

@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import {
   getCookieConsent,
   setCookieConsent,
+  resetCookieConsent,
   trackPageView,
   getVisitorStats,
 } from "@/lib/analytics";
@@ -12,24 +13,44 @@ describe("1. Multilingual Cookie Consent & First-Party Analytics", () => {
   beforeEach(() => {
     localStorage.clear();
     sessionStorage.clear();
+    resetCookieConsent();
   });
 
-  it("should initialize with null consent and update to granted", () => {
+  it("should not collect local or GA telemetry before consent or after revocation", () => {
     expect(getCookieConsent()).toBeNull();
+    trackPageView("/urunler/oncesi", "İzinsiz Ziyaret");
+    expect(getVisitorStats().totalPageviews).toBe(0);
+    expect(localStorage.getItem("acarpen_visitor_telemetry_v2")).toBeNull();
+
     setCookieConsent("granted");
     expect(getCookieConsent()).toBe("granted");
     expect(localStorage.getItem("acarpen_cookie_consent")).toBe("granted");
+    expect(document.getElementById("ga4-script")).not.toBeNull();
+
+    const afterGrantViews = getVisitorStats().totalPageviews;
+    trackPageView("/urunler/cift-cam", "PVC Pencere Sistemleri");
+    const updatedStats = getVisitorStats();
+    expect(updatedStats.totalPageviews).toBe(afterGrantViews + 1);
+    expect(updatedStats.topPages.some((p) => p.path === "/urunler/cift-cam")).toBe(true);
+
+    // Revoke consent and verify full telemetry wipe + GA disable + script removal
+    setCookieConsent("denied");
+    expect(getCookieConsent()).toBe("denied");
+    expect(getVisitorStats().totalPageviews).toBe(0);
+    expect(localStorage.getItem("acarpen_visitor_telemetry_v2")).toBeNull();
+    expect(document.getElementById("ga4-script")).toBeNull();
+    expect((window as unknown as Record<string, unknown>)["ga-disable-G-ACARPEN001"]).toBe(true);
+
+    trackPageView("/urunler/sonrasi", "Red Sonrası");
+    expect(getVisitorStats().totalPageviews).toBe(0);
   });
 
-  it("should track pageviews and update visitor telemetry", () => {
-    const initialStats = getVisitorStats();
-    const initialViews = initialStats.totalPageviews;
-
-    trackPageView("/urunler/cift-cam", "PVC Pencere Sistemleri");
-
-    const updatedStats = getVisitorStats();
-    expect(updatedStats.totalPageviews).toBe(initialViews + 1);
-    expect(updatedStats.topPages.some((p) => p.path === "/urunler/cift-cam")).toBe(true);
+  it("CookieConsent copy must accurately disclose third-party Google integrations", () => {
+    const cookieConsentPath = path.resolve(__dirname, "../components/site/CookieConsent.tsx");
+    const content = fs.readFileSync(cookieConsentPath, "utf-8");
+    expect(content).not.toContain("asla 3. taraflarla paylaşılmaz");
+    expect(content).not.toContain("never sold or shared with third parties");
+    expect(content).toContain("Google Analytics");
   });
 });
 

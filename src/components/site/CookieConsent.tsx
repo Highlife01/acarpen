@@ -17,32 +17,32 @@ const COOKIE_TRANSLATIONS: Record<"tr" | "en" | "ar", ConsentTranslation> = {
   tr: {
     title: "Gizlilik ve Çerez Tercihleriniz",
     description:
-      "Acarpen (Acar Pen İnşaat San. ve Tic. Ltd. Şti.) olarak sitemizdeki deneyiminizi geliştirmek, PVC doğrama ve cam balkon teklif robotumuzun hatasız çalışmasını sağlamak ve ziyaretçi istatistiklerini anonim olarak analiz etmek amacıyla KVKK ve GDPR standartlarına uygun birinci taraf çerezler kullanıyoruz.",
+      "Acarpen olarak dil tercihiniz için zorunlu yerel depolama kullanıyoruz. Onay vermeniz hâlinde yalnızca ölçümleme amacıyla Google Analytics ve ziyaret istatistikleri etkinleşir; ayrıca tercihinize göre açılan Google Haritalar ve Google Çeviri bileşenleri Google hizmetleriyle doğrudan iletişim kurabilir.",
     badge: "KVKK & GDPR Uyumlu",
     accept: "Tümünü Kabul Et",
     reject: "Yalnızca Gerekli Çerezler",
     policy: "Çerez Politikası",
-    guarantee: "Kişisel verileriniz asla 3. taraflarla paylaşılmaz.",
+    guarantee: "Onay vermeden analiz izlemesi başlatılmaz; tercih altbilgiden geri çekilebilir.",
   },
   en: {
     title: "Privacy & Cookie Preferences",
     description:
-      "At Acarpen (Authorized Fıratpen Producer & Dealer), we use GDPR-compliant first-party cookies to optimize your browsing experience, ensure our PVC window & glass balcony quotation calculator operates accurately, and evaluate anonymous traffic statistics.",
+      "At Acarpen, strictly necessary storage preserves your language preference. With your consent, Google Analytics and first-party visit statistics are enabled; optional embedded Google Maps and Google Translate components communicate directly with Google when used.",
     badge: "GDPR & KVKK Compliant",
     accept: "Accept All Cookies",
     reject: "Essential Only",
     policy: "Cookie Policy",
-    guarantee: "Your personal data is never sold or shared with third parties.",
+    guarantee: "No analytics tracking runs without consent; you may withdraw anytime in the footer.",
   },
   ar: {
     title: "تفضيلات الخصوصية وملفات تعريف الارتباط",
     description:
-      "في شركة أكاربن (وكيل ومصنع معتمد لـ Fıratpen)، نستخدم ملفات تعريف الارتباط من الطرف الأول المتوافقة مع معايير GDPR وKVKK لتحسين تجربتكم وضمان دقة روبوت حساب أسعار النوافذ والواجهات الزجاجية وتحليل الإحصاءات بسرية تامة.",
+      "في أكاربن، نستخدم التخزين الضروري لحفظ تفضيل اللغة فقط. وعند موافقتكم يتم تفعيل إحصاءات Google Analytics والزيارات؛ كما قد تتواصل خدمات خرائط Google والترجمة عند استخدامها مع خوادم Google.",
     badge: "متوافق مع GDPR و KVKK",
     accept: "قبول جميع ملفات الارتباط",
     reject: "الملفات الأساسية فقط",
     policy: "سياسة ملفات الارتباط",
-    guarantee: "بياناتكم الشخصية محمية ولا يتم مشاركتها مع أطراف خارجية.",
+    guarantee: "لا يبدأ أي تتبع تحليلي قبل الموافقة، ويمكنكم سحبها في أي وقت.",
   },
 };
 
@@ -54,7 +54,9 @@ export const CookieConsent: React.FC = () => {
   useEffect(() => {
     const unsubscribe = subscribeCookieConsent((status) => {
       setConsentStatus(status);
-      if (status !== null) {
+      if (status === null) {
+        setIsVisible(true);
+      } else {
         setIsVisible(false);
       }
     });

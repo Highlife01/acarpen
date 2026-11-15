@@ -5,7 +5,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     function signedIn() {
-      return request.auth != null;
+      return request.auth != null && request.auth.token.email_verified == true;
     }
 
     function userDocPath() {
@@ -16,10 +16,6 @@ service cloud.firestore {
       return get(userDocPath()).data;
     }
 
-    function isPrimaryAdmin() {
-      return signedIn() && request.auth.token.email == 'admin@acarpen.com.tr';
-    }
-
     function isStaff() {
       return signedIn()
         && exists(userDocPath())
@@ -27,223 +23,63 @@ service cloud.firestore {
     }
 
     function hasRole(roles) {
-      return isPrimaryAdmin()
-        || (signedIn() && ('role' in request.auth.token) && (request.auth.token.role in roles))
-        || (isStaff() && (me().role in roles));
+      return isStaff() && (
+        (me().role in roles)
+        || (('acarpenRole' in request.auth.token) && (request.auth.token.acarpenRole in roles))
+      );
     }
 
     function isAdminOrStaff() {
-      return isPrimaryAdmin()
-        || (signedIn() && ('role' in request.auth.token) && request.auth.token.role in [
+      return isStaff() && (
+        me().role in [
           'yonetici', 'satis_yoneticisi', 'satis', 'uretim_planlama',
           'operator', 'kalite', 'depo_satinalma', 'finans',
-          'superadmin', 'manager', 'sales', 'editor'
-        ])
-        || isStaff();
+          'superadmin', 'super_admin', 'manager', 'sales', 'editor'
+        ]
+        || (('acarpenRole' in request.auth.token) && (request.auth.token.acarpenRole in [
+          'yonetici', 'satis_yoneticisi', 'satis', 'uretim_planlama',
+          'operator', 'kalite', 'depo_satinalma', 'finans'
+        ]))
+      );
     }
 
     // Rol matrisi — adminStorage ROLE_DEFINITIONS + eski alias'lar
     function isYonetici() {
-      return hasRole(['yonetici', 'superadmin', 'manager']);
+      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager']);
     }
     function canManage() {
       return isYonetici();
     }
     function canSell() {
-      return hasRole(['yonetici', 'superadmin', 'manager', 'satis_yoneticisi', 'satis', 'sales', 'editor']);
+      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'satis_yoneticisi', 'satis', 'sales', 'editor']);
     }
     function canEdit() {
-      return hasRole(['yonetici', 'superadmin', 'manager', 'satis_yoneticisi', 'editor']);
+      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'satis_yoneticisi', 'editor']);
     }
     function canEditPrices() {
-      return hasRole(['yonetici', 'superadmin', 'manager', 'satis_yoneticisi']);
+      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'satis_yoneticisi']);
     }
     function canManageProduction() {
-      return hasRole(['yonetici', 'superadmin', 'manager', 'uretim_planlama', 'operator']);
+      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'uretim_planlama', 'operator']);
     }
     function canInspectQuality() {
-      return hasRole(['yonetici', 'superadmin', 'manager', 'uretim_planlama', 'operator', 'kalite', 'depo_satinalma']);
+      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'uretim_planlama', 'operator', 'kalite', 'depo_satinalma']);
     }
     function canManageQualityHold() {
-      return hasRole(['yonetici', 'superadmin', 'manager', 'kalite']);
+      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'kalite']);
     }
     function canManageInventory() {
-      return hasRole(['yonetici', 'superadmin', 'manager', 'depo_satinalma']);
+      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'depo_satinalma']);
     }
     function canManageFinance() {
-      return hasRole(['yonetici', 'superadmin', 'manager', 'finans', 'satis_yoneticisi']);
+      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'finans', 'satis_yoneticisi']);
     }
     function canManageChecksAndCash() {
-      return hasRole(['yonetici', 'superadmin', 'manager', 'finans']);
+      return hasRole(['yonetici', 'superadmin', 'super_admin', 'manager', 'finans']);
     }
 
-    function optString(d, key, max) {
-      return !(key in d) || (d[key] is string && d[key].size() <= max);
-    }
-
-    function validLead() {
-      let d = request.resource.data;
-      return d.keys().hasOnly([
-          'type', 'name', 'phone', 'phoneNormalized', 'email', 'city', 'district', 'neighborhood',
-          'serviceId', 'projectType', 'dimensions', 'message', 'attachments', 'contactMethod',
-          'source', 'utm', 'landingPage', 'referrer', 'status', 'assignedTo', 'consent',
-          'createdAt', 'updatedAt'
-        ])
-        && d.keys().hasAll(['type', 'name', 'phone', 'phoneNormalized', 'serviceId', 'status', 'consent', 'createdAt', 'updatedAt'])
-        && d.type in ['quote', 'survey', 'contact']
-        && d.name is string && d.name.size() >= 2 && d.name.size() <= 80
-        && d.phone is string && d.phone.size() >= 10 && d.phone.size() <= 24
-        && d.phoneNormalized is string && d.phoneNormalized.matches('^[+][0-9]{10,15}$')
-        && d.serviceId is string && d.serviceId.size() <= 80
-        && d.status == 'new'
-        && (!('assignedTo' in d) || d.assignedTo == null)
-        && d.consent is map && d.consent.noticeAccepted == true
-        && d.createdAt == request.time && d.updatedAt == request.time
-        && optString(d, 'email', 120)
-        && optString(d, 'city', 40)
-        && optString(d, 'district', 40)
-        && optString(d, 'neighborhood', 80)
-        && optString(d, 'projectType', 20)
-        && optString(d, 'message', 2000)
-        && optString(d, 'contactMethod', 20)
-        && optString(d, 'source', 40)
-        && optString(d, 'landingPage', 300)
-        && optString(d, 'referrer', 300)
-        && (!('dimensions' in d) || d.dimensions is map)
-        && (!('utm' in d) || (d.utm is map && d.utm.size() <= 6))
-        && (!('attachments' in d) || (d.attachments is list && d.attachments.size() <= 5));
-    }
-
-    function validPublicQuote() {
-      let d = request.resource.data;
-      return d.keys().hasOnly([
-          'id', 'customerName', 'phone', 'email', 'city', 'siteName', 'leadSource',
-          'glassType', 'thickness', 'dimensions', 'totalArea', 'estimatedPrice',
-          'estimatedCost', 'actualCost', 'discountRate', 'extraCost', 'paymentStatus',
-          'paidAmount', 'version', 'priceListVersion', 'approvalStatus', 'routeSteps',
-          'productionStage', 'stationStatus', 'status', 'notes', 'urgency',
-          'createdAt', 'date'
-        ])
-        && d.keys().hasAll([
-          'id', 'customerName', 'phone', 'city', 'glassType', 'thickness',
-          'dimensions', 'totalArea', 'estimatedPrice', 'status', 'createdAt', 'date'
-        ])
-        && d.id is string && d.id.matches('^TKF-[0-9]{4}-[0-9]{4,12}$')
-        && d.customerName is string && d.customerName.size() >= 2 && d.customerName.size() <= 100
-        && d.phone is string && d.phone.size() >= 10 && d.phone.size() <= 24
-        && d.city is string && d.city.size() >= 1 && d.city.size() <= 80
-        && d.glassType is string && d.glassType.size() <= 160
-        && d.thickness is string && d.thickness.size() <= 120
-        && d.dimensions is string && d.dimensions.size() <= 500
-        && d.totalArea is number && d.totalArea >= 0 && d.totalArea <= 50000
-        && d.estimatedPrice == 0
-        && (!('estimatedCost' in d) || d.estimatedCost == 0)
-        && (!('actualCost' in d) || d.actualCost == 0)
-        && (!('paidAmount' in d) || d.paidAmount == 0)
-        && (!('discountRate' in d) || d.discountRate == 0)
-        && (!('extraCost' in d) || d.extraCost == 0)
-        && (!('paymentStatus' in d) || d.paymentStatus == 'unpaid')
-        && (!('productionStage' in d) || d.productionStage == 1)
-        && (!('stationStatus' in d) || d.stationStatus == 'waiting')
-        && (!('version' in d) || d.version == 1)
-        && d.status == 'new'
-        && d.date is string && d.date.size() <= 40
-        && d.createdAt is int && d.createdAt > 1700000000000
-        && optString(d, 'email', 120)
-        && optString(d, 'siteName', 120)
-        && optString(d, 'leadSource', 60)
-        && optString(d, 'priceListVersion', 40)
-        && optString(d, 'notes', 2000);
-    }
-
-    function validPublicMessage() {
-      let d = request.resource.data;
-      return d.keys().hasOnly([
-          'id', 'name', 'phone', 'email', 'subject', 'message', 'date', 'createdAt', 'isRead'
-        ])
-        && d.keys().hasAll([
-          'id', 'name', 'phone', 'subject', 'message', 'date', 'createdAt', 'isRead'
-        ])
-        && d.id is string && d.id.matches('^MSG-[0-9]{4,16}$')
-        && d.name is string && d.name.size() >= 2 && d.name.size() <= 100
-        && d.phone is string && d.phone.size() >= 10 && d.phone.size() <= 24
-        && optString(d, 'email', 120)
-        && d.subject is string && d.subject.size() >= 1 && d.subject.size() <= 200
-        && d.message is string && d.message.size() >= 1 && d.message.size() <= 2500
-        && d.date is string && d.date.size() <= 40
-        && d.createdAt is int && d.createdAt > 1700000000000
-        && d.isRead == false;
-    }
-
-    function validTrackingProjection(d) {
-      return d is map
-        && d.keys().hasOnly([
-          'orderId', 'maskedCustomer', 'city', 'glassType', 'thickness', 'dimensions',
-          'totalArea', 'status', 'productionStage', 'stationStatus', 'estimatedDeliveryDate',
-          'date', 'updatedAt'
-        ])
-        && d.keys().hasAll([
-          'orderId', 'maskedCustomer', 'city', 'glassType', 'thickness', 'dimensions',
-          'totalArea', 'status', 'productionStage', 'date', 'updatedAt'
-        ])
-        && d.orderId is string && d.orderId.matches('^TKF-[0-9]{4}-[0-9]{4,12}$')
-        && d.maskedCustomer is string && d.maskedCustomer.size() >= 2 && d.maskedCustomer.size() <= 80
-        && d.city is string && d.city.size() >= 1 && d.city.size() <= 60
-        && d.glassType is string && d.glassType.size() <= 120
-        && d.thickness is string && d.thickness.size() <= 100
-        && d.dimensions is string && d.dimensions.size() <= 200
-        && d.totalArea is number && d.totalArea >= 0 && d.totalArea <= 50000
-        && d.status == 'new'
-        && d.productionStage == 1
-        && optString(d, 'stationStatus', 30)
-        && optString(d, 'estimatedDeliveryDate', 40)
-        && d.date is string && d.date.size() <= 40
-        && d.updatedAt is int && d.updatedAt > 1700000000000;
-    }
-
-    function validPublicTrackingOrder(id) {
-      let d = request.resource.data;
-      return id.matches('^ORDER_TKF-[0-9]{4}-[0-9]{4,12}$')
-        && validTrackingProjection(d)
-        && id == 'ORDER_' + d.orderId;
-    }
-
-    function validPublicTrackingPhoneCreate(id) {
-      let d = request.resource.data;
-      return id.matches('^PHONE_[a-f0-9]{64}$')
-        && d.keys().hasOnly(['kind', 'latestOrderId', 'entries', 'updatedAt'])
-        && d.keys().hasAll(['kind', 'latestOrderId', 'entries', 'updatedAt'])
-        && d.kind == 'phone'
-        && d.latestOrderId is string && d.latestOrderId.matches('^TKF-[0-9]{4}-[0-9]{4,12}$')
-        && d.entries is map
-        && d.entries.size() == 1
-        && d.latestOrderId in d.entries
-        && validTrackingProjection(d.entries[d.latestOrderId])
-        && d.entries[d.latestOrderId].orderId == d.latestOrderId
-        && d.updatedAt is int && d.updatedAt > 1700000000000;
-    }
-
-    function validPublicTrackingPhoneAppend(id) {
-      let d = request.resource.data;
-      let existing = resource.data;
-      let topDiff = d.diff(existing);
-      let entryDiff = d.entries.diff(existing.entries);
-      return id.matches('^PHONE_[a-f0-9]{64}$')
-        && d.keys().hasOnly(['kind', 'latestOrderId', 'entries', 'updatedAt'])
-        && topDiff.affectedKeys().hasOnly(['latestOrderId', 'entries', 'updatedAt'])
-        && d.kind == 'phone'
-        && d.latestOrderId is string && d.latestOrderId.matches('^TKF-[0-9]{4}-[0-9]{4,12}$')
-        && d.entries is map
-        && d.entries.size() <= 20
-        && entryDiff.removedKeys().size() == 0
-        && entryDiff.changedKeys().size() == 0
-        && entryDiff.addedKeys().hasOnly([d.latestOrderId])
-        && entryDiff.addedKeys().size() == 1
-        && validTrackingProjection(d.entries[d.latestOrderId])
-        && d.entries[d.latestOrderId].orderId == d.latestOrderId
-        && d.updatedAt is int && d.updatedAt > 1700000000000;
-    }
-
+    // Anonim istemci doğrudan teklif, mesaj veya takip yazamaz; tüm halka açık formlar
+    // hız sınırlamalı acarpenSubmitPublicLead Cloud Function (Admin SDK) üzerinden işlenir.
     // Yayınlanan içerik herkese açık; taslaklar yalnızca içerik yetkililerine.
     match /services/{id} {
       allow read: if resource.data.status == 'published' || canEdit();
@@ -266,10 +102,9 @@ service cloud.firestore {
       allow write: if canManage();
     }
 
-    // CRM: ziyaretçi yalnızca doğrulanmış biçimde yeni talep oluşturabilir, liste okuyamaz.
+    // CRM: yalnızca yetkili satış/yönetim personeli okuyup yazabilir.
     match /leads/{id} {
-      allow create: if validLead();
-      allow read, update: if canSell();
+      allow read, create, update: if canSell();
       allow delete: if canManage();
     }
     match /leadNotes/{id} {
@@ -282,34 +117,51 @@ service cloud.firestore {
       allow delete: if canManage();
     }
 
-    // Acarpen ERP Canlı Koleksiyonları — backend rol matrisi ile korumalı
+    // Acarpen ERP Canlı Koleksiyonları — PII/finans ve atölye verileri rol bazlı ayrıştırılmıştır
     match /acarpen_quotes/{id} {
+      allow get, list: if canSell() || canManageFinance();
+      allow create: if canSell();
+      allow update: if canSell() || canManageFinance();
+      allow delete: if isYonetici();
+    }
+
+    // Müşteri PII ve maliyet/fiyat alanları içermeyen atölye üretim ve sevkiyat projeksiyonu
+    match /acarpen_production_orders/{id} {
       allow get, list: if isAdminOrStaff();
-      allow create: if canSell() || validPublicQuote();
-      allow update: if (canSell() || canManageProduction() || canManageQualityHold() || canManageFinance())
+      allow create: if canSell()
+        && !request.resource.data.keys().hasAny([
+          'phone', 'email', 'customerName', 'city', 'deliveryAddress',
+          'estimatedPrice', 'estimatedCost', 'actualCost', 'discountRate',
+          'paidAmount', 'invoiceNo', 'waybillNo'
+        ]);
+      allow update: if (canSell() || canManageProduction() || canManageQualityHold() || hasRole(['depo_satinalma']))
         && (
           request.resource.data.get('qualityHold', false) == resource.data.get('qualityHold', false)
           || canManageQualityHold()
           || isYonetici()
-        );
+        )
+        && !request.resource.data.keys().hasAny([
+          'phone', 'email', 'customerName', 'city', 'deliveryAddress',
+          'estimatedPrice', 'estimatedCost', 'actualCost', 'discountRate',
+          'paidAmount', 'invoiceNo', 'waybillNo'
+        ]);
       allow delete: if isYonetici();
     }
 
-    // PII ve finansal bilgi içermeyen halka açık sipariş/telefon hash takip projeksiyonu
+    // İki faktörlü (Sipariş/Telefon + 6 haneli PIN) SHA-256 anahtarlı takip projeksiyonu
     match /acarpen_order_tracking/{id} {
-      allow get: if id.matches('^(ORDER_|PHONE_)[A-Za-z0-9_-]{4,80}$');
+      allow get: if id.matches('^(ORDER|PHONE)_[a-f0-9]{64}$');
       allow list: if false;
-      allow create: if isAdminOrStaff()
-        || validPublicTrackingOrder(id)
-        || validPublicTrackingPhoneCreate(id);
-      allow update: if isAdminOrStaff()
-        || validPublicTrackingPhoneAppend(id);
+      allow create, update: if canSell() || canManageProduction() || canManageQualityHold();
       allow delete: if isYonetici();
+    }
+
+    match /acarpen_rate_limits/{id} {
+      allow read, write: if false;
     }
 
     match /acarpen_messages/{id} {
-      allow read, update: if canSell();
-      allow create: if canSell() || validPublicMessage();
+      allow read, create, update: if canSell();
       allow delete: if isYonetici();
     }
 
@@ -327,8 +179,7 @@ service cloud.firestore {
       allow delete: if isYonetici();
     }
     match /acarpen_opportunities/{id} {
-      allow read: if canSell();
-      allow create, update: if canSell();
+      allow read, create, update: if canSell();
       allow delete: if isYonetici();
     }
     match /acarpen_activities/{id} {
@@ -341,7 +192,7 @@ service cloud.firestore {
       allow delete: if isYonetici();
     }
     match /acarpen_purchases/{id} {
-      allow read: if isAdminOrStaff();
+      allow read: if canSell() || canManageInventory() || hasRole(['uretim_planlama', 'finans']);
       allow create, update: if canManageInventory();
       allow delete: if isYonetici();
     }

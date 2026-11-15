@@ -22,6 +22,7 @@ import {
   type QuoteRevision,
   type DeliveryProof,
   type QuoteItem,
+  type ProductionOrderItem,
   type PublicOrderTrackingItem,
   type CustomerRecord,
   type OpportunityStage,
@@ -48,9 +49,14 @@ import {
   normalizeUserRole,
 } from "./erpSeeds";
 import {
+  generateOrderId,
+  generateTrackingPin,
   getOrderTrackingDocId,
   getPhoneTrackingDocId,
+  normalizeOrderId,
+  normalizeTrackingPin,
   normalizeTrPhone10,
+  toProductionOrderItem,
   toPublicOrderTrackingItem,
 } from "./orderTracking";
 
@@ -62,6 +68,9 @@ export {
   INITIAL_CHECKS,
   INITIAL_CASH_LEDGER,
   normalizeUserRole,
+  generateOrderId,
+  generateTrackingPin,
+  toProductionOrderItem,
   toPublicOrderTrackingItem,
 };
 
@@ -73,6 +82,7 @@ export type {
   QuoteRevision,
   DeliveryProof,
   QuoteItem,
+  ProductionOrderItem,
   PublicOrderTrackingItem,
   CustomerRecord,
   OpportunityStage,
@@ -97,12 +107,51 @@ export interface AdminAuthState {
   canSimulateRoles: boolean;
 }
 
+export interface AdminSyncState {
+  status: "idle" | "synced" | "error";
+  lastSyncedAt: number | null;
+  lastError: string | null;
+  failedCount: number;
+}
+
+export interface PublicLeadSubmissionInput {
+  kind: "quote" | "contact";
+  customerName: string;
+  phone: string;
+  email?: string;
+  city?: string;
+  siteName?: string;
+  leadSource?: string;
+  glassType?: string;
+  thickness?: string;
+  dimensions?: string;
+  totalArea?: number;
+  notes?: string;
+  subject?: string;
+  message?: string;
+  website?: string;
+  formElapsedMs?: number;
+}
+
+export interface PublicLeadSubmissionResult {
+  ok: boolean;
+  id?: string;
+  messageId?: string;
+  trackingPin?: string;
+  date?: string;
+  error?: string;
+}
+
+const DEFAULT_PUBLIC_LEAD_ENDPOINT =
+  "https://europe-west1-advera-c8dd0.cloudfunctions.net/acarpenSubmitPublicLead";
+
 const TRANSACTIONAL_QUERY_LIMIT = 250;
 const CATALOG_QUERY_LIMIT = 500;
 const STAFF_QUERY_LIMIT = 100;
 
 const COLLECTIONS = {
   QUOTES: "acarpen_quotes",
+  PRODUCTION_ORDERS: "acarpen_production_orders",
   ORDER_TRACKING: "acarpen_order_tracking",
   MESSAGES: "acarpen_messages",
   PRICES: "acarpen_prices",
@@ -165,6 +214,7 @@ export function statusToDefaultStage(status: QuoteItem["status"]): 1 | 2 | 3 | 4
 
 class ActiveDataStore {
   private quotes: QuoteItem[] = [];
+  private productionOrders: ProductionOrderItem[] = [];
   private messages: ContactMessage[] = [];
   private prices: FactoryPriceItem[] = [...INITIAL_PRICES];
   private services: FactoryServiceItem[] = [...INITIAL_SERVICES];
@@ -184,6 +234,13 @@ class ActiveDataStore {
   private isAuthorizedStaff = false;
   private assignedBackendRole: UserRole | null = null;
   private activeRole: UserRole = "yonetici";
+
+  private syncState: AdminSyncState = {
+    status: "idle",
+    lastSyncedAt: null,
+    lastError: null,
+    failedCount: 0,
+  };
 
   private pricesSeeded = false;
   private servicesSeeded = false;
@@ -205,6 +262,7 @@ class ActiveDataStore {
   private sessionListeners: Set<(uid: string | null) => void> = new Set();
   private roleListeners: Set<(role: UserRole) => void> = new Set();
   private authStateListeners: Set<(state: AdminAuthState) => void> = new Set();
+  private syncStateListeners: Set<(state: AdminSyncState) => void> = new Set();
   private staffUsersListeners: Set<(items: StaffUserRecord[]) => void> = new Set();
 
   constructor() {
@@ -294,6 +352,7 @@ class ActiveDataStore {
           this.isAuthorizedStaff = false;
           this.authResolved = true;
           this.staffUsers = [];
+          this.productionOrders = [];
           this.activeRole = "yonetici";
           this.detachRealtimeListeners();
           this.notifySession();
@@ -308,45 +367,216 @@ class ActiveDataStore {
         this.notifySession();
         this.notifyAuthState();
 
-        void this.resolveBackendUserRole(user.uid, user.email || "");
+        void this.resolveBackendUserRole(user.uid);
       });
-    } catch {
+    } catch (err) {
       this.authResolved = true;
+      this.recordSyncError("Oturum dinleyicisi", err);
       this.notifyAuthState();
     }
   }
 
-  private async resolveBackendUserRole(uid: string, email: string): Promise<void> {
+  private formatSyncError(operation: string, err: unknown): string {
+    const code =
+      typeof err === "object" && err !== null && "code" in err
+        ? String((err as { code?: unknown }).code || "")
+        : "";
+    const msg =
+      err instanceof Error ? err.message : typeof err === "string" ? err : "Bilinmeyen bağlantı/yetki hatası";
+    if (code.includes("permission-denied") || msg.includes("PERMISSION_DENIED")) {
+      return `${operation}: Firestore yetkisi reddedildi (PERMISSION_DENIED). Değişiklik sunucuya kaydedilemedi.`;
+    }
+    if (code.includes("unavailable") || msg.toLowerCase().includes("network")) {
+      return `${operation}: Sunucu bağlantısı kurulamadı. Değişiklik yalnızca yerel önbellekte, eşitlenemedi.`;
+    }
+    return `${operation}: Sunucu eşitlemesi başarısız (${msg}).`;
+  }
+
+  private recordSyncSuccess(): void {
+    this.syncState = {
+      status: "synced",
+      lastSyncedAt: Date.now(),
+      lastError: null,
+      failedCount: this.syncState.failedCount,
+    };
+    this.notifySyncState();
+  }
+
+  private recordSyncError(operation: string, err: unknown): void {
+    const readable = this.formatSyncError(operation, err);
+    console.warn("[AcarpenSync]", readable, err);
+    this.syncState = {
+      status: "error",
+      lastSyncedAt: this.syncState.lastSyncedAt,
+      lastError: readable,
+      failedCount: this.syncState.failedCount + 1,
+    };
+    this.notifySyncState();
+  }
+
+  private persistWrite(operation: string, promise: Promise<unknown>): void {
+    void promise
+      .then(() => {
+        this.recordSyncSuccess();
+      })
+      .catch((err) => {
+        this.recordSyncError(operation, err);
+      });
+  }
+
+  public getSyncState(): AdminSyncState {
+    return { ...this.syncState };
+  }
+
+  public clearSyncError(): void {
+    this.syncState = {
+      ...this.syncState,
+      status: this.syncState.lastSyncedAt ? "synced" : "idle",
+      lastError: null,
+    };
+    this.notifySyncState();
+  }
+
+  public subscribeSyncState(callback: (state: AdminSyncState) => void): () => void {
+    this.syncStateListeners.add(callback);
+    callback(this.getSyncState());
+    return () => this.syncStateListeners.delete(callback);
+  }
+
+  private notifySyncState(): void {
+    const current = this.getSyncState();
+    this.syncStateListeners.forEach((cb) => cb(current));
+  }
+
+  private canRoleReadQuotes(role: UserRole | null): boolean {
+    return role === "yonetici" || role === "satis_yoneticisi" || role === "satis" || role === "finans";
+  }
+
+  private canRoleSell(role: UserRole | null): boolean {
+    return role === "yonetici" || role === "satis_yoneticisi" || role === "satis";
+  }
+
+  private canRoleFinance(role: UserRole | null): boolean {
+    return role === "yonetici" || role === "finans" || role === "satis_yoneticisi";
+  }
+
+  private productionOrderToSafeQuote(po: ProductionOrderItem): QuoteItem {
+    return {
+      id: po.id,
+      trackingPin: po.trackingPin,
+      customerName: `İş Emri #${po.id}`,
+      phone: "",
+      city: "Adana",
+      glassType: po.glassType,
+      thickness: po.thickness,
+      dimensions: po.dimensions,
+      totalArea: po.totalArea,
+      estimatedPrice: 0,
+      routeSteps: po.routeSteps,
+      productionStage: po.productionStage,
+      stationStatus: po.stationStatus,
+      assignedOperator: po.assignedOperator,
+      machineName: po.machineName,
+      downtimeMinutes: po.downtimeMinutes,
+      downtimeReason: po.downtimeReason,
+      scrapM2: po.scrapM2,
+      scrapReason: po.scrapReason,
+      scrapStation: po.scrapStation,
+      reservedLotNo: po.reservedLotNo,
+      qualityHold: po.qualityHold,
+      qualityHoldReason: po.qualityHoldReason,
+      qualityDisposition: po.qualityDisposition,
+      qualityInspector: po.qualityInspector,
+      qualityCheckedAt: po.qualityCheckedAt,
+      estimatedDeliveryDate: po.estimatedDeliveryDate,
+      vehiclePlate: po.vehiclePlate,
+      driverName: po.driverName,
+      rackNo: po.rackNo,
+      packageCount: po.packageCount,
+      craneRequired: po.craneRequired,
+      dueDate: po.dueDate,
+      notes: po.notes,
+      date: po.date,
+      createdAt: po.createdAt,
+      status: po.status,
+    };
+  }
+
+  private applyProductionOrdersMerge(): void {
+    const prodMap = new Map(this.productionOrders.map((p) => [p.id, p]));
+
+    if (this.sessionUid && !this.canRoleReadQuotes(this.assignedBackendRole)) {
+      this.quotes = this.productionOrders.map((po) => this.productionOrderToSafeQuote(po));
+      this.quotes.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      this.notifyQuotes(false);
+      return;
+    }
+
+    if (prodMap.size === 0) return;
+
+    let changed = false;
+    this.quotes = this.quotes.map((q) => {
+      const po = prodMap.get(q.id);
+      if (!po) return q;
+      if ((po.updatedAt || 0) < (q.createdAt || 0)) return q;
+      changed = true;
+      return {
+        ...q,
+        productionStage: po.productionStage ?? q.productionStage,
+        stationStatus: po.stationStatus ?? q.stationStatus,
+        assignedOperator: po.assignedOperator ?? q.assignedOperator,
+        machineName: po.machineName ?? q.machineName,
+        downtimeMinutes: po.downtimeMinutes ?? q.downtimeMinutes,
+        downtimeReason: po.downtimeReason ?? q.downtimeReason,
+        scrapM2: po.scrapM2 ?? q.scrapM2,
+        scrapReason: po.scrapReason ?? q.scrapReason,
+        scrapStation: po.scrapStation ?? q.scrapStation,
+        reservedLotNo: po.reservedLotNo ?? q.reservedLotNo,
+        qualityHold: po.qualityHold ?? q.qualityHold,
+        qualityHoldReason: po.qualityHoldReason ?? q.qualityHoldReason,
+        qualityDisposition: po.qualityDisposition ?? q.qualityDisposition,
+        qualityInspector: po.qualityInspector ?? q.qualityInspector,
+        qualityCheckedAt: po.qualityCheckedAt ?? q.qualityCheckedAt,
+        estimatedDeliveryDate: po.estimatedDeliveryDate ?? q.estimatedDeliveryDate,
+        vehiclePlate: po.vehiclePlate ?? q.vehiclePlate,
+        driverName: po.driverName ?? q.driverName,
+        rackNo: po.rackNo ?? q.rackNo,
+        packageCount: po.packageCount ?? q.packageCount,
+        craneRequired: po.craneRequired ?? q.craneRequired,
+        status: po.status ?? q.status,
+      };
+    });
+    if (changed) {
+      this.notifyQuotes(true);
+    }
+  }
+
+  private async resolveBackendUserRole(uid: string): Promise<void> {
     try {
       const currentUser = auth.currentUser;
-      const isPrimaryAdmin = email.trim().toLowerCase() === "admin@acarpen.com.tr";
+      const isEmailVerified = Boolean(currentUser?.emailVerified);
 
       const [tokenResult, userSnap] = await Promise.all([
         currentUser ? currentUser.getIdTokenResult().catch(() => null) : Promise.resolve(null),
-        getDoc(doc(db, COLLECTIONS.USERS, uid)).catch(() => null),
+        getDoc(doc(db, COLLECTIONS.USERS, uid)).catch((err) => {
+          this.recordSyncError("Personel yetki belgesi okuma", err);
+          return null;
+        }),
       ]);
 
       if (auth.currentUser && auth.currentUser.uid !== uid) return;
 
-      const claimRole = normalizeUserRole(tokenResult?.claims?.role);
+      // Require verified email + active acarpen users/{uid} document (ignores sibling-project generic claims)
+      const claimRole = normalizeUserRole(tokenResult?.claims?.acarpenRole);
       const userData = userSnap && userSnap.exists() ? userSnap.data() : null;
-      const docActive = userData ? userData.active !== false : false;
+      const docActive = userData ? userData.active === true : false;
       const docRole = userData ? normalizeUserRole(userData.role) : null;
 
       let resolvedRole: UserRole | null = null;
       let authorized = false;
 
-      if (isPrimaryAdmin) {
-        resolvedRole = claimRole || "yonetici";
-        authorized = true;
-      } else if (userData && userData.active === false) {
-        resolvedRole = null;
-        authorized = false;
-      } else if (claimRole) {
-        resolvedRole = claimRole;
-        authorized = true;
-      } else if (docActive && docRole) {
-        resolvedRole = docRole;
+      if (isEmailVerified && docActive && (docRole || claimRole)) {
+        resolvedRole = docRole || claimRole;
         authorized = true;
       }
 
@@ -355,6 +585,17 @@ class ActiveDataStore {
       this.authResolved = true;
       if (resolvedRole) {
         this.activeRole = resolvedRole;
+      }
+
+      if (!authorized || !this.canRoleReadQuotes(resolvedRole)) {
+        // Never retain cached PII/financial state across unauthorized or shopfloor sessions
+        this.quotes = [];
+        this.messages = [];
+        this.customers = [];
+        this.opportunities = [];
+        this.activities = [];
+        this.checks = [];
+        this.cashLedger = [];
       }
 
       this.notifyAuthState();
@@ -366,10 +607,11 @@ class ActiveDataStore {
       } else {
         this.detachRealtimeListeners();
       }
-    } catch {
+    } catch (err) {
       this.assignedBackendRole = null;
       this.isAuthorizedStaff = false;
       this.authResolved = true;
+      this.recordSyncError("Yetki doğrulama", err);
       this.notifyAuthState();
     }
   }
@@ -391,66 +633,97 @@ class ActiveDataStore {
       return;
     }
 
+    const role = this.assignedBackendRole;
+    const canReadQuotes = this.canRoleReadQuotes(role);
+    const canSell = this.canRoleSell(role);
+    const canFinance = this.canRoleFinance(role);
+    const canPurchases =
+      canSell || canFinance || role === "uretim_planlama" || role === "depo_satinalma";
+    const canAudit = role === "yonetici" || role === "finans" || role === "kalite";
+
     try {
-      // 1. Quotes & Orders (bounded newest 250)
+      // 1a. Full Quotes & Orders (Strictly sales & finance roles only; workshop roles use production_orders)
+      if (canReadQuotes) {
+        this.realtimeUnsubscribers.push(
+          onSnapshot(
+            boundedQuery(COLLECTIONS.QUOTES, TRANSACTIONAL_QUERY_LIMIT),
+            (snapshot) => {
+              const remoteMap = new Map<string, QuoteItem>();
+              snapshot.forEach((docSnap) => {
+                const docId = docSnap.id;
+                if (LEGACY_MOCK_IDS.has(docId)) {
+                  this.persistWrite(
+                    `Eski sahte kayıt temizliği (${docId})`,
+                    deleteDoc(doc(db, COLLECTIONS.QUOTES, docId))
+                  );
+                  return;
+                }
+                const data = docSnap.data() as QuoteItem;
+                remoteMap.set(data.id || docId, { ...data, id: data.id || docId });
+              });
+              const merged = Array.from(remoteMap.values());
+              merged.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              this.quotes = merged;
+              this.applyProductionOrdersMerge();
+              this.notifyQuotes(true);
+              this.recordSyncSuccess();
+            },
+            (err) => this.recordSyncError("Teklif/Sipariş dinleyicisi", err)
+          )
+        );
+      }
+
+      // 1b. Non-PII Production Orders (All active staff, primary view for shopfloor/quality/warehouse)
       this.realtimeUnsubscribers.push(
         onSnapshot(
-          boundedQuery(COLLECTIONS.QUOTES, TRANSACTIONAL_QUERY_LIMIT),
+          boundedQuery(COLLECTIONS.PRODUCTION_ORDERS, TRANSACTIONAL_QUERY_LIMIT),
           (snapshot) => {
-            const remoteMap = new Map<string, QuoteItem>();
+            const list: ProductionOrderItem[] = [];
             snapshot.forEach((docSnap) => {
               const docId = docSnap.id;
-              if (LEGACY_MOCK_IDS.has(docId)) {
-                deleteDoc(doc(db, COLLECTIONS.QUOTES, docId)).catch(() => {});
-                return;
-              }
-              const data = docSnap.data() as QuoteItem;
-              remoteMap.set(data.id || docId, { ...data, id: data.id || docId });
+              if (LEGACY_MOCK_IDS.has(docId)) return;
+              const data = docSnap.data() as ProductionOrderItem;
+              list.push({ ...data, id: data.id || docId });
             });
-            this.quotes.forEach((localItem) => {
-              if (!remoteMap.has(localItem.id)) {
-                remoteMap.set(localItem.id, localItem);
-              }
-            });
-            const merged = Array.from(remoteMap.values());
-            merged.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            this.quotes = merged;
-            this.notifyQuotes();
+            list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            this.productionOrders = list;
+            this.applyProductionOrdersMerge();
+            this.recordSyncSuccess();
           },
-          () => {}
+          (err) => this.recordSyncError("Üretim iş emirleri dinleyicisi", err)
         )
       );
 
-      // 2. Contact Messages (bounded newest 250)
-      this.realtimeUnsubscribers.push(
-        onSnapshot(
-          boundedQuery(COLLECTIONS.MESSAGES, TRANSACTIONAL_QUERY_LIMIT),
-          (snapshot) => {
-            const remoteMap = new Map<string, ContactMessage>();
-            snapshot.forEach((docSnap) => {
-              const docId = docSnap.id;
-              if (LEGACY_MOCK_IDS.has(docId)) {
-                deleteDoc(doc(db, COLLECTIONS.MESSAGES, docId)).catch(() => {});
-                return;
-              }
-              const data = docSnap.data() as ContactMessage;
-              remoteMap.set(data.id || docId, { ...data, id: data.id || docId });
-            });
-            this.messages.forEach((localItem) => {
-              if (!remoteMap.has(localItem.id)) {
-                remoteMap.set(localItem.id, localItem);
-              }
-            });
-            const merged = Array.from(remoteMap.values());
-            merged.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            this.messages = merged;
-            this.notifyMessages();
-          },
-          () => {}
-        )
-      );
+      // 2. Contact Messages (Sales/Management only)
+      if (canSell) {
+        this.realtimeUnsubscribers.push(
+          onSnapshot(
+            boundedQuery(COLLECTIONS.MESSAGES, TRANSACTIONAL_QUERY_LIMIT),
+            (snapshot) => {
+              const remoteMap = new Map<string, ContactMessage>();
+              snapshot.forEach((docSnap) => {
+                const docId = docSnap.id;
+                if (LEGACY_MOCK_IDS.has(docId)) {
+                  this.persistWrite(
+                    `Eski mesaj temizliği (${docId})`,
+                    deleteDoc(doc(db, COLLECTIONS.MESSAGES, docId))
+                  );
+                  return;
+                }
+                const data = docSnap.data() as ContactMessage;
+                remoteMap.set(data.id || docId, { ...data, id: data.id || docId });
+              });
+              const merged = Array.from(remoteMap.values());
+              merged.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              this.messages = merged;
+              this.notifyMessages();
+            },
+            (err) => this.recordSyncError("Mesajlar dinleyicisi", err)
+          )
+        );
+      }
 
-      // 3. Factory Unit Prices
+      // 3. Factory Unit Prices (Catalog readable by active staff)
       this.realtimeUnsubscribers.push(
         onSnapshot(
           boundedQuery(COLLECTIONS.PRICES, CATALOG_QUERY_LIMIT, false),
@@ -459,7 +732,10 @@ class ActiveDataStore {
               if (!this.pricesSeeded && this.canEditPrices()) {
                 this.pricesSeeded = true;
                 INITIAL_PRICES.forEach((item) => {
-                  setDoc(doc(db, COLLECTIONS.PRICES, item.id), stripUndefined(item)).catch(() => {});
+                  this.persistWrite(
+                    `Fiyat başlangıç yüklemesi (${item.id})`,
+                    setDoc(doc(db, COLLECTIONS.PRICES, item.id), stripUndefined(item))
+                  );
                 });
               }
               return;
@@ -484,7 +760,7 @@ class ActiveDataStore {
             this.prices = items;
             this.notifyPrices();
           },
-          () => {}
+          (err) => this.recordSyncError("Fiyat listesi dinleyicisi", err)
         )
       );
 
@@ -497,7 +773,10 @@ class ActiveDataStore {
               if (!this.servicesSeeded && this.canEditPrices()) {
                 this.servicesSeeded = true;
                 INITIAL_SERVICES.forEach((item) => {
-                  setDoc(doc(db, COLLECTIONS.SERVICES, item.id), stripUndefined(item)).catch(() => {});
+                  this.persistWrite(
+                    `Hizmet başlangıç yüklemesi (${item.id})`,
+                    setDoc(doc(db, COLLECTIONS.SERVICES, item.id), stripUndefined(item))
+                  );
                 });
               }
               return;
@@ -520,63 +799,66 @@ class ActiveDataStore {
             this.services = items;
             this.notifyServices();
           },
-          () => {}
+          (err) => this.recordSyncError("Hizmet tarifeleri dinleyicisi", err)
         )
       );
 
-      // 5. Customers (CRM 360)
-      this.realtimeUnsubscribers.push(
-        onSnapshot(
-          boundedQuery(COLLECTIONS.CUSTOMERS, TRANSACTIONAL_QUERY_LIMIT),
-          (snapshot) => {
-            const items: CustomerRecord[] = [];
-            snapshot.forEach((docSnap) => {
-              const data = docSnap.data() as CustomerRecord;
-              items.push({ ...data, id: data.id || docSnap.id });
-            });
-            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            this.customers = items;
-            this.notifyCustomers();
-          },
-          () => {}
-        )
-      );
+      // 5. Customers (Sales & Finance only)
+      if (canSell || canFinance) {
+        this.realtimeUnsubscribers.push(
+          onSnapshot(
+            boundedQuery(COLLECTIONS.CUSTOMERS, TRANSACTIONAL_QUERY_LIMIT),
+            (snapshot) => {
+              const items: CustomerRecord[] = [];
+              snapshot.forEach((docSnap) => {
+                const data = docSnap.data() as CustomerRecord;
+                items.push({ ...data, id: data.id || docSnap.id });
+              });
+              items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              this.customers = items;
+              this.notifyCustomers();
+            },
+            (err) => this.recordSyncError("Müşteriler dinleyicisi", err)
+          )
+        );
+      }
 
-      // 6. Opportunities (Sales Funnel)
-      this.realtimeUnsubscribers.push(
-        onSnapshot(
-          boundedQuery(COLLECTIONS.OPPORTUNITIES, TRANSACTIONAL_QUERY_LIMIT),
-          (snapshot) => {
-            const items: OpportunityItem[] = [];
-            snapshot.forEach((docSnap) => {
-              const data = docSnap.data() as OpportunityItem;
-              items.push({ ...data, id: data.id || docSnap.id });
-            });
-            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            this.opportunities = items;
-            this.notifyOpportunities();
-          },
-          () => {}
-        )
-      );
+      // 6 & 7. Opportunities & Activities (Sales/Management only)
+      if (canSell) {
+        this.realtimeUnsubscribers.push(
+          onSnapshot(
+            boundedQuery(COLLECTIONS.OPPORTUNITIES, TRANSACTIONAL_QUERY_LIMIT),
+            (snapshot) => {
+              const items: OpportunityItem[] = [];
+              snapshot.forEach((docSnap) => {
+                const data = docSnap.data() as OpportunityItem;
+                items.push({ ...data, id: data.id || docSnap.id });
+              });
+              items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              this.opportunities = items;
+              this.notifyOpportunities();
+            },
+            (err) => this.recordSyncError("Fırsatlar dinleyicisi", err)
+          )
+        );
 
-      // 7. Activities
-      this.realtimeUnsubscribers.push(
-        onSnapshot(
-          boundedQuery(COLLECTIONS.ACTIVITIES, TRANSACTIONAL_QUERY_LIMIT),
-          (snapshot) => {
-            const items: ActivityItem[] = [];
-            snapshot.forEach((docSnap) => {
-              const data = docSnap.data() as ActivityItem;
-              items.push({ ...data, id: data.id || docSnap.id });
-            });
-            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            this.activities = items;
-            this.notifyActivities();
-          },
-          () => {}
-        )
-      );
+        this.realtimeUnsubscribers.push(
+          onSnapshot(
+            boundedQuery(COLLECTIONS.ACTIVITIES, TRANSACTIONAL_QUERY_LIMIT),
+            (snapshot) => {
+              const items: ActivityItem[] = [];
+              snapshot.forEach((docSnap) => {
+                const data = docSnap.data() as ActivityItem;
+                items.push({ ...data, id: data.id || docSnap.id });
+              });
+              items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              this.activities = items;
+              this.notifyActivities();
+            },
+            (err) => this.recordSyncError("Aktiviteler dinleyicisi", err)
+          )
+        );
+      }
 
       // 8. Inventory
       this.realtimeUnsubscribers.push(
@@ -587,7 +869,10 @@ class ActiveDataStore {
             snapshot.forEach((docSnap) => {
               const docId = docSnap.id;
               if (LEGACY_MOCK_IDS.has(docId)) {
-                deleteDoc(doc(db, COLLECTIONS.INVENTORY, docId)).catch(() => {});
+                this.persistWrite(
+                  `Eski stok temizliği (${docId})`,
+                  deleteDoc(doc(db, COLLECTIONS.INVENTORY, docId))
+                );
                 return;
               }
               const data = docSnap.data() as InventoryItem;
@@ -596,27 +881,29 @@ class ActiveDataStore {
             this.inventory = items;
             this.notifyInventory();
           },
-          () => {}
+          (err) => this.recordSyncError("Stok dinleyicisi", err)
         )
       );
 
-      // 9. Purchases
-      this.realtimeUnsubscribers.push(
-        onSnapshot(
-          boundedQuery(COLLECTIONS.PURCHASES, TRANSACTIONAL_QUERY_LIMIT),
-          (snapshot) => {
-            const items: PurchaseOrderItem[] = [];
-            snapshot.forEach((docSnap) => {
-              const data = docSnap.data() as PurchaseOrderItem;
-              items.push({ ...data, id: data.id || docSnap.id });
-            });
-            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            this.purchases = items;
-            this.notifyPurchases();
-          },
-          () => {}
-        )
-      );
+      // 9. Purchases (Procurement, Planning, Sales, Finance only)
+      if (canPurchases) {
+        this.realtimeUnsubscribers.push(
+          onSnapshot(
+            boundedQuery(COLLECTIONS.PURCHASES, TRANSACTIONAL_QUERY_LIMIT),
+            (snapshot) => {
+              const items: PurchaseOrderItem[] = [];
+              snapshot.forEach((docSnap) => {
+                const data = docSnap.data() as PurchaseOrderItem;
+                items.push({ ...data, id: data.id || docSnap.id });
+              });
+              items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              this.purchases = items;
+              this.notifyPurchases();
+            },
+            (err) => this.recordSyncError("Satın alma dinleyicisi", err)
+          )
+        );
+      }
 
       // 10. Quality Inspections
       this.realtimeUnsubscribers.push(
@@ -632,76 +919,85 @@ class ActiveDataStore {
             this.qualityInspections = items;
             this.notifyQuality();
           },
-          () => {}
+          (err) => this.recordSyncError("Kalite kontrol dinleyicisi", err)
         )
       );
 
-      // 11. Audit Logs
-      this.realtimeUnsubscribers.push(
-        onSnapshot(
-          boundedQuery(COLLECTIONS.AUDIT_LOGS, TRANSACTIONAL_QUERY_LIMIT),
-          (snapshot) => {
-            const items: AuditEventItem[] = [];
-            snapshot.forEach((docSnap) => {
-              const data = docSnap.data() as AuditEventItem;
-              items.push({ ...data, id: data.id || docSnap.id });
-            });
-            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            this.auditLogs = items;
-            this.notifyAuditLogs();
-          },
-          () => {}
-        )
-      );
+      // 11. Audit Logs (Management, Finance, Quality only)
+      if (canAudit) {
+        this.realtimeUnsubscribers.push(
+          onSnapshot(
+            boundedQuery(COLLECTIONS.AUDIT_LOGS, TRANSACTIONAL_QUERY_LIMIT),
+            (snapshot) => {
+              const items: AuditEventItem[] = [];
+              snapshot.forEach((docSnap) => {
+                const data = docSnap.data() as AuditEventItem;
+                items.push({ ...data, id: data.id || docSnap.id });
+              });
+              items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              this.auditLogs = items;
+              this.notifyAuditLogs();
+            },
+            (err) => this.recordSyncError("Denetim günlüğü dinleyicisi", err)
+          )
+        );
+      }
 
-      // 12. Checks Portfolio
-      this.realtimeUnsubscribers.push(
-        onSnapshot(
-          boundedQuery(COLLECTIONS.CHECKS, TRANSACTIONAL_QUERY_LIMIT),
-          (snapshot) => {
-            const items: CheckInstrumentItem[] = [];
-            snapshot.forEach((docSnap) => {
-              const docId = docSnap.id;
-              if (LEGACY_MOCK_IDS.has(docId)) {
-                deleteDoc(doc(db, COLLECTIONS.CHECKS, docId)).catch(() => {});
-                return;
-              }
-              const data = docSnap.data() as CheckInstrumentItem;
-              items.push({ ...data, id: data.id || docId });
-            });
-            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            this.checks = items;
-            this.notifyChecks();
-          },
-          () => {}
-        )
-      );
+      // 12 & 13. Checks & Cash Ledger (Finance & Management only)
+      if (canFinance) {
+        this.realtimeUnsubscribers.push(
+          onSnapshot(
+            boundedQuery(COLLECTIONS.CHECKS, TRANSACTIONAL_QUERY_LIMIT),
+            (snapshot) => {
+              const items: CheckInstrumentItem[] = [];
+              snapshot.forEach((docSnap) => {
+                const docId = docSnap.id;
+                if (LEGACY_MOCK_IDS.has(docId)) {
+                  this.persistWrite(
+                    `Eski çek temizliği (${docId})`,
+                    deleteDoc(doc(db, COLLECTIONS.CHECKS, docId))
+                  );
+                  return;
+                }
+                const data = docSnap.data() as CheckInstrumentItem;
+                items.push({ ...data, id: data.id || docId });
+              });
+              items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              this.checks = items;
+              this.notifyChecks();
+            },
+            (err) => this.recordSyncError("Çek/Senet dinleyicisi", err)
+          )
+        );
 
-      // 13. Cash & Bank Ledger
-      this.realtimeUnsubscribers.push(
-        onSnapshot(
-          boundedQuery(COLLECTIONS.CASH_LEDGER, TRANSACTIONAL_QUERY_LIMIT),
-          (snapshot) => {
-            const items: CashLedgerItem[] = [];
-            snapshot.forEach((docSnap) => {
-              const docId = docSnap.id;
-              if (LEGACY_MOCK_IDS.has(docId)) {
-                deleteDoc(doc(db, COLLECTIONS.CASH_LEDGER, docId)).catch(() => {});
-                return;
-              }
-              const data = docSnap.data() as CashLedgerItem;
-              items.push({ ...data, id: data.id || docId });
-            });
-            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            this.cashLedger = items;
-            this.notifyCashLedger();
-          },
-          () => {}
-        )
-      );
+        this.realtimeUnsubscribers.push(
+          onSnapshot(
+            boundedQuery(COLLECTIONS.CASH_LEDGER, TRANSACTIONAL_QUERY_LIMIT),
+            (snapshot) => {
+              const items: CashLedgerItem[] = [];
+              snapshot.forEach((docSnap) => {
+                const docId = docSnap.id;
+                if (LEGACY_MOCK_IDS.has(docId)) {
+                  this.persistWrite(
+                    `Eski kasa temizliği (${docId})`,
+                    deleteDoc(doc(db, COLLECTIONS.CASH_LEDGER, docId))
+                  );
+                  return;
+                }
+                const data = docSnap.data() as CashLedgerItem;
+                items.push({ ...data, id: data.id || docId });
+              });
+              items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              this.cashLedger = items;
+              this.notifyCashLedger();
+            },
+            (err) => this.recordSyncError("Kasa/Banka dinleyicisi", err)
+          )
+        );
+      }
 
       // 14. Staff Users (Only readable/writable by yonetici)
-      if (this.assignedBackendRole === "yonetici") {
+      if (role === "yonetici") {
         this.realtimeUnsubscribers.push(
           onSnapshot(
             boundedQuery(COLLECTIONS.USERS, STAFF_QUERY_LIMIT, false),
@@ -709,12 +1005,12 @@ class ActiveDataStore {
               const list: StaffUserRecord[] = [];
               snapshot.forEach((docSnap) => {
                 const raw = docSnap.data() as Partial<StaffUserRecord>;
-                const role = normalizeUserRole(raw.role) || "satis";
+                const normalizedRole = normalizeUserRole(raw.role) || "satis";
                 list.push({
                   uid: raw.uid || docSnap.id,
                   email: raw.email || "",
                   displayName: raw.displayName || raw.email || docSnap.id,
-                  role,
+                  role: normalizedRole,
                   active: raw.active !== false,
                   updatedAt: typeof raw.updatedAt === "number" ? raw.updatedAt : Date.now(),
                 });
@@ -723,12 +1019,12 @@ class ActiveDataStore {
               this.staffUsers = list;
               this.notifyStaffUsers();
             },
-            () => {}
+            (err) => this.recordSyncError("Personel yetki listesi dinleyicisi", err)
           )
         );
       }
-    } catch {
-      // Fallback cleanly to local state
+    } catch (err) {
+      this.recordSyncError("Canlı dinleyici başlatma", err);
     }
   }
 
@@ -736,27 +1032,27 @@ class ActiveDataStore {
     return ROLE_DEFINITIONS[this.activeRole].permissions.canEditPrices;
   }
 
-  /** Sync sanitized order projection to public tracking collection without leaking PII/financials. */
+  /** Sync two-factor PIN-protected order tracking projection (no PII or financial fields). */
   private syncPublicOrderTracking(quote: QuoteItem, allowOverwrite: boolean): void {
-    if (!isFirebaseConfigured) return;
+    if (!isFirebaseConfigured || !quote.trackingPin) return;
 
     const trackingItem = toPublicOrderTrackingItem(quote);
-    const orderDocId = getOrderTrackingDocId(quote.id);
+    const orderDocId = getOrderTrackingDocId(quote.id, quote.trackingPin);
     if (orderDocId) {
       const orderRef = doc(db, COLLECTIONS.ORDER_TRACKING, orderDocId);
       const cleanPayload = stripUndefined(trackingItem);
-      if (allowOverwrite) {
-        setDoc(orderRef, cleanPayload, { merge: true }).catch(() => {});
-      } else {
-        setDoc(orderRef, cleanPayload).catch(() => {});
-      }
+      this.persistWrite(
+        `Takip kaydı güncelleme (${quote.id})`,
+        allowOverwrite ? setDoc(orderRef, cleanPayload, { merge: true }) : setDoc(orderRef, cleanPayload)
+      );
     }
 
-    const phoneDocId = getPhoneTrackingDocId(quote.phone);
+    const phoneDocId = getPhoneTrackingDocId(quote.phone, quote.trackingPin);
     if (phoneDocId) {
       const phoneRef = doc(db, COLLECTIONS.ORDER_TRACKING, phoneDocId);
-      void (async () => {
-        try {
+      this.persistWrite(
+        `Telefon takip projeksiyonu (${quote.id})`,
+        (async () => {
           const snap = await getDoc(phoneRef);
           if (!snap.exists()) {
             await setDoc(phoneRef, {
@@ -774,10 +1070,8 @@ class ActiveDataStore {
               updatedAt: trackingItem.updatedAt,
             });
           }
-        } catch {
-          // Ignore sync failure if offline or rule prevents unauthorized public overwrite
-        }
-      })();
+        })()
+      );
     }
   }
 
@@ -890,8 +1184,9 @@ class ActiveDataStore {
     this.notifyStaffUsers();
 
     if (isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.USERS, cleanUid), stripUndefined(normalized), { merge: true }).catch(
-        () => {}
+      this.persistWrite(
+        `Personel yetkisi (${normalized.email || cleanUid})`,
+        setDoc(doc(db, COLLECTIONS.USERS, cleanUid), stripUndefined(normalized), { merge: true })
       );
     }
     this.logAuditEvent(
@@ -911,7 +1206,10 @@ class ActiveDataStore {
     this.staffUsers = this.staffUsers.filter((u) => u.uid !== uid);
     this.notifyStaffUsers();
     if (isFirebaseConfigured) {
-      deleteDoc(doc(db, COLLECTIONS.USERS, uid)).catch(() => {});
+      this.persistWrite(
+        `Personel kaydı silme (${uid})`,
+        deleteDoc(doc(db, COLLECTIONS.USERS, uid))
+      );
     }
     return { ok: true };
   }
@@ -952,8 +1250,11 @@ class ActiveDataStore {
     this.auditLogs = [entry, ...this.auditLogs];
     this.notifyAuditLogs();
 
-    if (isFirebaseConfigured && this.sessionUid) {
-      setDoc(doc(db, COLLECTIONS.AUDIT_LOGS, entry.id), stripUndefined(entry)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Denetim kaydı (${entry.id})`,
+        setDoc(doc(db, COLLECTIONS.AUDIT_LOGS, entry.id), stripUndefined(entry))
+      );
     }
     return entry;
   }
@@ -976,8 +1277,8 @@ class ActiveDataStore {
 
   public addQuote(quote: Omit<QuoteItem, "id" | "date"> & { id?: string }): QuoteItem {
     const now = Date.now();
-    const generatedId =
-      quote.id || `TKF-${new Date().getFullYear()}-${now.toString().slice(-6)}`;
+    const generatedId = quote.id || generateOrderId(new Date(now).getFullYear());
+    const trackingPin = quote.trackingPin || generateTrackingPin();
     const estimatedCost =
       quote.estimatedCost ?? Math.round((quote.estimatedPrice || 0) * 0.68);
     const isStaffWrite = Boolean(this.sessionUid && this.isAuthorizedStaff);
@@ -998,6 +1299,7 @@ class ActiveDataStore {
       estimatedCost,
       actualCost: estimatedCost,
       ...quote,
+      trackingPin,
       id: generatedId,
       createdAt: now,
       date: formatTrNow(),
@@ -1005,9 +1307,19 @@ class ActiveDataStore {
     this.quotes = [newQuote, ...this.quotes.filter((q) => q.id !== generatedId)];
     this.notifyQuotes();
 
-    if (isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.QUOTES, newQuote.id), stripUndefined(newQuote)).catch(() => {});
-      this.syncPublicOrderTracking(newQuote, isStaffWrite);
+    if (isFirebaseConfigured && isStaffWrite) {
+      this.persistWrite(
+        `Yeni teklif/sipariş (${newQuote.id})`,
+        setDoc(doc(db, COLLECTIONS.QUOTES, newQuote.id), stripUndefined(newQuote))
+      );
+      this.persistWrite(
+        `Üretim iş emri (${newQuote.id})`,
+        setDoc(
+          doc(db, COLLECTIONS.PRODUCTION_ORDERS, newQuote.id),
+          stripUndefined(toProductionOrderItem(newQuote))
+        )
+      );
+      this.syncPublicOrderTracking(newQuote, true);
     }
     return newQuote;
   }
@@ -1036,15 +1348,28 @@ class ActiveDataStore {
     this.quotes = this.quotes.map((q) => (q.id === id ? updated : q));
     this.notifyQuotes();
 
-    if (isFirebaseConfigured) {
-      updateDoc(
-        doc(db, COLLECTIONS.QUOTES, id),
-        stripUndefined({
-          status,
-          productionStage: nextStage,
-          orderSnapshotAt,
-        })
-      ).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      if (this.canRoleReadQuotes(this.assignedBackendRole)) {
+        this.persistWrite(
+          `Sipariş durum güncelleme (${id})`,
+          updateDoc(
+            doc(db, COLLECTIONS.QUOTES, id),
+            stripUndefined({
+              status,
+              productionStage: nextStage,
+              orderSnapshotAt,
+            })
+          )
+        );
+      }
+      this.persistWrite(
+        `Üretim iş emri durumu (${id})`,
+        setDoc(
+          doc(db, COLLECTIONS.PRODUCTION_ORDERS, id),
+          stripUndefined(toProductionOrderItem(updated)),
+          { merge: true }
+        )
+      );
       this.syncPublicOrderTracking(updated, true);
     }
     return { ok: true };
@@ -1114,15 +1439,28 @@ class ActiveDataStore {
     this.quotes = this.quotes.map((q) => (q.id === id ? merged : q));
     this.notifyQuotes();
 
-    if (isFirebaseConfigured) {
-      updateDoc(
-        doc(db, COLLECTIONS.QUOTES, id),
-        stripUndefined({
-          ...fields,
-          version: nextVersion,
-          revisions: updatedRevisions,
-        })
-      ).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      if (this.canRoleReadQuotes(this.assignedBackendRole)) {
+        this.persistWrite(
+          `Sipariş/Teklif güncelleme (${id})`,
+          updateDoc(
+            doc(db, COLLECTIONS.QUOTES, id),
+            stripUndefined({
+              ...fields,
+              version: nextVersion,
+              revisions: updatedRevisions,
+            })
+          )
+        );
+      }
+      this.persistWrite(
+        `Üretim iş emri güncelleme (${id})`,
+        setDoc(
+          doc(db, COLLECTIONS.PRODUCTION_ORDERS, id),
+          stripUndefined(toProductionOrderItem(merged)),
+          { merge: true }
+        )
+      );
       this.syncPublicOrderTracking(merged, true);
     }
     return { ok: true };
@@ -1141,14 +1479,24 @@ class ActiveDataStore {
   }
 
   public deleteQuote(id: string): void {
+    const existing = this.quotes.find((q) => q.id === id);
     this.quotes = this.quotes.filter((q) => q.id !== id);
     this.notifyQuotes();
 
-    if (isFirebaseConfigured) {
-      deleteDoc(doc(db, COLLECTIONS.QUOTES, id)).catch(() => {});
-      const orderDocId = getOrderTrackingDocId(id);
-      if (orderDocId) {
-        deleteDoc(doc(db, COLLECTIONS.ORDER_TRACKING, orderDocId)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(`Sipariş silme (${id})`, deleteDoc(doc(db, COLLECTIONS.QUOTES, id)));
+      this.persistWrite(
+        `Üretim iş emri silme (${id})`,
+        deleteDoc(doc(db, COLLECTIONS.PRODUCTION_ORDERS, id))
+      );
+      if (existing?.trackingPin) {
+        const orderDocId = getOrderTrackingDocId(id, existing.trackingPin);
+        if (orderDocId) {
+          this.persistWrite(
+            `Takip projeksiyonu silme (${id})`,
+            deleteDoc(doc(db, COLLECTIONS.ORDER_TRACKING, orderDocId))
+          );
+        }
       }
     }
   }
@@ -1159,9 +1507,11 @@ class ActiveDataStore {
     return () => this.quoteListeners.delete(callback);
   }
 
-  private notifyQuotes(): void {
+  private notifyQuotes(persistLocal = true): void {
     const current = this.getQuotes();
-    this.saveLocalKey("acarpen_live_v3_quotes", current);
+    if (persistLocal && (!this.sessionUid || this.canRoleReadQuotes(this.assignedBackendRole))) {
+      this.saveLocalKey("acarpen_live_v3_quotes", current);
+    }
     this.quoteListeners.forEach((cb) => cb(current));
   }
 
@@ -1183,8 +1533,11 @@ class ActiveDataStore {
     this.customers = [fullRecord, ...this.customers.filter((c) => c.id !== id)];
     this.notifyCustomers();
 
-    if (isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.CUSTOMERS, id), stripUndefined(fullRecord)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Müşteri kartı kaydetme (${id})`,
+        setDoc(doc(db, COLLECTIONS.CUSTOMERS, id), stripUndefined(fullRecord))
+      );
     }
     return fullRecord;
   }
@@ -1220,8 +1573,11 @@ class ActiveDataStore {
     this.opportunities = [created, ...this.opportunities];
     this.notifyOpportunities();
 
-    if (isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.OPPORTUNITIES, id), stripUndefined(created)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Fırsat ekleme (${id})`,
+        setDoc(doc(db, COLLECTIONS.OPPORTUNITIES, id), stripUndefined(created))
+      );
     }
     return created;
   }
@@ -1230,8 +1586,11 @@ class ActiveDataStore {
     this.opportunities = this.opportunities.map((o) => (o.id === id ? { ...o, ...fields } : o));
     this.notifyOpportunities();
 
-    if (isFirebaseConfigured) {
-      updateDoc(doc(db, COLLECTIONS.OPPORTUNITIES, id), stripUndefined(fields)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Fırsat güncelleme (${id})`,
+        updateDoc(doc(db, COLLECTIONS.OPPORTUNITIES, id), stripUndefined(fields))
+      );
     }
   }
 
@@ -1262,8 +1621,11 @@ class ActiveDataStore {
     this.activities = [created, ...this.activities];
     this.notifyActivities();
 
-    if (isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.ACTIVITIES, created.id), stripUndefined(created)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Aktivite ekleme (${created.id})`,
+        setDoc(doc(db, COLLECTIONS.ACTIVITIES, created.id), stripUndefined(created))
+      );
     }
     return created;
   }
@@ -1277,8 +1639,11 @@ class ActiveDataStore {
     );
     this.notifyActivities();
 
-    if (isFirebaseConfigured) {
-      updateDoc(doc(db, COLLECTIONS.ACTIVITIES, id), { completed: nextState }).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Aktivite güncelleme (${id})`,
+        updateDoc(doc(db, COLLECTIONS.ACTIVITIES, id), { completed: nextState })
+      );
     }
   }
 
@@ -1322,9 +1687,10 @@ class ActiveDataStore {
     this.notifyInventory();
 
     const target = this.inventory.find((i) => i.id === id);
-    if (target && isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.INVENTORY, id), stripUndefined(target), { merge: true }).catch(
-        () => {}
+    if (target && isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Stok güncelleme (${id})`,
+        setDoc(doc(db, COLLECTIONS.INVENTORY, id), stripUndefined(target), { merge: true })
       );
     }
     this.logAuditEvent("STOCK_ADJUSTMENT", id, `${target?.name || id}: ${reason}`);
@@ -1337,8 +1703,11 @@ class ActiveDataStore {
     this.inventory = [...this.inventory, created];
     this.notifyInventory();
 
-    if (isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.INVENTORY, id), stripUndefined(created)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Yeni stok kartı (${id})`,
+        setDoc(doc(db, COLLECTIONS.INVENTORY, id), stripUndefined(created))
+      );
     }
     this.logAuditEvent("STOCK_ADJUSTMENT", id, `Yeni stok kartı açıldı: ${created.name} (${created.lotNo})`);
     return created;
@@ -1373,8 +1742,11 @@ class ActiveDataStore {
     this.purchases = [created, ...this.purchases];
     this.notifyPurchases();
 
-    if (isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.PURCHASES, created.id), stripUndefined(created)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Satın alma emri (${created.id})`,
+        setDoc(doc(db, COLLECTIONS.PURCHASES, created.id), stripUndefined(created))
+      );
     }
     return created;
   }
@@ -1383,8 +1755,11 @@ class ActiveDataStore {
     this.purchases = this.purchases.map((p) => (p.id === id ? { ...p, ...fields } : p));
     this.notifyPurchases();
 
-    if (isFirebaseConfigured) {
-      updateDoc(doc(db, COLLECTIONS.PURCHASES, id), stripUndefined(fields)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Satın alma güncelleme (${id})`,
+        updateDoc(doc(db, COLLECTIONS.PURCHASES, id), stripUndefined(fields))
+      );
     }
   }
 
@@ -1417,8 +1792,11 @@ class ActiveDataStore {
     this.qualityInspections = [created, ...this.qualityInspections];
     this.notifyQuality();
 
-    if (isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.QUALITY, created.id), stripUndefined(created)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Kalite kontrol kaydı (${created.id})`,
+        setDoc(doc(db, COLLECTIONS.QUALITY, created.id), stripUndefined(created))
+      );
     }
 
     if (q.orderId) {
@@ -1501,8 +1879,11 @@ class ActiveDataStore {
     this.messages = [newMsg, ...this.messages];
     this.notifyMessages();
 
-    if (isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.MESSAGES, newMsg.id), stripUndefined(newMsg)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Mesaj kaydetme (${newMsg.id})`,
+        setDoc(doc(db, COLLECTIONS.MESSAGES, newMsg.id), stripUndefined(newMsg))
+      );
     }
     return newMsg;
   }
@@ -1511,8 +1892,11 @@ class ActiveDataStore {
     this.messages = this.messages.map((m) => (m.id === id ? { ...m, isRead: true } : m));
     this.notifyMessages();
 
-    if (isFirebaseConfigured) {
-      updateDoc(doc(db, COLLECTIONS.MESSAGES, id), { isRead: true }).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Mesaj okundu (${id})`,
+        updateDoc(doc(db, COLLECTIONS.MESSAGES, id), { isRead: true })
+      );
     }
   }
 
@@ -1520,8 +1904,11 @@ class ActiveDataStore {
     this.messages = this.messages.filter((m) => m.id !== id);
     this.notifyMessages();
 
-    if (isFirebaseConfigured) {
-      deleteDoc(doc(db, COLLECTIONS.MESSAGES, id)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Mesaj silme (${id})`,
+        deleteDoc(doc(db, COLLECTIONS.MESSAGES, id))
+      );
     }
   }
 
@@ -1559,10 +1946,13 @@ class ActiveDataStore {
     this.prices = this.prices.map((p) => (p.id === id ? { ...p, m2Price: newPrice } : p));
     this.notifyPrices();
 
-    if (isFirebaseConfigured) {
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
       const target = this.prices.find((p) => p.id === id);
       if (target) {
-        setDoc(doc(db, COLLECTIONS.PRICES, id), stripUndefined(target), { merge: true }).catch(() => {});
+        this.persistWrite(
+          `Fiyat güncelleme (${id})`,
+          setDoc(doc(db, COLLECTIONS.PRICES, id), stripUndefined(target), { merge: true })
+        );
       }
     }
     this.logAuditEvent(
@@ -1585,10 +1975,13 @@ class ActiveDataStore {
     this.prices = this.prices.map((p) => (p.id === id ? { ...p, ...fields } : p));
     this.notifyPrices();
 
-    if (isFirebaseConfigured) {
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
       const target = this.prices.find((p) => p.id === id);
       if (target) {
-        setDoc(doc(db, COLLECTIONS.PRICES, id), stripUndefined(target), { merge: true }).catch(() => {});
+        this.persistWrite(
+          `Fiyat kartı (${id})`,
+          setDoc(doc(db, COLLECTIONS.PRICES, id), stripUndefined(target), { merge: true })
+        );
       }
     }
     return { ok: true };
@@ -1610,9 +2003,12 @@ class ActiveDataStore {
     }));
     this.notifyPrices();
 
-    if (isFirebaseConfigured) {
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
       this.prices.forEach((item) => {
-        setDoc(doc(db, COLLECTIONS.PRICES, item.id), stripUndefined(item), { merge: true }).catch(() => {});
+        this.persistWrite(
+          `Toplu fiyat (${item.id})`,
+          setDoc(doc(db, COLLECTIONS.PRICES, item.id), stripUndefined(item), { merge: true })
+        );
       });
     }
     this.logAuditEvent(
@@ -1647,8 +2043,11 @@ class ActiveDataStore {
     this.prices = [...this.prices, created];
     this.notifyPrices();
 
-    if (isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.PRICES, created.id), stripUndefined(created)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Yeni fiyat kartı (${created.id})`,
+        setDoc(doc(db, COLLECTIONS.PRICES, created.id), stripUndefined(created))
+      );
     }
     this.logAuditEvent("PRICE_CHANGE", created.id, `Yeni cam fiyat kartı eklendi: ${created.name} (₺${created.m2Price}/m²)`);
     return created;
@@ -1659,8 +2058,11 @@ class ActiveDataStore {
     this.prices = this.prices.filter((p) => p.id !== id);
     this.notifyPrices();
 
-    if (isFirebaseConfigured) {
-      deleteDoc(doc(db, COLLECTIONS.PRICES, id)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Fiyat kartı silme (${id})`,
+        deleteDoc(doc(db, COLLECTIONS.PRICES, id))
+      );
     }
   }
 
@@ -1685,10 +2087,13 @@ class ActiveDataStore {
     this.services = this.services.map((s) => (s.id === id ? { ...s, ...fields } : s));
     this.notifyServices();
 
-    if (isFirebaseConfigured) {
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
       const target = this.services.find((s) => s.id === id);
       if (target) {
-        setDoc(doc(db, COLLECTIONS.SERVICES, id), stripUndefined(target), { merge: true }).catch(() => {});
+        this.persistWrite(
+          `Hizmet güncelleme (${id})`,
+          setDoc(doc(db, COLLECTIONS.SERVICES, id), stripUndefined(target), { merge: true })
+        );
       }
     }
   }
@@ -1712,8 +2117,11 @@ class ActiveDataStore {
     this.services = [...this.services, created];
     this.notifyServices();
 
-    if (isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.SERVICES, created.id), stripUndefined(created)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Yeni hizmet kartı (${created.id})`,
+        setDoc(doc(db, COLLECTIONS.SERVICES, created.id), stripUndefined(created))
+      );
     }
     return created;
   }
@@ -1723,8 +2131,11 @@ class ActiveDataStore {
     this.services = this.services.filter((s) => s.id !== id);
     this.notifyServices();
 
-    if (isFirebaseConfigured) {
-      deleteDoc(doc(db, COLLECTIONS.SERVICES, id)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Hizmet kartı silme (${id})`,
+        deleteDoc(doc(db, COLLECTIONS.SERVICES, id))
+      );
     }
   }
 
@@ -1758,8 +2169,11 @@ class ActiveDataStore {
     this.checks = [created, ...this.checks];
     this.notifyChecks();
 
-    if (isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.CHECKS, created.id), stripUndefined(created)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Çek kaydı (${created.id})`,
+        setDoc(doc(db, COLLECTIONS.CHECKS, created.id), stripUndefined(created))
+      );
     }
     this.logAuditEvent(
       "INVOICE_ISSUE",
@@ -1773,8 +2187,11 @@ class ActiveDataStore {
     this.checks = this.checks.map((c) => (c.id === id ? { ...c, ...fields } : c));
     this.notifyChecks();
 
-    if (isFirebaseConfigured) {
-      updateDoc(doc(db, COLLECTIONS.CHECKS, id), stripUndefined(fields)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Çek güncelleme (${id})`,
+        updateDoc(doc(db, COLLECTIONS.CHECKS, id), stripUndefined(fields))
+      );
     }
   }
 
@@ -1782,8 +2199,11 @@ class ActiveDataStore {
     this.checks = this.checks.filter((c) => c.id !== id);
     this.notifyChecks();
 
-    if (isFirebaseConfigured) {
-      deleteDoc(doc(db, COLLECTIONS.CHECKS, id)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Çek silme (${id})`,
+        deleteDoc(doc(db, COLLECTIONS.CHECKS, id))
+      );
     }
   }
 
@@ -1817,8 +2237,11 @@ class ActiveDataStore {
     this.cashLedger = [created, ...this.cashLedger];
     this.notifyCashLedger();
 
-    if (isFirebaseConfigured) {
-      setDoc(doc(db, COLLECTIONS.CASH_LEDGER, created.id), stripUndefined(created)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Kasa hareketi (${created.id})`,
+        setDoc(doc(db, COLLECTIONS.CASH_LEDGER, created.id), stripUndefined(created))
+      );
     }
     this.logAuditEvent(
       "INVOICE_ISSUE",
@@ -1832,8 +2255,11 @@ class ActiveDataStore {
     this.cashLedger = this.cashLedger.filter((e) => e.id !== id);
     this.notifyCashLedger();
 
-    if (isFirebaseConfigured) {
-      deleteDoc(doc(db, COLLECTIONS.CASH_LEDGER, id)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      this.persistWrite(
+        `Kasa kaydı silme (${id})`,
+        deleteDoc(doc(db, COLLECTIONS.CASH_LEDGER, id))
+      );
     }
   }
 
@@ -1850,7 +2276,7 @@ class ActiveDataStore {
   }
 
   public purgeAllTransactionalData(): void {
-    const quoteIds = this.quotes.map((q) => q.id);
+    const existingQuotes = [...this.quotes];
     const msgIds = this.messages.map((m) => m.id);
     const custIds = this.customers.map((c) => c.id);
     const oppIds = this.opportunities.map((o) => o.id);
@@ -1862,6 +2288,7 @@ class ActiveDataStore {
     const cashIds = this.cashLedger.map((c) => c.id);
 
     this.quotes = [];
+    this.productionOrders = [];
     this.messages = [];
     this.customers = [];
     this.opportunities = [];
@@ -1884,30 +2311,50 @@ class ActiveDataStore {
     this.notifyCashLedger();
     this.cleanupLegacyFakeCache();
 
-    if (isFirebaseConfigured) {
-      quoteIds.forEach((id) => {
-        deleteDoc(doc(db, COLLECTIONS.QUOTES, id)).catch(() => {});
-        const orderDocId = getOrderTrackingDocId(id);
-        if (orderDocId) {
-          deleteDoc(doc(db, COLLECTIONS.ORDER_TRACKING, orderDocId)).catch(() => {});
+    if (isFirebaseConfigured && this.sessionUid && this.isAuthorizedStaff) {
+      existingQuotes.forEach((q) => {
+        this.persistWrite(`Toplu temizlik teklif (${q.id})`, deleteDoc(doc(db, COLLECTIONS.QUOTES, q.id)));
+        this.persistWrite(
+          `Toplu temizlik üretim (${q.id})`,
+          deleteDoc(doc(db, COLLECTIONS.PRODUCTION_ORDERS, q.id))
+        );
+        if (q.trackingPin) {
+          const orderDocId = getOrderTrackingDocId(q.id, q.trackingPin);
+          if (orderDocId) {
+            this.persistWrite(
+              `Toplu temizlik takip (${q.id})`,
+              deleteDoc(doc(db, COLLECTIONS.ORDER_TRACKING, orderDocId))
+            );
+          }
         }
       });
-      msgIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.MESSAGES, id)).catch(() => {}));
-      custIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.CUSTOMERS, id)).catch(() => {}));
-      oppIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.OPPORTUNITIES, id)).catch(() => {}));
-      actIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.ACTIVITIES, id)).catch(() => {}));
-      invIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.INVENTORY, id)).catch(() => {}));
-      purIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.PURCHASES, id)).catch(() => {}));
-      qualIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.QUALITY, id)).catch(() => {}));
-      chkIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.CHECKS, id)).catch(() => {}));
-      cashIds.forEach((id) => deleteDoc(doc(db, COLLECTIONS.CASH_LEDGER, id)).catch(() => {}));
-      LEGACY_MOCK_IDS.forEach((id) => {
-        deleteDoc(doc(db, COLLECTIONS.QUOTES, id)).catch(() => {});
-        deleteDoc(doc(db, COLLECTIONS.MESSAGES, id)).catch(() => {});
-        deleteDoc(doc(db, COLLECTIONS.INVENTORY, id)).catch(() => {});
-        deleteDoc(doc(db, COLLECTIONS.CHECKS, id)).catch(() => {});
-        deleteDoc(doc(db, COLLECTIONS.CASH_LEDGER, id)).catch(() => {});
-      });
+      msgIds.forEach((id) =>
+        this.persistWrite(`Toplu temizlik mesaj (${id})`, deleteDoc(doc(db, COLLECTIONS.MESSAGES, id)))
+      );
+      custIds.forEach((id) =>
+        this.persistWrite(`Toplu temizlik müşteri (${id})`, deleteDoc(doc(db, COLLECTIONS.CUSTOMERS, id)))
+      );
+      oppIds.forEach((id) =>
+        this.persistWrite(`Toplu temizlik fırsat (${id})`, deleteDoc(doc(db, COLLECTIONS.OPPORTUNITIES, id)))
+      );
+      actIds.forEach((id) =>
+        this.persistWrite(`Toplu temizlik aktivite (${id})`, deleteDoc(doc(db, COLLECTIONS.ACTIVITIES, id)))
+      );
+      invIds.forEach((id) =>
+        this.persistWrite(`Toplu temizlik stok (${id})`, deleteDoc(doc(db, COLLECTIONS.INVENTORY, id)))
+      );
+      purIds.forEach((id) =>
+        this.persistWrite(`Toplu temizlik satınalma (${id})`, deleteDoc(doc(db, COLLECTIONS.PURCHASES, id)))
+      );
+      qualIds.forEach((id) =>
+        this.persistWrite(`Toplu temizlik kalite (${id})`, deleteDoc(doc(db, COLLECTIONS.QUALITY, id)))
+      );
+      chkIds.forEach((id) =>
+        this.persistWrite(`Toplu temizlik çek (${id})`, deleteDoc(doc(db, COLLECTIONS.CHECKS, id)))
+      );
+      cashIds.forEach((id) =>
+        this.persistWrite(`Toplu temizlik kasa (${id})`, deleteDoc(doc(db, COLLECTIONS.CASH_LEDGER, id)))
+      );
     }
   }
 }
@@ -2050,30 +2497,95 @@ export const deleteStaffUser = (uid: string) => liveStore.deleteStaffUser(uid);
 export const subscribeStaffUsers = (cb: (items: StaffUserRecord[]) => void) =>
   liveStore.subscribeStaffUsers(cb);
 
+export const getAdminSyncState = () => liveStore.getSyncState();
+export const clearAdminSyncError = () => liveStore.clearSyncError();
+export const subscribeAdminSyncState = (cb: (state: AdminSyncState) => void) =>
+  liveStore.subscribeSyncState(cb);
+
+/**
+ * Submit a public website quote or contact inquiry through the hardened HTTPS Cloud Function
+ * (`acarpenSubmitPublicLead`), enforcing server-side origin, honeypot, rate limits, CSPRNG IDs,
+ * and two-factor tracking PIN generation instead of writing anonymously to Firestore.
+ */
+export async function submitPublicLead(
+  input: PublicLeadSubmissionInput
+): Promise<PublicLeadSubmissionResult> {
+  const endpoint =
+    (typeof import.meta !== "undefined" && import.meta.env?.VITE_PUBLIC_LEAD_ENDPOINT) ||
+    DEFAULT_PUBLIC_LEAD_ENDPOINT;
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(input),
+    });
+
+    const data = (await response.json().catch(() => null)) as PublicLeadSubmissionResult | null;
+    if (!response.ok || !data || !data.ok) {
+      return {
+        ok: false,
+        error:
+          data?.error ||
+          `Sunucu talebi kabul etmedi (HTTP ${response.status}). Lütfen tekrar deneyin.`,
+      };
+    }
+
+    return data;
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error && err.message
+          ? `Sunucuya ulaşılamadı (${err.message}). Lütfen internet bağlantınızı kontrol edip tekrar deneyin.`
+          : "Sunucuya ulaşılamadı. Talebiniz gönderilemedi.",
+    };
+  }
+}
+
 /**
  * Resolve sanitized public order tracking status from Firestore (`acarpen_order_tracking`)
- * by order ID (`ORDER_<ID>`) or canonical hashed phone (`PHONE_<SHA256>`), with safe local fallback.
+ * requiring TWO-FACTOR credentials: (orderId OR canonical phone) + 6-character trackingPin.
  */
-export async function fetchPublicOrderTracking(
-  queryStr: string
-): Promise<PublicOrderTrackingItem[]> {
-  const clean = (queryStr || "").trim();
-  if (!clean) return [];
+export async function fetchPublicOrderTrackingWithStatus(
+  queryStr: string,
+  trackingPin: string
+): Promise<{ ok: boolean; items: PublicOrderTrackingItem[]; error?: string }> {
+  const cleanQuery = (queryStr || "").trim();
+  const cleanPin = normalizeTrackingPin(trackingPin);
 
-  const canonicalPhone10 = normalizeTrPhone10(clean);
-  const orderDocId = getOrderTrackingDocId(clean);
-  const phoneDocId = canonicalPhone10 ? getPhoneTrackingDocId(canonicalPhone10) : null;
+  if (!cleanQuery || cleanPin.length < 6) {
+    return {
+      ok: true,
+      items: [],
+    };
+  }
+
+  const normalizedQueryId = normalizeOrderId(cleanQuery);
+  const canonicalPhone10 = normalizeTrPhone10(cleanQuery);
+  const orderDocId = getOrderTrackingDocId(cleanQuery, cleanPin);
+  const phoneDocId = canonicalPhone10 ? getPhoneTrackingDocId(canonicalPhone10, cleanPin) : null;
 
   if (isFirebaseConfigured) {
+    let remoteError: string | undefined;
+
     if (orderDocId) {
       try {
         const orderSnap = await getDoc(doc(db, COLLECTIONS.ORDER_TRACKING, orderDocId));
         if (orderSnap.exists()) {
           const item = orderSnap.data() as PublicOrderTrackingItem;
-          return [{ ...item, orderId: item.orderId || clean.toUpperCase() }];
+          return {
+            ok: true,
+            items: [{ ...item, orderId: item.orderId || normalizedQueryId }],
+          };
         }
-      } catch {
-        // Ignore network/permission errors and try phone hash / local fallback
+      } catch (err) {
+        remoteError =
+          err instanceof Error
+            ? err.message
+            : "Sipariş takip sunucusuna bağlanılamadı.";
       }
     }
 
@@ -2087,30 +2599,50 @@ export async function fetchPublicOrderTracking(
           const entriesMap = data.entries || {};
           const items = Object.values(entriesMap);
           items.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-          if (items.length > 0) return items;
+          if (items.length > 0) {
+            return { ok: true, items };
+          }
         }
-      } catch {
-        // Ignore network/permission errors
+      } catch (err) {
+        remoteError =
+          err instanceof Error
+            ? err.message
+            : "Sipariş takip sunucusuna bağlanılamadı.";
       }
+    }
+
+    if (remoteError) {
+      return { ok: false, items: [], error: remoteError };
     }
   }
 
-  // Fallback for current-session locally created orders or offline dev tests
-  const lower = clean.toLowerCase();
+  // Fallback for locally created ERP session items when offline/dev test
   const localMatches = liveStore
     .getQuotes()
     .filter((q) => {
-      if (q.id.toLowerCase() === lower) return true;
+      if (normalizeTrackingPin(q.trackingPin || "") !== cleanPin) return false;
+      if (normalizeOrderId(q.id) === normalizedQueryId) return true;
       if (canonicalPhone10 && normalizeTrPhone10(q.phone) === canonicalPhone10) return true;
       return false;
     })
     .map(toPublicOrderTrackingItem);
 
-  return localMatches;
+  return { ok: true, items: localMatches };
 }
 
-/** @deprecated Prefer fetchPublicOrderTracking returning non-PII projections array. */
-export async function fetchPublicQuoteById(id: string): Promise<PublicOrderTrackingItem | null> {
-  const results = await fetchPublicOrderTracking(id);
+export async function fetchPublicOrderTracking(
+  queryStr: string,
+  trackingPin = ""
+): Promise<PublicOrderTrackingItem[]> {
+  const res = await fetchPublicOrderTrackingWithStatus(queryStr, trackingPin);
+  return res.items;
+}
+
+/** @deprecated Prefer fetchPublicOrderTrackingWithStatus with trackingPin. */
+export async function fetchPublicQuoteById(
+  id: string,
+  trackingPin = ""
+): Promise<PublicOrderTrackingItem | null> {
+  const results = await fetchPublicOrderTracking(id, trackingPin);
   return results[0] || null;
 }

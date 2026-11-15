@@ -311,7 +311,7 @@ export const LEGACY_MOCK_IDS = new Set([
 export function normalizeUserRole(raw: unknown): UserRole | null {
   if (typeof raw !== "string") return null;
   const clean = raw.trim().toLowerCase();
-  if (clean === "superadmin" || clean === "manager" || clean === "admin") return "yonetici";
+  if (clean === "superadmin" || clean === "super_admin" || clean === "manager" || clean === "admin") return "yonetici";
   if (clean === "sales") return "satis";
   if (clean === "editor") return "satis_yoneticisi";
   if (

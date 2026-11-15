@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowRight, ShieldCheck, Sparkles, Award, Calculator, CheckCircle2, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { addAdminQuote } from "@/lib/adminStorage";
+import { submitPublicLead } from "@/lib/adminStorage";
 import {
   checkSubmissionCooldown,
   isHoneypotTripped,
@@ -79,6 +79,12 @@ export const Hero = () => {
   const [customerPhone, setCustomerPhone] = useState("");
   const [websiteTrap, setWebsiteTrap] = useState("");
   const [showOrderInput, setShowOrderInput] = useState(false);
+  const [submittingOrder, setSubmittingOrder] = useState(false);
+  const [submittedConfirmation, setSubmittedConfirmation] = useState<{
+    id: string;
+    trackingPin: string;
+  } | null>(null);
+  const formLoadedAtRef = useRef<number>(Date.now());
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -100,8 +106,9 @@ export const Hero = () => {
     }
   };
 
-  const handleQuickOrder = (e: React.FormEvent) => {
+  const handleQuickOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submittingOrder) return;
     if (isHoneypotTripped(websiteTrap)) {
       setShowOrderInput(false);
       return;
@@ -122,24 +129,39 @@ export const Hero = () => {
       return;
     }
 
-    const created = addAdminQuote({
+    setSubmittingOrder(true);
+    const result = await submitPublicLead({
+      kind: "quote",
       customerName: customerName.trim(),
       phone: customerPhone.trim(),
       city: "Adana (Hızlı Ölçü Robotu)",
+      leadSource: "Hızlı Ölçü Robotu",
       glassType: `[${selectedBrand}] ${selectedModel.name} [${color}]`,
       thickness: `${selectedBrand} • ${direction} • ${accessory} • 4+16+4 Isıcam`,
       dimensions: `${widthCm}x${heightCm} cm (${qty} Adet)`,
       totalArea,
-      estimatedPrice: 0,
-      status: "new",
+      website: websiteTrap,
+      formElapsedMs: Date.now() - formLoadedAtRef.current,
     });
-    markFormSubmitted("hero_quick_quote");
+    setSubmittingOrder(false);
 
-    toast.success(`Talebiniz (#${created.id}) Acarpen sistemine kaydedildi!`);
+    if (!result.ok || !result.id) {
+      toast.error(result.error || "Talebiniz sunucuya iletilemedi. Lütfen tekrar deneyin.");
+      return;
+    }
+
+    markFormSubmitted("hero_quick_quote");
+    const trackingPin = result.trackingPin || "";
+    setSubmittedConfirmation({ id: result.id, trackingPin });
+
+    toast.success(
+      `Talebiniz (#${result.id} • Takip PIN: ${trackingPin}) Acarpen sunucusuna kaydedildi!`
+    );
 
     const wpText = encodeURIComponent(
       `Merhaba Acarpen,\nWeb sitenizdeki Pencere & Kapı Yapılandırıcıdan fiyat teklifi rica ediyorum:\n\n` +
-        `• Talep No: ${created.id}\n` +
+        `• Talep No: ${result.id}\n` +
+        (trackingPin ? `• Takip PIN: ${trackingPin}\n` : "") +
         `• Ad Soyad: ${customerName}\n` +
         `• Telefon: ${customerPhone}\n` +
         `• Tercih Edilen Marka: ${selectedBrand}\n` +
@@ -490,11 +512,41 @@ export const Hero = () => {
                   </div>
                 </div>
 
+                {submittedConfirmation && (
+                  <div className="rounded-2xl bg-emerald-50 border border-emerald-300 p-3 text-xs text-emerald-950 flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <span className="font-bold">Talep Kaydedildi:</span>{" "}
+                      <span className="font-mono font-extrabold">{submittedConfirmation.id}</span>
+                      {submittedConfirmation.trackingPin && (
+                        <>
+                          {" • "}Takip PIN:{" "}
+                          <span className="font-mono font-extrabold bg-emerald-200 px-1.5 py-0.5 rounded">
+                            {submittedConfirmation.trackingPin}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                    <Link
+                      to={`/siparis-takip?id=${encodeURIComponent(submittedConfirmation.id)}${
+                        submittedConfirmation.trackingPin
+                          ? `&pin=${encodeURIComponent(submittedConfirmation.trackingPin)}`
+                          : ""
+                      }`}
+                      className="font-bold text-emerald-800 underline hover:text-emerald-950"
+                    >
+                      Sipariş Takibe Git →
+                    </Link>
+                  </div>
+                )}
+
                 {!showOrderInput ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                     <Button
                       type="button"
-                      onClick={() => setShowOrderInput(true)}
+                      onClick={() => {
+                        formLoadedAtRef.current = Date.now();
+                        setShowOrderInput(true);
+                      }}
                       className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-11 text-xs shadow-md"
                     >
                       <MessageCircle className="mr-1.5 h-4 w-4" />
@@ -533,9 +585,12 @@ export const Hero = () => {
                     <div className="flex gap-2">
                       <Button
                         type="submit"
+                        disabled={submittingOrder}
                         className="flex-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-10 text-xs"
                       >
-                        WhatsApp'tan Teklif İste (0533 625 36 11)
+                        {submittingOrder
+                          ? "Sunucuya Kaydediliyor..."
+                          : "WhatsApp'tan Teklif İste (0533 625 36 11)"}
                       </Button>
                       <Button
                         type="button"

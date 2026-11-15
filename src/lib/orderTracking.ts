@@ -1,4 +1,4 @@
-import type { PublicOrderTrackingItem, QuoteItem } from "./erpTypes";
+import type { ProductionOrderItem, PublicOrderTrackingItem, QuoteItem } from "./erpTypes";
 
 const SHA256_K = new Uint32Array([
   0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
@@ -94,20 +94,85 @@ export function normalizeTrPhone10(phone: string): string {
   return "";
 }
 
-/** Deterministic non-PII Firestore document ID for single-order tracking lookups. */
-export function getOrderTrackingDocId(orderId: string): string {
-  const sanitized = orderId
+const TOKEN_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"; // 32 chars (bitmask 31, zero modulo bias)
+
+function randomCsprngToken(length: number): string {
+  const bytes = new Uint8Array(length);
+  if (typeof globalThis !== "undefined" && globalThis.crypto?.getRandomValues) {
+    globalThis.crypto.getRandomValues(bytes);
+  } else {
+    throw new Error("Secure CSPRNG unavailable for order tracking generation.");
+  }
+  let out = "";
+  for (let i = 0; i < length; i += 1) {
+    out += TOKEN_ALPHABET[bytes[i] & 31];
+  }
+  return out;
+}
+
+export function generateOrderId(year = new Date().getFullYear()): string {
+  return `TKF-${year}-${randomCsprngToken(8)}`;
+}
+
+export function generateTrackingPin(): string {
+  return randomCsprngToken(6);
+}
+
+export function normalizeOrderId(orderId: string): string {
+  return (orderId || "")
     .trim()
     .toUpperCase()
     .replace(/[^A-Z0-9_-]/g, "");
-  return sanitized ? `ORDER_${sanitized}` : "";
 }
 
-/** Deterministic SHA-256 Firestore document ID for hashed-phone remote lookups without storing raw phones. */
-export function getPhoneTrackingDocId(phone: string): string | null {
+export function normalizeTrackingPin(pin: string): string {
+  return (pin || "")
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "");
+}
+
+export function inferSystemCategory(glassType?: string): string {
+  const lower = (glassType || "").toLowerCase();
+  if (lower.includes("balkon")) return "Cam Balkon Sistemleri";
+  if (lower.includes("alüminyum") || lower.includes("aluminyum") || lower.includes("panjur")) {
+    return "Alüminyum / Panjur Sistemleri";
+  }
+  if (lower.includes("sürme") || lower.includes("surme") || lower.includes("hebeschiebe")) {
+    return "Sürme Doğrama Sistemleri";
+  }
+  if (
+    lower.includes("winsa") ||
+    lower.includes("pimapen") ||
+    lower.includes("fıratpen") ||
+    lower.includes("firatpen") ||
+    lower.includes("pvc")
+  ) {
+    return "PVC Doğrama Sistemleri";
+  }
+  return "Özel İmalat & Doğrama";
+}
+
+/**
+ * Deterministic two-factor salted SHA-256 Firestore document ID requiring BOTH
+ * orderId and 6-char trackingPin so order lookups cannot be enumerated.
+ */
+export function getOrderTrackingDocId(orderId: string, trackingPin = ""): string {
+  const cleanId = normalizeOrderId(orderId);
+  const cleanPin = normalizeTrackingPin(trackingPin);
+  if (!cleanId || cleanPin.length < 6) return "";
+  return `ORDER_${sha256Hex(`acarpen-order-pin-v2:${cleanId}:${cleanPin}`)}`;
+}
+
+/**
+ * Deterministic two-factor salted SHA-256 Firestore document ID requiring BOTH
+ * canonical 10-digit phone and 6-char trackingPin so knowing a phone number alone returns nothing.
+ */
+export function getPhoneTrackingDocId(phone: string, trackingPin = ""): string | null {
   const canonical10 = normalizeTrPhone10(phone);
-  if (!canonical10) return null;
-  return `PHONE_${sha256Hex(`acarpen-track-v1:${canonical10}`)}`;
+  const cleanPin = normalizeTrackingPin(trackingPin);
+  if (!canonical10 || cleanPin.length < 6) return null;
+  return `PHONE_${sha256Hex(`acarpen-phone-pin-v2:${canonical10}:${cleanPin}`)}`;
 }
 
 /** Mask full customer/company names before exposing status projections publicly. */
@@ -141,8 +206,56 @@ function defaultStageForStatus(status: QuoteItem["status"]): 1 | 2 | 3 | 4 | 5 |
   }
 }
 
-/** Project an internal QuoteItem onto a strictly sanitized public tracking record (no PII/prices). */
-export function toPublicOrderTrackingItem(q: QuoteItem): PublicOrderTrackingItem {
+/** Build non-PII, non-financial workshop projection for acarpen_production_orders. */
+export function toProductionOrderItem(q: QuoteItem): ProductionOrderItem {
+  const stage: 1 | 2 | 3 | 4 | 5 | 6 =
+    q.productionStage && q.productionStage >= 1 && q.productionStage <= 6
+      ? q.productionStage
+      : defaultStageForStatus(q.status);
+
+  const item: ProductionOrderItem = {
+    id: q.id,
+    glassType: q.glassType || "Fıratpen PVC Doğrama",
+    thickness: q.thickness || "4+16+4 Isıcam",
+    dimensions: q.dimensions || "Özel Ölçü",
+    totalArea: Number(q.totalArea || 0),
+    productionStage: stage,
+    status: q.status,
+    date: q.date || "",
+    createdAt: q.createdAt || Date.now(),
+    updatedAt: Date.now(),
+  };
+
+  if (q.trackingPin) item.trackingPin = q.trackingPin;
+  if (q.routeSteps) item.routeSteps = q.routeSteps;
+  if (q.stationStatus) item.stationStatus = q.stationStatus;
+  if (q.assignedOperator) item.assignedOperator = q.assignedOperator;
+  if (q.machineName) item.machineName = q.machineName;
+  if (q.downtimeMinutes !== undefined) item.downtimeMinutes = q.downtimeMinutes;
+  if (q.downtimeReason) item.downtimeReason = q.downtimeReason;
+  if (q.scrapM2 !== undefined) item.scrapM2 = q.scrapM2;
+  if (q.scrapReason) item.scrapReason = q.scrapReason;
+  if (q.scrapStation) item.scrapStation = q.scrapStation;
+  if (q.reservedLotNo) item.reservedLotNo = q.reservedLotNo;
+  if (q.qualityHold !== undefined) item.qualityHold = q.qualityHold;
+  if (q.qualityHoldReason) item.qualityHoldReason = q.qualityHoldReason;
+  if (q.qualityDisposition) item.qualityDisposition = q.qualityDisposition;
+  if (q.qualityInspector) item.qualityInspector = q.qualityInspector;
+  if (q.qualityCheckedAt) item.qualityCheckedAt = q.qualityCheckedAt;
+  if (q.estimatedDeliveryDate) item.estimatedDeliveryDate = q.estimatedDeliveryDate;
+  if (q.vehiclePlate) item.vehiclePlate = q.vehiclePlate;
+  if (q.driverName) item.driverName = q.driverName;
+  if (q.rackNo) item.rackNo = q.rackNo;
+  if (q.packageCount !== undefined) item.packageCount = q.packageCount;
+  if (q.craneRequired !== undefined) item.craneRequired = q.craneRequired;
+  if (q.dueDate) item.dueDate = q.dueDate;
+  if (q.notes) item.notes = q.notes.slice(0, 500);
+
+  return item;
+}
+
+/** Build minimal public-safe tracking summary strictly excluding customer PII, city, dimensions, and pricing. */
+export function toPublicOrderTrackingItem(q: QuoteItem | ProductionOrderItem): PublicOrderTrackingItem {
   const stage =
     q.productionStage && q.productionStage >= 1 && q.productionStage <= 6
       ? q.productionStage
@@ -150,16 +263,12 @@ export function toPublicOrderTrackingItem(q: QuoteItem): PublicOrderTrackingItem
 
   const item: PublicOrderTrackingItem = {
     orderId: q.id,
-    maskedCustomer: maskCustomerName(q.customerName),
-    city: (q.city || "Adana").slice(0, 60),
-    glassType: (q.glassType || "PVC Doğrama & Isıcam").slice(0, 120),
-    thickness: (q.thickness || "4+16+4 Isıcam").slice(0, 100),
-    dimensions: (q.dimensions || "Özel Ölçü").slice(0, 200),
-    totalArea: Number(q.totalArea || 0),
     status: q.status,
     productionStage: stage,
+    qualityHold: Boolean(q.qualityHold),
+    systemCategory: inferSystemCategory(q.glassType),
     date: q.date || "",
-    updatedAt: q.createdAt || Date.now(),
+    updatedAt: Date.now(),
   };
 
   if (q.stationStatus) item.stationStatus = q.stationStatus;

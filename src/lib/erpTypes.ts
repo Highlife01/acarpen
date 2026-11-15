@@ -158,19 +158,53 @@ export interface QuoteItem {
   createdAt?: number;
   status: "new" | "in_review" | "quoted" | "approved" | "completed" | "cancelled";
   urgency?: "high" | "normal" | "low";
+  trackingPin?: string;
 }
 
-export interface PublicOrderTrackingItem {
-  orderId: string;
-  maskedCustomer: string;
-  city: string;
+export interface ProductionOrderItem {
+  id: string;
+  trackingPin?: string;
   glassType: string;
   thickness: string;
   dimensions: string;
   totalArea: number;
+  routeSteps?: number[];
+  productionStage: 1 | 2 | 3 | 4 | 5 | 6;
+  stationStatus?: QuoteItem["stationStatus"];
+  assignedOperator?: string;
+  machineName?: string;
+  downtimeMinutes?: number;
+  downtimeReason?: string;
+  scrapM2?: number;
+  scrapReason?: string;
+  scrapStation?: string;
+  reservedLotNo?: string;
+  qualityHold?: boolean;
+  qualityHoldReason?: string;
+  qualityDisposition?: QuoteItem["qualityDisposition"];
+  qualityInspector?: string;
+  qualityCheckedAt?: string;
+  estimatedDeliveryDate?: string;
+  vehiclePlate?: string;
+  driverName?: string;
+  rackNo?: string;
+  packageCount?: number;
+  craneRequired?: boolean;
+  dueDate?: string;
+  notes?: string;
+  date: string;
+  createdAt?: number;
+  updatedAt?: number;
+  status: QuoteItem["status"];
+}
+
+export interface PublicOrderTrackingItem {
+  orderId: string;
   status: QuoteItem["status"];
   productionStage: 1 | 2 | 3 | 4 | 5 | 6;
   stationStatus?: QuoteItem["stationStatus"];
+  qualityHold?: boolean;
+  systemCategory?: string;
   estimatedDeliveryDate?: string;
   date: string;
   updatedAt: number;

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin, Clock, Send, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { addAdminQuote, addAdminMessage } from "@/lib/adminStorage";
+import { submitPublicLead } from "@/lib/adminStorage";
 import {
   checkSubmissionCooldown,
   isHoneypotTripped,
@@ -18,9 +19,12 @@ export const Contact = () => {
   const [details, setDetails] = useState("");
   const [websiteTrap, setWebsiteTrap] = useState("");
   const [loading, setLoading] = useState(false);
+  const [lastTicket, setLastTicket] = useState<{ id: string; trackingPin: string } | null>(null);
+  const formLoadedAtRef = useRef<number>(Date.now());
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     if (isHoneypotTripped(websiteTrap)) {
       return;
     }
@@ -43,38 +47,41 @@ export const Contact = () => {
     }
 
     setLoading(true);
-
-    const created = addAdminQuote({
+    const result = await submitPublicLead({
+      kind: "contact",
       customerName: name.trim(),
       phone: phone.trim(),
+      email: email.trim() || undefined,
       city: "Adana (İletişim Formu)",
+      leadSource: "İletişim Formu",
       glassType,
       thickness: "Beyaz / Antrasit / Altınmeşe • 4+16+4 Isıcam",
-      dimensions: details.trim() ? details.trim().slice(0, 60) : "Keşif / Ölçü Bekleniyor",
+      dimensions: details.trim() ? details.trim().slice(0, 120) : "Keşif / Ölçü Bekleniyor",
       totalArea: 10,
-      estimatedPrice: 0,
-      status: "new",
-    });
-
-    addAdminMessage({
-      name: name.trim(),
-      phone: phone.trim(),
-      email: email.trim() || "-",
       subject: `Teklif Talebi: ${glassType}`,
       message: details.trim() || "İletişim formu üzerinden keşif/fiyat talebi gönderildi.",
+      website: websiteTrap,
+      formElapsedMs: Date.now() - formLoadedAtRef.current,
     });
-    markFormSubmitted("contact_lead_form");
+    setLoading(false);
 
-    setTimeout(() => {
-      setLoading(false);
-      toast.success(
-        `Talebiniz (#${created.id}) Acarpen sistemine kaydedildi! Satış temsilcimiz en kısa sürede sizi arayacaktır.`
+    if (!result.ok || !result.id) {
+      toast.error(
+        result.error || "Talebiniz sunucuya kaydedilemedi. Lütfen tekrar deneyin."
       );
-      setName("");
-      setPhone("");
-      setEmail("");
-      setDetails("");
-    }, 400);
+      return;
+    }
+
+    markFormSubmitted("contact_lead_form");
+    const trackingPin = result.trackingPin || "";
+    setLastTicket({ id: result.id, trackingPin });
+    toast.success(
+      `Talebiniz (#${result.id} • Takip PIN: ${trackingPin}) Acarpen sistemine kaydedildi! Satış temsilcimiz en kısa sürede sizi arayacaktır.`
+    );
+    setName("");
+    setPhone("");
+    setEmail("");
+    setDetails("");
   };
 
   const handleSendWhatsAppDirect = () => {
@@ -255,6 +262,33 @@ export const Contact = () => {
               />
             </div>
 
+            {lastTicket && (
+              <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-4 text-xs sm:text-sm text-emerald-950 flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <span className="font-bold">Başvurunuz alındı:</span>{" "}
+                  <span className="font-mono font-extrabold">{lastTicket.id}</span>
+                  {lastTicket.trackingPin && (
+                    <>
+                      {" • "}Güvenlik PIN:{" "}
+                      <span className="font-mono font-extrabold bg-emerald-200 px-2 py-0.5 rounded">
+                        {lastTicket.trackingPin}
+                      </span>
+                    </>
+                  )}
+                </div>
+                <Link
+                  to={`/siparis-takip?id=${encodeURIComponent(lastTicket.id)}${
+                    lastTicket.trackingPin
+                      ? `&pin=${encodeURIComponent(lastTicket.trackingPin)}`
+                      : ""
+                  }`}
+                  className="font-bold text-emerald-800 underline hover:text-emerald-950"
+                >
+                  Sipariş Durumunu Gör →
+                </Link>
+              </div>
+            )}
+
             <div className="grid sm:grid-cols-2 gap-3 pt-1">
               <Button
                 type="submit"
@@ -263,7 +297,7 @@ export const Contact = () => {
                 className="w-full rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold h-12 shadow-md text-xs sm:text-sm"
               >
                 <Send className="mr-2 h-4 w-4" />
-                {loading ? "Kaydediliyor..." : "Teklif Talebini Gönder"}
+                {loading ? "Sunucuya Kaydediliyor..." : "Teklif Talebini Gönder"}
               </Button>
 
               <Button

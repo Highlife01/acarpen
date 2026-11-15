@@ -1,0 +1,14 @@
+{
+  "name": "acarpen-staff-claims-sync",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Isolated Cloud Function Gen2 syncing Firestore (database: acarpen) users/{uid} roles to Firebase Auth acarpenRole custom claims without touching shared project functions.",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.4.5",
+    "firebase-admin": "^13.0.0"
+  }
+}
