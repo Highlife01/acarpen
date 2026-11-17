@@ -2,6 +2,26 @@
 <html lang="tr" prefix="og: https://ogp.me/ns#">
   <head>
     <meta charset="UTF-8" />
+    <!-- Immediate Canonical Domain Redirect (*.web.app / *.firebaseapp.com / non-www root -> ANA_DOMAIN) -->
+    <script>
+      (function () {
+        try {
+          var targetDomain = "https://www.acarpen.com.tr";
+          var host = (window.location.hostname || "").toLowerCase();
+          if (host === "localhost" || host === "127.0.0.1" || host === "[::1]" || host.indexOf("192.168.") === 0) return;
+          var isNonCanonical =
+            host.indexOf(".web.app") !== -1 ||
+            host.indexOf(".firebaseapp.com") !== -1 ||
+            host === "acarpen.com.tr" ||
+            host === "acarpen.tr" ||
+            host === "www.acarpen.tr" ||
+            (host === "www.acarpen.com.tr" && window.location.protocol === "http:");
+          if (isNonCanonical) {
+            window.location.replace(targetDomain + (window.location.pathname || "/") + (window.location.search || "") + (window.location.hash || ""));
+          }
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Acarpen | Adana Fıratpen, Winsa & Pimapen PVC Pencere, Kapı, Sürme ve Cam Balkon</title>
     
@@ -105,13 +125,22 @@
           var rawLang = (params.get("lang") || "").toLowerCase();
           var activeLang = rawLang === "en" || rawLang === "ar" ? rawLang : "tr";
 
-          var expectedSearch = activeLang === "en" || activeLang === "ar" ? "?lang=" + activeLang : "";
+          var remainingParams = new URLSearchParams(window.location.search || "");
+          if (activeLang === "tr") {
+            remainingParams.delete("lang");
+          } else {
+            remainingParams.set("lang", activeLang);
+          }
+          var paramStr = remainingParams.toString();
+          var expectedSearch = paramStr ? "?" + paramStr : "";
+          var preservedHash = window.location.hash || "";
+
           if (
             (cleanPath !== rawPath || (window.location.search || "") !== expectedSearch) &&
             window.history &&
             window.history.replaceState
           ) {
-            window.history.replaceState(null, "", cleanPath + expectedSearch);
+            window.history.replaceState(null, "", cleanPath + expectedSearch + preservedHash);
           }
 
           document.documentElement.lang = activeLang;
@@ -142,6 +171,7 @@
     <!-- AI & Generative Engine Optimization (GEO) Discovery -->
     <link rel="alternate" type="text/plain" href="https://www.acarpen.com.tr/llms.txt" title="LLMs Text Summary" />
     <link rel="alternate" type="text/plain" href="https://www.acarpen.com.tr/llms-full.txt" title="LLMs Full Knowledge Base" />
+    <link rel="alternate" type="application/ld+json" href="https://www.acarpen.com.tr/entity.jsonld" title="Acarpen Knowledge Graph Entity" />
     
     <!-- Geo Location Tags (Adana Merkez Fabrika & Çukurova) -->
     <meta name="geo.region" content="TR-01" />

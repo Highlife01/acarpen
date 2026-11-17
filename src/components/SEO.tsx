@@ -58,14 +58,14 @@ const LOCALIZED_PAGE_META: Record<
 > = {
   "/": {
     en: {
-      title: "Acarpen | Authorized Fıratpen PVC Window, Door & Glass Balcony Producer in Adana",
+      title: "Acarpen | Fıratpen, Winsa & Pimapen PVC Window, Door & Glass Balcony Producer in Adana",
       description:
-        "Acarpen (Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana) — Authorized Fıratpen manufacturer producing 70mm & 75mm PVC windows, balcony doors, sliding systems, colored insulating glass, and folding glass balconies.",
+        "Acarpen (Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana) — Fıratpen, Winsa and Pimapen PVC window manufacturer producing 70mm & 75mm PVC windows, balcony doors, sliding systems, colored insulating glass, and folding glass balconies.",
     },
     ar: {
-      title: "أكاربن (Acarpen) | الوكيل والمصنع المعتمد لأنظمة نوافذ وأبواب Fıratpen PVC في أضنة",
+      title: "أكاربن (Acarpen) | مصنع ومركز إنتاج أنظمة نوافذ وأبواب Fıratpen و Winsa و Pimapen PVC في أضنة",
       description:
-        "شركة أكاربن في سيهان / أضنة — وكيل ومصنع معتمد لأنظمة Fıratpen لإنتاج نوافذ وأبواب PVC العازلة، الأنظمة المنزلقة، الزجاج العازل الملون، وزجاج الشرفات القابل للطي بـ 19 لوناً مختلفاً.",
+        "شركة أكاربن في سيهan / أضنة — مصنع ومركز إنتاج متخصص لأنظمة Fıratpen و Winsa و Pimapen لإنتاج نوافذ وأبواب PVC العازلة، الأنظمة المنزلقة، الزجاج العازل الملون، وزجاج الشرفات القابل للطي بـ 19 لوناً مختلفاً.",
     },
   },
   "/hizmetler": {
@@ -77,7 +77,7 @@ const LOCALIZED_PAGE_META: Record<
     ar: {
       title: "منتجات نوافذ وأبواب PVC وأنظمة الشرفات الزجاجية | أكاربن أضنة",
       description:
-        "تصفح منتجات أكاربن المعتمدة من Fıratpen: نوافذ PVC عازلة، أبواب شرفات وحمامات، أنظمة سحب منزلقة، وزجاج شرفات مع 19 خياراً للألوان وزجاج عاكس ملون.",
+        "تصفح منتجات أكاربن من Fıratpen و Winsa و Pimapen: نوافذ PVC عازلة، أبواب شرفات وحمامات، أنظمة سحب منزلقة، وزجاج شرفات مع 19 خياراً للألوان وزجاج عاكس ملون.",
     },
   },
   "/hesaplama": {
@@ -142,7 +142,7 @@ const LOCALIZED_PAGE_META: Record<
   },
   "/iletisim": {
     en: {
-      title: "Contact & Adana Factory Showroom | Acarpen — Authorized Fıratpen Producer",
+      title: "Contact & Adana Factory Showroom | Acarpen — Fıratpen, Winsa & Pimapen Producer",
       description:
         "Visit Acarpen at Gülbahçesi Mah. 13428 Sok. No:16/17 Seyhan / Adana or message +90 533 625 36 11 on WhatsApp for free laser measurement and uPVC window quotes.",
     },

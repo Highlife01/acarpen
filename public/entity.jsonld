@@ -1,0 +1,81 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://www.acarpen.com.tr/#website",
+      "url": "https://www.acarpen.com.tr/",
+      "name": "Acarpen — Adana PVC Pencere, Kapı & Cam Balkon Üreticisi",
+      "alternateName": [
+        "Acarpen",
+        "Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti.",
+        "Acarpen Adana PVC Pencere, Kapı ve Cam Balkon"
+      ],
+      "inLanguage": ["tr", "en", "ar"],
+      "publisher": { "@id": "https://www.acarpen.com.tr/#organization" },
+      "potentialAction": {
+        "@type": "ViewAction",
+        "name": "Online PVC Pencere & Cam Balkon Ölçü Yapılandırıcı",
+        "target": "https://www.acarpen.com.tr/hesaplama"
+      }
+    },
+    {
+      "@type": ["LocalBusiness", "HomeAndConstructionBusiness", "Store", "Organization"],
+      "@id": "https://www.acarpen.com.tr/#organization",
+      "name": "Acarpen — Adana PVC Pencere, Kapı & Cam Balkon Üretim Merkezi",
+      "alternateName": ["Acarpen", "Acar Pen İnşaat Sanayi ve Ticaret Ltd. Şti."],
+      "legalName": "ACAR PEN İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ",
+      "url": "https://www.acarpen.com.tr/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.acarpen.com.tr/assets/acarpen-logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "image": "https://www.acarpen.com.tr/assets/firatpen-selenit-pvc-pencere.jpg",
+      "description": "Adana Seyhan Gülbahçesi Mahallesi fabrikamızda Fıratpen, Winsa ve Pimapen PVC pencere, kapı, Hebeschiebe sürme ve cam balkon sistemleri üretimi.",
+      "telephone": "+90 533 625 36 11",
+      "email": "info@acarpen.com.tr",
+      "priceRange": "₺₺",
+      "inLanguage": ["tr", "en", "ar"],
+      "hasMap": "https://maps.google.com/?q=G%C3%BClbah%C3%A7esi+Mah.+13428+Sok.+No:16/17+Seyhan+Adana",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Gülbahçesi Mah. 13428 Sok. No:16/17",
+        "addressLocality": "Seyhan",
+        "addressRegion": "Adana",
+        "postalCode": "01080",
+        "addressCountry": "TR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 36.9850,
+        "longitude": 35.2880
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "opens": "08:00",
+          "closes": "19:00"
+        }
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+90-533-625-36-11",
+          "contactType": "sales",
+          "contactOption": "WhatsApp",
+          "areaServed": ["TR-01", "TR-33", "TR-80", "TR-31", "TR-27", "TR-38", "TR-51"],
+          "availableLanguage": ["Turkish", "English", "Arabic"]
+        }
+      ],
+      "brand": [
+        { "@type": "Brand", "name": "Acarpen" },
+        { "@type": "Brand", "name": "Fıratpen", "sameAs": "https://www.firatpen.com.tr" },
+        { "@type": "Brand", "name": "Winsa", "sameAs": "https://www.winsa.com.tr" },
+        { "@type": "Brand", "name": "Pimapen", "sameAs": "https://www.pimapen.com.tr" }
+      ]
+    }
+  ]
+}

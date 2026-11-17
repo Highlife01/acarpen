@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prerender-seo-geo.mjs",
-    "prerender": "node scripts/prerender-seo-geo.mjs",
+    "build": "vite build && node scripts/prerender-static-seo.mjs",
+    "prerender": "node scripts/prerender-static-seo.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",

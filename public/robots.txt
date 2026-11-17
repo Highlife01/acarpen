@@ -71,6 +71,7 @@ Allow: /
 # LLMs Summary: https://www.acarpen.com.tr/llms.txt
 # LLMs Full Knowledge Base: https://www.acarpen.com.tr/llms-full.txt
 # AI Policy: https://www.acarpen.com.tr/ai.txt
+# Knowledge Graph Entity: https://www.acarpen.com.tr/entity.jsonld
 
 Sitemap: https://www.acarpen.com.tr/sitemap.xml
 Host: https://www.acarpen.com.tr

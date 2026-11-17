@@ -745,21 +745,23 @@ function buildSemanticHTML(route) {
     <main class="prerender-main" style="max-width:1200px;margin:0 auto;padding:3rem 1.5rem;font-family:'Inter','Plus Jakarta Sans',system-ui,-apple-system,sans-serif;color:#1e293b;line-height:1.6;">
       ${breadcrumbMarkup}
 
-      <header style="margin-bottom:2.5rem;">
-        <span style="display:inline-block;padding:0.35rem 0.85rem;background:#e0f2fe;color:#0369a1;border-radius:9999px;font-size:0.75rem;font-weight:bold;text-transform:uppercase;margin-bottom:0.75rem;">
-          Fıratpen, Winsa &amp; Pimapen PVC Sistemleri • Acarpen Adana
-        </span>
-        <h1 style="font-size:2.25rem;font-weight:800;color:#0f172a;letter-spacing:-0.03em;margin-top:0.25rem;line-height:1.2;">
-          ${route.h1}
-        </h1>
-        <p style="font-size:1.15rem;color:#475569;margin-top:1rem;max-width:900px;">
-          ${route.summary}
-        </p>
-      </header>
+      <article>
+        <header style="margin-bottom:2.5rem;">
+          <span style="display:inline-block;padding:0.35rem 0.85rem;background:#e0f2fe;color:#0369a1;border-radius:9999px;font-size:0.75rem;font-weight:bold;text-transform:uppercase;margin-bottom:0.75rem;">
+            Fıratpen, Winsa &amp; Pimapen PVC Sistemleri • Acarpen Adana
+          </span>
+          <h1 style="font-size:2.25rem;font-weight:800;color:#0f172a;letter-spacing:-0.03em;margin-top:0.25rem;line-height:1.2;">
+            ${route.h1}
+          </h1>
+          <p style="font-size:1.15rem;color:#475569;margin-top:1rem;max-width:900px;">
+            ${route.summary}
+          </p>
+        </header>
 
-      ${specsMarkup}
+        ${specsMarkup}
 
-      ${faqsMarkup}
+        ${faqsMarkup}
+      </article>
 
       <section class="prerender-cta" style="margin-top:3.5rem;padding:2.5rem;background:#0f172a;border-radius:1rem;color:#ffffff;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1.5rem;">
         <div>
@@ -1084,9 +1086,15 @@ async function main() {
   console.log("======================================================");
   console.log(`🎉 Başarılı: Toplam ${generatedCount} sayfa statik SEO/GEO HTML olarak üretildi!`);
   console.log("======================================================");
+  return generatedCount;
 }
 
-main().catch((err) => {
-  console.error("Prerender hatası:", err);
-  process.exit(1);
-});
+export { main, ROUTES, BASE_URL };
+
+const isDirectRun = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (isDirectRun) {
+  main().catch((err) => {
+    console.error("Prerender hatası:", err);
+    process.exit(1);
+  });
+}

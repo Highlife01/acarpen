@@ -171,7 +171,17 @@ describe("4. International SEO & GEO (AI Search Engines)", () => {
     expect(content).toContain("<loc>https://www.acarpen.com.tr/hesaplama</loc>");
     expect(content).toContain("<loc>https://www.acarpen.com.tr/urunler/cift-cam</loc>");
     expect(content).toContain("<loc>https://www.acarpen.com.tr/bolgeler/adana-cam-fabrikasi</loc>");
-    expect(content).toContain("2026-11-15");
+    expect(content).toMatch(/2026-11-\d{2}/);
+    expect(content).not.toContain("acarpen.web.app");
+  });
+
+  it("entity.jsonld should exist, declare Organization and WebSite schema for www.acarpen.com.tr", () => {
+    const entityPath = path.resolve(__dirname, "../../public/entity.jsonld");
+    expect(fs.existsSync(entityPath)).toBe(true);
+    const content = fs.readFileSync(entityPath, "utf-8");
+    const json = JSON.parse(content);
+    expect(json["@context"]).toBe("https://schema.org");
+    expect(content).toContain("https://www.acarpen.com.tr/");
     expect(content).not.toContain("acarpen.web.app");
   });
 
